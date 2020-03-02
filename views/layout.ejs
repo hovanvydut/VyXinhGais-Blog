@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<!--
+This is a starter template page. Use this page to start your new project from
+scratch. This page gets rid of all links and provides the needed markup only.
+-->
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>Admin-VyXinhGais</title>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="stylesheets/all.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="stylesheets/adminlte.min.css">
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <!-- tinyMCE -->
+    <script src="javascripts/tinyMCE.js"></script>
+</head>
+
+<body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+
+        <!-- Navbar -->
+        <%- include('layoutComponent/MainHeader') -%>
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        <%- include('layoutComponent/MainSidebar') -%>
+
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <%- body %>
+        </div>
+        <!-- /.content-wrapper -->
+
+        <!-- Control Sidebar -->
+        <%- include('layoutComponent/ControlSidebar') -%>
+        <!-- /.control-sidebar -->
+
+        <!-- Main Footer -->
+        <%- include('layoutComponent/MainFooter') -%>
+    </div>
+    <!-- ./wrapper -->
+
+    <!-- REQUIRED SCRIPTS -->
+
+    <!-- jQuery -->
+    <script src="javascripts/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="javascripts/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="javascripts/adminlte.min.js"></script>
+    <!-- tinyMCE -->
+    <script>
+        const URL_UPLOAD = 'http://localhost:4400/api/v1/images';
+        //tinyMCE.editors.myEditor.getContent()
+        tinymce.init({
+            selector: 'textarea#myEditor',
+            plugins: 'advlist link image lists',
+            menubar: 'file edit view insert format',
+            // menubar: '',
+            toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media fullpage | forecolor backcolor emoticons',
+            formats: {
+                // Changes the default format for h1 to have a class of heading
+                h1: {
+                    block: 'h1',
+                    classes: 'full-post__main-title'
+                },
+                p: {
+                    block: 'p',
+                    classes: 'full-post__para'
+                }
+            },
+            images_upload_handler: function (blobInfo, success, failure) {
+                var xhr, formData;
+                xhr = new XMLHttpRequest();
+                xhr.withCredentials = false;
+                xhr.open('POST', URL_UPLOAD);
+                xhr.onload = function () {
+                    var json;
+                    if (xhr.status != 200) {
+                        failure('HTTP Error: ' + xhr.status);
+                        return;
+                    }
+                    json = JSON.parse(xhr.responseText);
+
+                    if (!json || typeof json.location != 'string') {
+                        failure('Invalid JSON: ' + xhr.responseText);
+                        return;
+                    }
+                    success(json.location);
+                };
+                formData = new FormData();
+                formData.append('file', blobInfo.blob(), blobInfo.filename());
+                xhr.send(formData);
+            }
+        });
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,32 @@
+<!-- Import -->
+<% include ../components/ContentHeader %>
+
+<!-- Content Header (Page header) -->
+<%- ContentHeader(title, breadscrumb) %>
+<!-- /.content-header -->
+
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Tiêu đề bài viết</label>
+                            <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body p-0">
+                        <textarea id="myEditor" name="content">
+                        </textarea>
+                    </div>
+                    <!-- /.card-body -->
+                </div><!-- /.card -->
+            </div>
+            <!-- /.col-md-6 -->
+        </div>
+        <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content -->

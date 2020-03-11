@@ -20,6 +20,10 @@
         "no-tabs": 0,
         "dot-notation": 0,
         "default-case": 0,
-        "no-unused-vars": 1
+        "no-unused-vars": 0,
+        "space-before-function-paren": 0,
+        "func-names": 0,
+        "no-useless-escape": 0,
+        "comma-dangle": 0
     }
 }

@@ -7,6 +7,15 @@ const signIn = function(req, res, next) {
     }
 };
 
+const isLogining = function(req, res, next) {
+    if (req.session.user) {
+        res.redirect('/');
+    } else {
+        next();
+    }
+};
+
 module.exports = {
     signIn,
+    isLogining,
 };

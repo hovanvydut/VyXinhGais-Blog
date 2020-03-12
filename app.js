@@ -27,15 +27,7 @@ const options = {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    checkExpirationInterval: 20 * 60 * 1000,
-    schema: {
-        tableName: 'sessions',
-        columnNames: {
-            session_id: 'session_id',
-            expires: 'expires',
-            data: 'data',
-        },
-    },
+    checkExpirationInterval: 1 * 60 * 1000,
 };
 
 const sessionStore = new MySQLStore(options);

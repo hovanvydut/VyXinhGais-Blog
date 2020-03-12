@@ -68,20 +68,20 @@ const handleSignIn = async (req, res) => {
             );
 
             // Check that current sessions has expired?
-            let checkExpired = 0;
+            let isNotExpired = 0;
             if (isLogining.length > 0) {
                 for (let i = 0; i < isLogining.length; i += 1) {
                     // Date now for milisecond => Date.now() / 1000 for second
                     const currentTime = Date.now() / 1000;
                     // if current session is not expired, so incree checkExpired
-                    if (isLogining[i].expires > currentTime / 1000) {
-                        checkExpired += 1;
+                    if (isLogining[i].expires > currentTime) {
+                        isNotExpired += 1;
                     }
                 }
             }
 
             // If a user is logining, dont allow mutiple login
-            if (checkExpired !== 0) {
+            if (isNotExpired !== 0) {
                 console.log('Dang co tai khoan login');
                 return res.redirect('/accounts/signup');
             }

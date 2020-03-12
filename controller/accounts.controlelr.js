@@ -43,15 +43,61 @@ const handleSignUp = async (req, res) => {
 
 const handleSignIn = async (req, res) => {
     const { email, password } = req.body;
-    const result = await knex
+
+    // check email is exist in DB
+    const isExistEmail = await knex
         .select()
         .from('users')
         .where({ email });
-    if (result.length > 0) {
-        const user = result[0];
-        const passLogin = bcrypt.compareSync(password, user.password);
-        if (passLogin) {
+
+    if (isExistEmail.length > 0) {
+        const user = isExistEmail[0];
+
+        // Compare password between client and DB
+        const comparePassword = bcrypt.compareSync(password, user.password);
+
+        if (comparePassword) {
+            /* Find in `session` table if `sessions.data` column include user.id. If include,
+                dont allow login because dont allow mutiple logins from 1 account */
+
+            // Filter sessions in `sessions` table which include user.id
+            const isLogining = await knex('sessions').where(
+                'data',
+                'like',
+                `%${user.id}%`
+            );
+
+            // Check that current sessions has expired?
+            let checkExpired = 0;
+            if (isLogining.length > 0) {
+                for (let i = 0; i < isLogining.length; i += 1) {
+                    // Date now for milisecond => Date.now() / 1000 for second
+                    const currentTime = Date.now() / 1000;
+                    // if current session is not expired, so incree checkExpired
+                    if (isLogining[i].expires > currentTime / 1000) {
+                        checkExpired += 1;
+                    }
+                }
+            }
+
+            // If a user is logining, dont allow mutiple login
+            if (checkExpired !== 0) {
+                console.log('Dang co tai khoan login');
+                return res.redirect('/accounts/signup');
+            }
+
+            // If a user is not logining, allow login
+            req.session.user = {
+                id: user.id,
+            };
+
+            res.cookie('testCookieParser', 'hovanvy', {
+                signed: true,
+                maxAge: 10 * 60 * 60,
+            });
+
             console.log('Login thanh cong');
+
             res.redirect('/');
         } else {
             console.log('Sai mat khau');
@@ -63,9 +109,18 @@ const handleSignIn = async (req, res) => {
     }
 };
 
+const signout = function(req, res) {
+    req.session.destroy((err) => {
+        console.log('Logout');
+        res.clearCookie('testCookieParser');
+        res.redirect('/accounts/signin');
+    });
+};
+
 module.exports = {
     renderSignInView,
     renderSignUpView,
     handleSignUp,
     handleSignIn,
+    signout,
 };

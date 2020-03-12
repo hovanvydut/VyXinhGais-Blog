@@ -24,6 +24,7 @@
         "space-before-function-paren": 0,
         "func-names": 0,
         "no-useless-escape": 0,
-        "comma-dangle": 0
+        "comma-dangle": 0,
+        "no-console": 0
     }
 }

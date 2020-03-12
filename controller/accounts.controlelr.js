@@ -52,6 +52,11 @@ const handleSignIn = async (req, res) => {
         const passLogin = bcrypt.compareSync(password, user.password);
         if (passLogin) {
             console.log('Login thanh cong');
+
+            req.session.user = {
+                id: user.id,
+            };
+
             res.redirect('/');
         } else {
             console.log('Sai mat khau');
@@ -63,9 +68,17 @@ const handleSignIn = async (req, res) => {
     }
 };
 
+const signout = function(req, res) {
+    req.session.destroy((err) => {
+        console.log('Da xoa session, err = ', err);
+        res.redirect('/accounts/signin');
+    });
+};
+
 module.exports = {
     renderSignInView,
     renderSignUpView,
     handleSignUp,
     handleSignIn,
+    signout,
 };

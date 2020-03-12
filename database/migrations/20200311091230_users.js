@@ -1,4 +1,5 @@
 const TABLE_NAME = 'users';
+
 exports.up = function(knex) {
     return knex.schema.createTable(TABLE_NAME, (table) => {
         table.string('id').primary();

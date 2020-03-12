@@ -15,4 +15,6 @@ router.get('/signup', controller.renderSignUpView);
 
 router.post('/signup', middleware.validateSignUp, controller.handleSignUp);
 
+router.get('/signout', controller.signout);
+
 module.exports = router;

@@ -2,6 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 const expressLayouts = require('express-ejs-layouts');
+const cookieParser = require('cookie-parser');
 const layoutPath = require('../common/layoutPath');
 const verify = require('./../middleware/verify');
 
@@ -14,6 +15,18 @@ router.get('/', verify.signIn, (req, res) => {
 });
 
 router.get('/posts', verify.signIn, (req, res) => {
+    console.log('------index.route: /posts -------------');
+    console.log('req.sessionID: ', req.sessionID);
+    console.log('req.session.cookie: ', req.session.cookie);
+    console.log('req.signedCookies: ', req.signedCookies);
+    console.log(
+        'cookieParser.signedCookie: ',
+        cookieParser.signedCookie(
+            req.signedCookies['vy-session'],
+            process.env.SESSION_COOKIE_SECRET
+        )
+    );
+
     res.render('pages/post', {
         layout: layoutPath.PRIMARY_LAYOUT,
         title: 'Danh sách tất cả các bài viết',

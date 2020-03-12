@@ -20,31 +20,43 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.set('layout', layoutPath.PRIMARY_LAYOUT, layoutPath.SECOND_LAYOUT);
 
+// express mysql session
 const options = {
-    host: 'localhost',
-    port: 3306,
-    user: 'root',
-    password: '',
-    database: 'node_s-group',
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    checkExpirationInterval: 20 * 60 * 1000,
+    schema: {
+        tableName: 'sessions',
+        columnNames: {
+            session_id: 'session_id',
+            expires: 'expires',
+            data: 'data',
+        },
+    },
 };
 
 const sessionStore = new MySQLStore(options);
-
+// express session
 app.use(
     session({
         key: process.env.SESSION_COOKIE_NAME,
         secret: process.env.SESSION_COOKIE_SECRET,
         store: sessionStore,
-        maxAge: 10 * 60 * 1000,
         resave: true,
         saveUninitialized: false,
+        cookie: {
+            maxAge: 5 * 60 * 1000,
+        },
     })
 );
 
 // app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser(process.env.COOKIE_PARSER_SECRET));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);

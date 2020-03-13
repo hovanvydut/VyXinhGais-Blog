@@ -8,9 +8,7 @@ const cookieParser = require('cookie-parser');
 const app = express();
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
-const mysql = require('mysql');
 
-const knex = require('./database/connection');
 const indexRouter = require('./routes/index.route');
 const accountsRouter = require('./routes/accounts.route');
 const layoutPath = require('./common/layoutPath');
@@ -27,20 +25,23 @@ const options = {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    checkExpirationInterval: 1 * 60 * 1000,
+    checkExpirationInterval: 10 * 60 * 1000,
+    // expiration: 0.5 * 60 * 1000,
 };
 
 const sessionStore = new MySQLStore(options);
+
 // express session
 app.use(
     session({
         key: process.env.SESSION_COOKIE_NAME,
         secret: process.env.SESSION_COOKIE_SECRET,
         store: sessionStore,
-        resave: true,
+        resave: false,
         saveUninitialized: false,
         cookie: {
-            maxAge: 5 * 60 * 1000,
+            maxAge: 0.5 * 60 * 1000,
+            // expries: new Date(Date.now() + 0.5 * 60 * 1000),
         },
     })
 );

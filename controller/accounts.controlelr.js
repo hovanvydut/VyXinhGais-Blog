@@ -79,40 +79,40 @@ const handleSignIn = async (req, res) => {
                     }
                 }
             }
+            console.log(isNotExpired);
 
             // If a user is logining, dont allow mutiple login
             if (isNotExpired !== 0) {
-                console.log('Dang co tai khoan login');
+                console.log('Đang có tài khoản login');
                 return res.redirect('/accounts/signup');
             }
 
             // If a user is not logining, allow login
+            // saveUninitialize:  false help skip empty session save back store
             req.session.user = {
                 id: user.id,
+                name: user.name,
             };
 
-            res.cookie('testCookieParser', 'hovanvy', {
+            /* res.cookie('testCookieParser', 'hovanvy', {
                 signed: true,
-                maxAge: 10 * 60 * 60,
-            });
+                maxAge: 10 * 60 * 1000,
+            }); */
 
             console.log('Login thanh cong');
-
-            res.redirect('/');
-        } else {
-            console.log('Sai mat khau');
-            res.redirect('/accounts/signin');
+            return res.redirect('/');
         }
-    } else {
-        console.log('Sai tài khoản');
-        res.redirect('/accounts/signin');
+        console.log('Sai mat khau');
+        return res.redirect('/accounts/signin');
     }
+    console.log('Sai tài khoản');
+    return res.redirect('/accounts/signin');
 };
 
 const signout = function(req, res) {
     req.session.destroy((err) => {
         console.log('Logout');
-        res.clearCookie('testCookieParser');
+        // res.clearCookie('testCookieParser');
         res.redirect('/accounts/signin');
     });
 };

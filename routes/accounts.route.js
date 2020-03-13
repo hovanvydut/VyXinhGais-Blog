@@ -8,9 +8,9 @@ const verify = require('../middleware/verify');
 
 router.use(expressLayouts);
 
-router.get('/signin', verify.isLogining, controller.renderSignInView);
+router.get('/signin', verify.signedIn, controller.renderSignInView);
 
-router.post('/signin', verify.isLogining, controller.handleSignIn);
+router.post('/signin', verify.signedIn, controller.handleSignIn);
 
 router.get('/signup', controller.renderSignUpView);
 

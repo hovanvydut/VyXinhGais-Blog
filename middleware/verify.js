@@ -1,21 +1,27 @@
-const signIn = function(req, res, next) {
+const isSignIn = function(req, res, next) {
     console.log(req.session);
+    console.log(req.session.cookie.maxAge);
+    // console.log(req.session.user);
+
     if (req.session.user) {
-        next();
-    } else {
-        res.redirect('/accounts/signin');
+        return next();
     }
+
+    req.session.destroy((err) => {
+        console.log(err);
+        console.log('destroy');
+        return res.redirect('/accounts/signin');
+    });
 };
 
-const isLogining = function(req, res, next) {
+const signedIn = function(req, res, next) {
     if (req.session.user) {
-        res.redirect('/');
-    } else {
-        next();
+        return res.redirect('/');
     }
+    return next();
 };
 
 module.exports = {
-    signIn,
-    isLogining,
+    isSignIn,
+    signedIn,
 };

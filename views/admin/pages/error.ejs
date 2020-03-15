@@ -14,8 +14,6 @@
     <link rel="stylesheet" href="stylesheets/adminlte.min.css">
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-    <!-- tinyMCE -->
-    <script src="javascripts/tinyMCE.js"></script>
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -95,53 +93,6 @@
     <script src="javascripts/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE App -->
     <script src="javascripts/adminlte.min.js"></script>
-    <!-- tinyMCE -->
-    <script>
-        const URL_UPLOAD = 'http://localhost:4400/api/v1/images';
-        //tinyMCE.editors.myEditor.getContent()
-        tinymce.init({
-            selector: 'textarea#myEditor',
-            plugins: 'advlist link image lists',
-            menubar: 'file edit view insert format',
-            // menubar: '',
-            toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media fullpage | forecolor backcolor emoticons',
-            formats: {
-                // Changes the default format for h1 to have a class of heading
-                h1: {
-                    block: 'h1',
-                    classes: 'full-post__main-title'
-                },
-                p: {
-                    block: 'p',
-                    classes: 'full-post__para'
-                }
-            },
-            images_upload_handler: function (blobInfo, success, failure) {
-                var xhr, formData;
-                xhr = new XMLHttpRequest();
-                xhr.withCredentials = false;
-                xhr.open('POST', URL_UPLOAD);
-                xhr.onload = function () {
-                    var json;
-                    if (xhr.status != 200) {
-                        failure('HTTP Error: ' + xhr.status);
-                        return;
-                    }
-                    json = JSON.parse(xhr.responseText);
-
-                    if (!json || typeof json.location != 'string') {
-                        failure('Invalid JSON: ' + xhr.responseText);
-                        return;
-                    }
-                    success(json.location);
-                };
-                formData = new FormData();
-                formData.append('file', blobInfo.blob(), blobInfo.filename());
-                xhr.send(formData);
-            }
-        });
-
-    </script>
 </body>
 
 </html>

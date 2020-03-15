@@ -1,3 +1,4 @@
+<% let domain = '/admin' %>
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="/" class="brand-link">
@@ -14,8 +15,8 @@
                 <img src="images/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="https://github.com/hovanvydut" class="d-block">
-                    ABC
+                <a href="#" class="d-block">
+                    <%= user.name %>
                 </a>
             </div>
         </div>
@@ -34,15 +35,27 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="/posts" class="nav-link active">
+                            <a href=<%= `${domain}/posts` %> class="nav-link active">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>All Posts</p>
+                                <p>All posts</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="/newpost" class="nav-link">
+                            <a href=<%= `${domain}/newpost` %> class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>New Post</p>
+                                <p>Write new post</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href=<%= `${domain}/categories` %> class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Categories</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href=<%= `${domain}/tags` %> class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tags</p>
                             </a>
                         </li>
                         <li class="nav-item">

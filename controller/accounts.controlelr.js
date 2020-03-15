@@ -1,21 +1,23 @@
 const bcrypt = require('bcryptjs');
-const layoutPath = require('../common/layoutPath');
 const knex = require('./../database/connection');
 
 const renderSignInView = (req, res) => {
-    res.render('pages/signIn', { layout: layoutPath.SECOND_LAYOUT });
+    const error = req.flash('errors')[0];
+    res.render('admin/pages/signin', { error });
 };
 
 const renderSignUpView = (req, res) => {
-    res.render('pages/signUp', { layout: layoutPath.SECOND_LAYOUT });
+    const error = req.flash('error')[0];
+    console.log(error);
+    res.render('admin/pages/signup', { error });
 };
 
 const handleSignUp = async (req, res) => {
     const { error, user } = res.locals;
-    console.log(error);
 
-    if (error.length > 0) {
-        return res.redirect('/accounts/signup');
+    if (error.status === 'hasError') {
+        req.flash('error', error);
+        return res.redirect('/admin/accounts/signup');
     }
 
     const checkEmail = await knex
@@ -25,7 +27,9 @@ const handleSignUp = async (req, res) => {
 
     if (checkEmail.length > 0) {
         console.log('email ton tai');
-        return res.redirect('/accounts/signup');
+        error.email = 'Email đã tồn tại';
+        req.flash('error', error);
+        return res.redirect('/admin/accounts/signup');
     }
 
     // hash password
@@ -38,7 +42,7 @@ const handleSignUp = async (req, res) => {
     user.password = hash;
 
     await knex.insert(user).into('users');
-    res.redirect('/accounts/signin');
+    res.redirect('/admin/accounts/signin');
 };
 
 const handleSignIn = async (req, res) => {
@@ -79,12 +83,11 @@ const handleSignIn = async (req, res) => {
                     }
                 }
             }
-            console.log(isNotExpired);
 
             // If a user is logining, dont allow mutiple login
             if (isNotExpired !== 0) {
                 console.log('Đang có tài khoản login');
-                return res.redirect('/accounts/signup');
+                return res.redirect('/admin/accounts/signup');
             }
 
             // If a user is not logining, allow login
@@ -94,26 +97,22 @@ const handleSignIn = async (req, res) => {
                 name: user.name,
             };
 
-            /* res.cookie('testCookieParser', 'hovanvy', {
-                signed: true,
-                maxAge: 10 * 60 * 1000,
-            }); */
-
             console.log('Login thanh cong');
-            return res.redirect('/');
+            return res.redirect('/admin');
         }
         console.log('Sai mat khau');
-        return res.redirect('/accounts/signin');
+        req.flash('errors', ['Email or password is not correct!']);
+        return res.redirect('/admin/accounts/signin');
     }
     console.log('Sai tài khoản');
-    return res.redirect('/accounts/signin');
+    req.flash('errors', ['Email or password is not correct!']);
+    return res.redirect('/admin/accounts/signin');
 };
 
 const signout = function(req, res) {
     req.session.destroy((err) => {
         console.log('Logout');
-        // res.clearCookie('testCookieParser');
-        res.redirect('/accounts/signin');
+        res.redirect('/admin/accounts/signin');
     });
 };
 

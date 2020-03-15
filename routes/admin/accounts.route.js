@@ -1,12 +1,9 @@
 const express = require('express');
 
 const router = express.Router();
-const expressLayouts = require('express-ejs-layouts');
-const controller = require('../controller/accounts.controlelr');
-const middleware = require('../middleware/accounts.middleware');
-const verify = require('../middleware/verify');
-
-router.use(expressLayouts);
+const controller = require('../../controller/accounts.controlelr');
+const middleware = require('../../middleware/accounts.middleware');
+const verify = require('../../middleware/verify');
 
 router.get('/signin', verify.signedIn, controller.renderSignInView);
 

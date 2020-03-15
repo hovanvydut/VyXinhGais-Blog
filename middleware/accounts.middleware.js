@@ -13,7 +13,15 @@ function generateId(length = 5) {
 }
 
 function validateSignUp(req, res, next) {
-    const error = [];
+    const error = {
+        name: '',
+        email: '',
+        password: '',
+        retypePassword: '',
+        status: 'noError',
+    };
+
+    console.log(req.body);
 
     let { name } = req.body;
     if (/^(\s*[A-Za-z]{2,}\s*)+$/g.test(name)) {
@@ -22,25 +30,28 @@ function validateSignUp(req, res, next) {
         // xoá những khoảng trắng theo sau nó là khoảng trắng
         name = name.replace(/\s(?=\s)/g, '');
     } else {
-        error.push('Tên không hợp lệ');
+        error.name = 'Tên không hợp lệ';
+        error.status = 'hasError';
     }
 
     const email = req.body.email.trim().toLowerCase();
     if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/g.test(email)) {
-        error.push('Email không hợp lệ');
+        error.email = 'Email không hợp lệ';
+        error.status = 'hasError';
     }
 
     const { password, retypePassword } = req.body;
     if (password !== retypePassword) {
-        error.push('Mật khẩu không khớp');
+        error.retypePassword = 'Mật khẩu không khớp';
+        error.status = 'hasError';
     } else if (
         !/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/.test(
             password
         )
     ) {
-        error.push(
-            'Mật khẩu phải gồm 8 kí tự trở lên, có ít nhất một chữ hoa và một kí tự đặc biệt, một chữ số'
-        );
+        error.password =
+            'Ít nhất 8 kí tự, 1 chữ hoa, 1 kí tự đặc biệt và 1 chữ số';
+        error.status = 'hasError';
     }
 
     res.locals.error = error;

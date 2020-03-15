@@ -3,20 +3,19 @@ const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const flash = require('connect-flash-plus');
 // const logger = require('morgan');
 
 const app = express();
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 
-const indexRouter = require('./routes/index.route');
-const accountsRouter = require('./routes/accounts.route');
-const layoutPath = require('./common/layoutPath');
+const indexRouter = require('./routes/admin/index.route');
+const accountsRouter = require('./routes/admin/accounts.route');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-app.set('layout', layoutPath.PRIMARY_LAYOUT, layoutPath.SECOND_LAYOUT);
 
 // express mysql session
 const options = {
@@ -26,12 +25,9 @@ const options = {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     checkExpirationInterval: 10 * 60 * 1000,
-    // expiration: 0.5 * 60 * 1000,
+    expiration: 30 * 60 * 1000,
 };
-
 const sessionStore = new MySQLStore(options);
-
-// express session
 app.use(
     session({
         key: process.env.SESSION_COOKIE_NAME,
@@ -39,21 +35,18 @@ app.use(
         store: sessionStore,
         resave: false,
         saveUninitialized: false,
-        cookie: {
-            maxAge: 0.5 * 60 * 1000,
-            // expries: new Date(Date.now() + 0.5 * 60 * 1000),
-        },
     })
 );
 
-// app.use(logger('dev'));
+app.use(flash());
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_PARSER_SECRET));
 app.use(express.static(path.join(__dirname, 'public')));
+// app.use(logger('dev'));
 
-app.use('/', indexRouter);
-app.use('/accounts', accountsRouter);
+app.use('/admin', indexRouter);
+app.use('/admin/accounts', accountsRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
@@ -68,7 +61,7 @@ app.use((err, req, res, next) => {
 
     // render the error page
     res.status(err.status || 500);
-    res.render('pages/error');
+    res.render('admin/pages/error');
 });
 
 module.exports = app;

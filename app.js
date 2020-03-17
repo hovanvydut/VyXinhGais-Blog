@@ -5,6 +5,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
 const flash = require('connect-flash-plus');
+const bodyParser = require('body-parser');
 // const logger = require('morgan');
 
 const app = express();
@@ -29,6 +30,9 @@ const options = {
     expiration: 30 * 60 * 1000,
 };
 const sessionStore = new MySQLStore(options);
+
+// app.use(methodOverride('X-HTTP-Method-Override'));
+// app.use(methodOverride('_method'));
 app.use(
     session({
         key: process.env.SESSION_COOKIE_NAME,
@@ -38,23 +42,22 @@ app.use(
         saveUninitialized: false,
     })
 );
-app.use(methodOverride('X-HTTP-Method-Override'));
-app.use(methodOverride('_method'));
 app.use(flash());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
+// app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser(process.env.COOKIE_PARSER_SECRET));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(
     methodOverride((req, res) => {
         if (req.body && typeof req.body === 'object' && '_method' in req.body) {
-            // look in urlencoded POST bodies and delete it
             const method = req.body._method;
             delete req.body._method;
             return method;
         }
     })
 );
-app.use(cookieParser(process.env.COOKIE_PARSER_SECRET));
-app.use(express.static(path.join(__dirname, 'public')));
 // app.use(logger('dev'));
 
 app.use('/admin', indexRouter);

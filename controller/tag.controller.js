@@ -39,7 +39,6 @@ const editTag = async (req, res) => {
 
 const updateTag = async function(req, res) {
     const { id } = req.params;
-    console.log(id);
     const { tagName } = req.body;
     await knex('tags')
         .where({ id })
@@ -49,9 +48,18 @@ const updateTag = async function(req, res) {
     res.redirect('/admin/tags');
 };
 
+const deleteTask = async (req, res) => {
+    const { id } = req.params;
+    await knex('tags')
+        .where({ id })
+        .del();
+    res.json({ urlRedirect: '/admin/tags' });
+};
+
 module.exports = {
     renderTagPage,
     addNewTag,
     editTag,
     updateTag,
+    deleteTask,
 };

@@ -16,10 +16,12 @@ router.get('/newpost', verify.isSignIn, newPostController.renderNewPostPage);
 
 router.get('/tags', verify.isSignIn, tagController.renderTagPage);
 
-router.get('/tags/:id', verify.isSignIn, tagController.editTag);
-
 router.post('/tags', verify.isSignIn, tagController.addNewTag);
 
-router.put('/tags/:id', verify.signedIn, tagController.updateTag);
+router.get('/tags/:id', verify.isSignIn, tagController.editTag);
+
+router.put('/tags/:id', verify.isSignIn, tagController.updateTag);
+
+router.delete('/tags/:id', verify.isSignIn, tagController.deleteTask);
 
 module.exports = router;

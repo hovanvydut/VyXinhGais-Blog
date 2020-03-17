@@ -36,10 +36,8 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-lg-6 offset-3">
-
-                            <form action=<%- tag ? `/admin/tags/${tag.id}` : '' %> method="POST"
-                                enctype="application/x-www-form-urlencoded">
-                                <input type="hidden" name="_method" value="put" />
+                            <form method="post" action="/admin/tags/<%= tag.id %>">
+                                <input type="hidden" name="_method" value="PUT" />
                                 <div class="card card-primary">
                                     <div class="card-header">
                                         <h3 class="card-title">Edit</h3>
@@ -53,8 +51,12 @@
                                     </div>
                                     <div class="card-footer">
                                         <button type="submit"
-                                            class="btn btn-block btn-outline-primary w-25 float-right">
+                                            class="btn btn-block btn-outline-primary w-25 float-right mt-0 mr-1">
                                             Save
+                                        </button>
+                                        <button id="btn-deleteTask" type="button"
+                                            class="btn btn-block btn-danger w-25 float-right mt-0 mr-1 text-white">
+                                            Delete
                                         </button>
                                     </div>
                                 </div>
@@ -78,6 +80,27 @@
     <script src="javascripts/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE App -->
     <script src="javascripts/adminlte.min.js"></script>
+    <script>
+        $('#btn-deleteTask').click(function () {
+            jQuery.ajax({
+                method: 'delete',
+                url: '/admin/tags/<%= tag.id %>',
+                // data: {
+                //     _method: 'DELETE'
+                // },
+                success: function (result, status, xhr) {
+                    console.log('success');
+                    console.log(result);
+                    window.location.replace(result.urlRedirect);
+                },
+                error: function (xhr, status, error) {
+                    console.log(status);
+                    console.log(error);
+                }
+            })
+        })
+
+    </script>
 </body>
 
 </html>

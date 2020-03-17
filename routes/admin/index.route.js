@@ -8,20 +8,22 @@ const postController = require('../../controller/post.controller');
 const newPostController = require('../../controller/newPost.controller');
 const tagController = require('../../controller/tag.controller');
 
-router.get('/', verify.isSignIn, homeController.renderHomePage);
+router.use(verify.isSignIn);
 
-router.get('/posts', verify.isSignIn, postController.renderPostPage);
+router.get('/', homeController.renderHomePage);
 
-router.get('/newpost', verify.isSignIn, newPostController.renderNewPostPage);
+router.get('/posts', postController.renderPostPage);
 
-router.get('/tags', verify.isSignIn, tagController.renderTagPage);
+router.get('/newpost', newPostController.renderNewPostPage);
 
-router.post('/tags', verify.isSignIn, tagController.addNewTag);
+router.get('/tags', tagController.renderTagPage);
 
-router.get('/tags/:id', verify.isSignIn, tagController.editTag);
+router.post('/tags', tagController.addNewTag);
 
-router.put('/tags/:id', verify.isSignIn, tagController.updateTag);
+router.get('/tags/:id', tagController.editTag);
 
-router.delete('/tags/:id', verify.isSignIn, tagController.deleteTask);
+router.put('/tags/:id', tagController.updateTag);
+
+router.delete('/tags/:id', tagController.deleteTask);
 
 module.exports = router;

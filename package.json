@@ -3,11 +3,10 @@
     "version": "0.0.0",
     "private": true,
     "scripts": {
-        "start": "nodemon --inspect ./bin/www"
+        "start": "nodemon ./bin/www"
     },
     "dependencies": {
         "bcryptjs": "^2.4.3",
-        "body-parser": "^1.19.0",
         "connect-flash-plus": "^0.2.1",
         "cookie-parser": "~1.4.4",
         "debug": "~2.6.9",
@@ -21,8 +20,8 @@
         "knex": "^0.20.11",
         "method-override": "^3.0.0",
         "morgan": "~1.9.1",
-        "mysql": "^2.18.1",
-        "nodemon": "^2.0.2"
+        "multer": "^1.4.2",
+        "mysql": "^2.18.1"
     },
     "devDependencies": {
         "eslint-config-airbnb": "^18.0.1",

@@ -12,6 +12,11 @@ const renderNewPostPage = (req, res) => {
     });
 };
 
+const savePost = (req, res) => {
+    const { title, content } = req.body;
+    console.log(title);
+};
+
 const uploadImg = function(req, res) {
     const path = req.file.path
         .split('\\')
@@ -29,4 +34,5 @@ const uploadImg = function(req, res) {
 module.exports = {
     renderNewPostPage,
     uploadImg,
+    savePost,
 };

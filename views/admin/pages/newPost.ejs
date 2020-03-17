@@ -39,7 +39,7 @@
                                 <div class="card-header">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Tiêu đề bài viết</label>
-                                        <input type="email" class="form-control" id="exampleInputEmail1"
+                                        <input id="post-title" type="email" class="form-control" id="exampleInputEmail1"
                                             placeholder="Enter email">
                                     </div>
                                 </div>
@@ -47,7 +47,7 @@
                                     <textarea id="myEditor" name="content"></textarea>
                                 </div>
                                 <div class="card-footer text-right">
-                                    <a href="#" class="btn btn-primary">Save</a>
+                                    <button id="save-btn" href="#" class="btn btn-primary">Save</button>
                                 </div>
                             </div>
                         </div>
@@ -73,8 +73,26 @@
     <script src="https://cdn.tiny.cloud/1/2915bg1q653j3923vjzn1e30iaq6aijt5sd0c429mcvdh9ov/tinymce/5/tinymce.min.js"
         referrerpolicy="origin"></script>
     <script>
-        const URL_UPLOAD = '/admin/newpost/image';
         //tinyMCE.editors.myEditor.getContent()
+        $('#save-btn').click(function () {
+            jQuery.ajax({
+                method: 'POST',
+                url: '/admin/newpost',
+                data: {
+                    title: $('#post-title').val(),
+                    content: tinyMCE.editors.myEditor.getContent()
+                },
+                success: function (result, status, xhr) {
+                    console.log('success');
+                },
+                error: function (xhr, status, error) {
+                    console.log('error');
+                    console.log(status);
+                    console.log(error);
+                }
+            })
+        })
+        const URL_UPLOAD = '/admin/newpost/image';
         tinymce.init({
             selector: 'textarea#myEditor',
             plugins: 'print preview powerpaste casechange importcss tinydrive searchreplace autolink autosave save directionality advcode visualblocks visualchars fullscreen image link media mediaembed template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists checklist wordcount tinymcespellchecker a11ychecker imagetools textpattern noneditable help formatpainter permanentpen pageembed charmap tinycomments mentions quickbars linkchecker emoticons advtable',
@@ -92,7 +110,7 @@
                 }
             },
             menubar: 'file edit view insert format tools table tc help',
-            toolbar: 'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist checklist | forecolor backcolor casechange permanentpen formatpainter removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media pageembed template link anchor codesample | a11ycheck ltr rtl | showcomments addcomment',
+            toolbar: 'bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | image codesample | numlist bullist checklist | forecolor backcolor casechange permanentpen formatpainter removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile media pageembed template link anchor  | a11ycheck ltr rtl | showcomments addcomment | outdent indent |',
             autosave_ask_before_unload: true,
             autosave_interval: "30s",
             autosave_prefix: "{path}{query}-{id}-",

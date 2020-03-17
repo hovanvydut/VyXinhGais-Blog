@@ -73,7 +73,7 @@
     <script src="https://cdn.tiny.cloud/1/2915bg1q653j3923vjzn1e30iaq6aijt5sd0c429mcvdh9ov/tinymce/5/tinymce.min.js"
         referrerpolicy="origin"></script>
     <script>
-        const URL_UPLOAD = 'http://localhost:4400/api/v1/images';
+        const URL_UPLOAD = '/admin/newpost/image';
         //tinyMCE.editors.myEditor.getContent()
         tinymce.init({
             selector: 'textarea#myEditor',
@@ -193,7 +193,10 @@
                     success(json.location);
                 };
                 formData = new FormData();
-                formData.append('file', blobInfo.blob(), blobInfo.filename());
+                console.log(blobInfo.blob());
+                console.log(blobInfo.filename());
+
+                formData.append('imageUpload', blobInfo.blob(), blobInfo.filename());
                 xhr.send(formData);
             }
         });

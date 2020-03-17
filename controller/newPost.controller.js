@@ -12,6 +12,21 @@ const renderNewPostPage = (req, res) => {
     });
 };
 
+const uploadImg = function(req, res) {
+    const path = req.file.path
+        .split('\\')
+        .slice(1)
+        .join('/');
+    let imgPath = `${process.env.HOST}/static/${path}`;
+    imgPath = imgPath.replace(/(?<!:)\/+(?=\/(?=))/g, '');
+
+    // send img path to tinyMCE
+    return res.status(200).json({
+        location: imgPath,
+    });
+};
+
 module.exports = {
     renderNewPostPage,
+    uploadImg,
 };

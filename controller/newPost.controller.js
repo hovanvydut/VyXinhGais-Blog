@@ -1,7 +1,11 @@
+const knex = require('./../database/connection');
+const generateId = require('./../common/generateId');
+
 const domain = 'admin';
 
-const renderNewPostPage = (req, res) => {
+const renderNewPostPage = async (req, res) => {
     const { user } = req.session;
+    const tags = await knex('tags').select();
     res.render(`${domain}/pages/newPost`, {
         title: 'Viết bài',
         breadscrumb: [
@@ -9,12 +13,39 @@ const renderNewPostPage = (req, res) => {
             { content: 'bài viết mới', href: '#' },
         ],
         user,
+        tags,
     });
 };
 
-const savePost = (req, res) => {
-    const { title, content } = req.body;
-    console.log(title);
+const savePost = async (req, res) => {
+    const { user } = req.session;
+    console.log(req.body);
+    const { title, content, tags, description } = req.body;
+    const idPost = generateId();
+    const linkPost = `/admin/posts/${title
+        .trim()
+        .replace(/\s(?=\s)/g, '')
+        .replace(/\s/g, '-')}${generateId(1)}`;
+
+    await knex('posts').insert({
+        id: idPost,
+        title,
+        content,
+        author: user.id,
+        linkPost,
+        description,
+        imgThumb: 'link img thumb',
+    });
+
+    JSON.parse(tags).forEach(async (tagId) => {
+        await knex('post_tags').insert({
+            id: generateId(),
+            post_id: idPost,
+            tag_id: tagId,
+        });
+    });
+
+    return res.status(200).json({ linkPost });
 };
 
 const uploadImg = function(req, res) {

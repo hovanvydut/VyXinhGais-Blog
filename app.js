@@ -57,6 +57,9 @@ app.use(logger('dev'));
 
 app.use('/admin', indexRouter);
 app.use('/admin/accounts', accountsRouter);
+app.use('admin/error', (req, res) => {
+    res.render('admin/pages/error');
+});
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

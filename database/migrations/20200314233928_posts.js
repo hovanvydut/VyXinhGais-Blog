@@ -10,7 +10,10 @@ exports.up = function(knex) {
             .foreign('author')
             .references('id')
             .inTable('users');
-        table.string('linkPost').notNullable();
+        table
+            .string('linkPost')
+            .unique()
+            .notNullable();
         table.string('description').notNullable();
         table.string('imgThumb').notNullable();
         table.datetime('created_at').defaultTo(knex.fn.now());

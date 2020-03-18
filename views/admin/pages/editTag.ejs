@@ -89,12 +89,9 @@
                 //     _method: 'DELETE'
                 // },
                 success: function (result, status, xhr) {
-                    console.log('success');
-                    console.log(result);
                     window.location.replace(result.urlRedirect);
                 },
                 error: function (xhr, status, error) {
-                    console.log(status);
                     console.log(error);
                 }
             })

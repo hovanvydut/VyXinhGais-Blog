@@ -1,12 +1,10 @@
 const knex = require('./../database/connection');
 const generateId = require('./../common/generateId');
 
-const domain = 'admin';
-
 const renderNewPostPage = async (req, res) => {
     const { user } = req.session;
     const tags = await knex('tags').select();
-    res.render(`${domain}/pages/newPost`, {
+    res.render('admin/pages/newPost', {
         title: 'Viết bài',
         breadscrumb: [
             { content: 'danh sách bài viết', href: '/post' },

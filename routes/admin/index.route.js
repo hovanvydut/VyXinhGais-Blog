@@ -15,27 +15,26 @@ const tagController = require('../../controller/tag.controller');
 
 router.get('/', verify.isSignIn, homeController.renderHomePage);
 
-router.get('/posts', verify.isSignIn, postController.renderPostPage);
+router
+    .get('/posts', verify.isSignIn, postController.renderPostPage)
+    .get('/posts/:idPost', verify.isSignIn, postController.renderEditPost)
+    .delete('/posts/:idPost', verify.isSignIn, postController.deletePost);
 
-router.get('/newpost', verify.isSignIn, newPostController.renderNewPostPage);
+router
+    .get('/newpost', verify.isSignIn, newPostController.renderNewPostPage)
+    .post(
+        '/newpost/image',
+        verify.isSignIn,
+        upload.single('imageUpload'),
+        newPostController.uploadImg
+    )
+    .post('/newpost', verify.isSignIn, newPostController.savePost);
 
-router.post(
-    '/newpost/image',
-    verify.isSignIn,
-    upload.single('imageUpload'),
-    newPostController.uploadImg
-);
-
-router.post('/newpost', verify.isSignIn, newPostController.savePost);
-
-router.get('/tags', verify.isSignIn, tagController.renderTagPage);
-
-router.post('/tags', verify.isSignIn, tagController.addNewTag);
-
-router.get('/tags/:id', verify.isSignIn, tagController.editTag);
-
-router.put('/tags/:id', verify.isSignIn, tagController.updateTag);
-
-router.delete('/tags/:id', verify.isSignIn, tagController.deleteTask);
+router
+    .get('/tags', verify.isSignIn, tagController.renderTagPage)
+    .post('/tags', verify.isSignIn, tagController.addNewTag)
+    .get('/tags/:id', verify.isSignIn, tagController.editTag)
+    .put('/tags/:id', verify.isSignIn, tagController.updateTag)
+    .delete('/tags/:id', verify.isSignIn, tagController.deleteTask);
 
 module.exports = router;

@@ -59,18 +59,56 @@
                                                 <th>Tác giả</th>
                                                 <th>Tag</th>
                                                 <th>Thời gian</th>
+                                                <th>#</th>
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            <% data ? data.forEach((post, idx) => { %>
                                             <tr>
-                                                <td>1</td>
-                                                <td><a href="#">Update software</a></td>
+                                                <td><%= idx + 1 %></td>
+                                                <td><a href="/admin/posts/<%= post.id %>"><%= post.title %></a></td>
                                                 <td>
-                                                    hovanvydut
+                                                    <%= post.name %>
                                                 </td>
                                                 <td><span class="badge bg-danger">Công nghệ</span></td>
-                                                <td>15:42 02/03/2020</td>
+                                                <td><%= post.created_at.toLocaleString() %></td>
+                                                <td>
+                                                    <button type="button" class="btn btn-danger" data-toggle="modal"
+                                                        data-target="#modal-danger-<%= post.id %>">
+                                                        Delete
+                                                    </button>
+                                                    <div class="modal fade" id="modal-danger-<%= post.id %>">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content bg-danger">
+                                                                <div class="modal-header">
+                                                                    <h4 class="modal-title"><%= post.title %></h4>
+                                                                    <button type="button" class="close"
+                                                                        data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">×</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <p>One fine body…</p>
+                                                                </div>
+                                                                <div class="modal-footer justify-content-between">
+                                                                    <button type="button" class="btn btn-outline-light"
+                                                                        data-dismiss="modal">Close</button>
+                                                                    <form action="/admin/posts/<%= post.id %>"
+                                                                        method="POST">
+                                                                        <input type="hidden" name="_method"
+                                                                            value="DELETE">
+                                                                        <button type="submit"
+                                                                            class="btn btn-outline-light">DELETE</button>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                            <!-- /.modal-content -->
+                                                        </div>
+                                                        <!-- /.modal-dialog -->
+                                                    </div>
+                                                </td>
                                             </tr>
+                                            <% }) : '' %>
                                         </tbody>
                                     </table>
                                 </div>

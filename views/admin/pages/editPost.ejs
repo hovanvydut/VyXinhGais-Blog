@@ -40,7 +40,7 @@
                                     <div class="form-group">
                                         <label for="post-title">Tiêu đề bài viết</label>
                                         <input id="post-title" type="email" class="form-control"
-                                            placeholder="Enter email">
+                                            placeholder="Enter email" <%- `value="${post.title}"`%>>
                                     </div>
 
                                 </div>
@@ -53,16 +53,19 @@
                                             <div class="form-group">
                                                 <label for="description">Description</label>
                                                 <textarea id="description" class="form-control d-block"
-                                                    row="5"></textarea>
+                                                    row="5"><%= post.description%></textarea>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-12 d-flex flex-wrap">
                                             <% tags ? tags.forEach((tag, idx) => { %>
+                                            <% let check = false %>
+                                            <% check = postTags.some(postTag => postTag.tag_id == tag.id) %>
+                                            <% check ? check = 'checked' : check = '' %>
                                             <div class="form-check mr-3">
-                                                <input class="tag-checkbox form-check-input" type="checkbox"
-                                                    value=<%= tag.id%>>
+                                                <input value=<%= tag.id %> class="tag-checkbox form-check-input"
+                                                    <%= check %> type="checkbox">
                                                 <label class="form-check-label">
                                                     <%= tag.name %>
                                                 </label>
@@ -72,7 +75,7 @@
                                     </div>
                                 </div>
                                 <div class="card-footer text-right">
-                                    <button id="save-btn" href="#" class="btn btn-primary">Save</button>
+                                    <button id="save-btn" href="#" class="btn btn-primary">Update</button>
                                 </div>
                             </div>
                         </div>
@@ -98,6 +101,11 @@
     <script src="https://cdn.tiny.cloud/1/2915bg1q653j3923vjzn1e30iaq6aijt5sd0c429mcvdh9ov/tinymce/5/tinymce.min.js"
         referrerpolicy="origin"></script>
     <script>
+        // tinyMCE.editors.myEditor.setContent(post.content)
+        window.onload = function () {
+            const content = `<%- post.content %>`;
+            tinyMCE.editors.myEditor.setContent(content)
+        }
         //tinyMCE.editors.myEditor.getContent()
         $('#save-btn').click(function () {
             let tags = Array.from(document.getElementsByClassName('tag-checkbox'));
@@ -114,7 +122,7 @@
                 success: function (result, status, xhr) {
                     console.log('success');
                     // window.alert(result.linkPost);
-                    window.location.replace("http://localhost:3000/admin/posts");
+                    window.location.replace("/admin/posts");
                 },
                 error: function (xhr, status, error) {
                     console.log('error');

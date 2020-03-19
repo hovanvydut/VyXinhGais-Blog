@@ -8,16 +8,20 @@ exports.up = function(knex) {
             .string('id')
             .primary()
             .defaultTo(generateId());
+
         table.string('post_id').notNullable();
         table
             .foreign('post_id')
             .references('id')
-            .inTable('posts');
+            .inTable('posts')
+            .onDelete('CASCADE');
+
         table.string('tag_id').notNullable();
         table
             .foreign('tag_id')
             .references('id')
-            .inTable('tags');
+            .inTable('tags')
+            .onDelete('CASCADE');
     });
 };
 

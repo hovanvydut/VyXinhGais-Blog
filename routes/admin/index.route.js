@@ -18,6 +18,7 @@ router.get('/', verify.isSignIn, homeController.renderHomePage);
 router
     .get('/posts', verify.isSignIn, postController.renderPostPage)
     .get('/posts/:idPost', verify.isSignIn, postController.renderEditPost)
+    .put('/posts/:idPost', verify.isSignIn, postController.updatePost)
     .delete('/posts/:idPost', verify.isSignIn, postController.deletePost);
 
 router

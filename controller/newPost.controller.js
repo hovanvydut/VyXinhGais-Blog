@@ -1,3 +1,4 @@
+const speakingUrl = require('speakingurl');
 const knex = require('./../database/connection');
 const generateId = require('./../common/generateId');
 
@@ -17,25 +18,27 @@ const renderNewPostPage = async (req, res) => {
 
 const savePost = async (req, res) => {
     const { user } = req.session;
-    console.log(req.body);
     const { title, content, tags, description } = req.body;
     const idPost = generateId();
-    const linkPost = `/admin/posts/${title
-        .trim()
-        .replace(/\s(?=\s)/g, '')
-        .replace(/\s/g, '-')}${generateId(1)}`;
+    const linkPost = `${speakingUrl(title)}-${idPost}`;
 
     await knex('posts').insert({
         id: idPost,
         title,
-        content,
+        content: content.replace(/\.\.(?=\/+static)/g, ''),
         author: user.id,
         linkPost,
         description,
         imgThumb: 'link img thumb',
     });
 
-    JSON.parse(tags).forEach(async (tagId) => {
+    let temp = [];
+    if (typeof tags !== 'object') {
+        temp.push(tags);
+    } else {
+        temp = tags;
+    }
+    temp.forEach(async (tagId) => {
         await knex('post_tags').insert({
             id: generateId(),
             post_id: idPost,
@@ -43,7 +46,7 @@ const savePost = async (req, res) => {
         });
     });
 
-    return res.status(200).json({ linkPost });
+    return res.redirect('/admin/posts');
 };
 
 const uploadImg = function(req, res) {

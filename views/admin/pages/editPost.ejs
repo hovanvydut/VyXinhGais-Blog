@@ -35,49 +35,54 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-lg-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="form-group">
-                                        <label for="post-title">Tiêu đề bài viết</label>
-                                        <input id="post-title" type="email" class="form-control"
-                                            placeholder="Enter email" <%- `value="${post.title}"`%>>
-                                    </div>
+                            <form method="POST" action="/admin/posts/<%= post.id %>">
+                                <input type="hidden" name="_method" value="PUT">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="form-group">
+                                            <label for="post-title">Tiêu đề bài viết</label>
+                                            <input name="title" id="post-title" type="text" class="form-control"
+                                                placeholder="Nhap tieu de tai day" <%- `value="${post.title}"`%>>
+                                        </div>
 
-                                </div>
-                                <div class="card-body p-0">
-                                    <textarea id="myEditor" name="content"></textarea>
-                                </div>
-                                <div class="card-footer">
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <div class="form-group">
-                                                <label for="description">Description</label>
-                                                <textarea id="description" class="form-control d-block"
-                                                    row="5"><%= post.description%></textarea>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <textarea id="myEditor" name="content"><%- post.content %></textarea>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    <label for="description">Description</label>
+                                                    <textarea name="description" id="description"
+                                                        class="form-control d-block"
+                                                        row="5"><%= post.description%></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-12 d-flex flex-wrap">
+                                                <% tags ? tags.forEach((tag, idx) => { %>
+                                                <% let check = false %>
+                                                <% check = postTags.some(postTag => postTag.tag_id == tag.id) %>
+                                                <% check ? check = 'checked' : check = '' %>
+                                                <div class="form-check mr-3">
+                                                    <input name="tags" value=<%= tag.id %>
+                                                        class="tag-checkbox form-check-input" <%= check %>
+                                                        type="checkbox">
+                                                    <label class="form-check-label">
+                                                        <%= tag.name %>
+                                                    </label>
+                                                </div>
+                                                <% }) : ''%>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-lg-12 d-flex flex-wrap">
-                                            <% tags ? tags.forEach((tag, idx) => { %>
-                                            <% let check = false %>
-                                            <% check = postTags.some(postTag => postTag.tag_id == tag.id) %>
-                                            <% check ? check = 'checked' : check = '' %>
-                                            <div class="form-check mr-3">
-                                                <input value=<%= tag.id %> class="tag-checkbox form-check-input"
-                                                    <%= check %> type="checkbox">
-                                                <label class="form-check-label">
-                                                    <%= tag.name %>
-                                                </label>
-                                            </div>
-                                            <% }) : ''%>
-                                        </div>
+                                    <div class="card-footer text-right">
+                                        <button type="submit" id="save-btn" class="btn btn-primary">Update</button>
                                     </div>
                                 </div>
-                                <div class="card-footer text-right">
-                                    <button id="save-btn" href="#" class="btn btn-primary">Update</button>
-                                </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -101,36 +106,6 @@
     <script src="https://cdn.tiny.cloud/1/2915bg1q653j3923vjzn1e30iaq6aijt5sd0c429mcvdh9ov/tinymce/5/tinymce.min.js"
         referrerpolicy="origin"></script>
     <script>
-        // tinyMCE.editors.myEditor.setContent(post.content)
-        window.onload = function () {
-            const content = `<%- post.content %>`;
-            tinyMCE.editors.myEditor.setContent(content)
-        }
-        //tinyMCE.editors.myEditor.getContent()
-        $('#save-btn').click(function () {
-            let tags = Array.from(document.getElementsByClassName('tag-checkbox'));
-            tags = tags.filter(tag => tag.checked).map(tag => tag.value);
-            jQuery.ajax({
-                method: 'POST',
-                url: '/admin/newpost',
-                data: {
-                    title: $('#post-title').val(),
-                    content: tinyMCE.editors.myEditor.getContent().replace(/\.\.(?=\/static)/g, ''),
-                    description: $('#description').val(),
-                    tags: JSON.stringify(tags)
-                },
-                success: function (result, status, xhr) {
-                    console.log('success');
-                    // window.alert(result.linkPost);
-                    window.location.replace("/admin/posts");
-                },
-                error: function (xhr, status, error) {
-                    console.log('error');
-                    console.log(status);
-                    console.log(error);
-                }
-            })
-        })
         const URL_UPLOAD = '/admin/newpost/image';
         tinymce.init({
             selector: 'textarea#myEditor',

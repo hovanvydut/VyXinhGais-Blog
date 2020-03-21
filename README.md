@@ -1,12 +1,18 @@
-# Project
+# START
 
--   PORT: 3333
--   CLI
--   \$ knex init
--   \$ knex migrate:make users # create directory: ./migrations/12321212_users.js
--   \$ knex migrate:latest
+-   \$ npm i
+-   create database named `node_s_group`
+-   \$ knex seed:run --specific=users.js
+-   \$ knex seed:run --specific=post.js
+-   \$ knex seed:run --specific=tags.js
+-   \$ knex seed:run --specific=users.js
+-   \$ cd adminlte
+-   \$ npm start
+-   port 3000
+-   account: admin -> hovanvydut@gmail.com ; customer -> nguyenvanan@gmail.com
+-   password for all user is : `abcdef123A!`
 
 # LOGIN/LOGOUT FEATURE
 
--   khong cho phep multiple login from one account
--   sau 30p khong dung, tu dong logout
+-   Dont allow multiple login from one account
+-   After 30m unactive, the account will log out

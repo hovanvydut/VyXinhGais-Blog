@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <base href="/static/" />
+    <title>Admin-VyXinhGais</title>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="stylesheets/all.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="stylesheets/adminlte.min.css">
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <!-- tinyMCE -->
+</head>
+
+<body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+
+        <!-- Navbar -->
+        <%- include('../layoutComponent/MainHeader') -%>
+
+        <!-- Main Sidebar Container -->
+        <%- include('../layoutComponent/MainSidebar', {user}) %>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <% include ../components/ContentHeader %>
+            <%- ContentHeader(title, breadscrumb) %>
+
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-6 offset-3">
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">Edit information</h3>
+                                </div>
+                                <form action="/admin/users/<%= userNeedEdit.id %>" method="POST">
+                                    <input type="hidden" name="_method" value="PUT">
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Name</label>
+                                            <input name="name" type="text" class="form-control" id="exampleInputEmail1"
+                                                placeholder="Enter email" value="<%= userNeedEdit.name %>">
+                                        </div>
+                                        <div class=" form-group">
+                                            <label for="exampleInputEmail1">Email address</label>
+                                            <input name="email" type="email" class="form-control"
+                                                id="exampleInputEmail1" placeholder="Enter email"
+                                                value=<%= userNeedEdit.email %>>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1">Reset Password</label>
+                                            <input name="password" type="password" class="form-control"
+                                                id="exampleInputPassword1" placeholder="Password">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1">Retype Password</label>
+                                            <input name="retypePassword" type="password" class="form-control"
+                                                id="exampleInputPassword1" placeholder="Password">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Role</label>
+                                            <select name="role" class="custom-select">
+                                                <option value="moderator"
+                                                    <%- userNeedEdit.role === 'moderator' ? "selected" : null %>>
+                                                    Moderator
+                                                </option>
+                                                <option value="customer"
+                                                    <%- userNeedEdit.role === 'customer' ? "selected" : null %>>
+                                                    Customer
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!-- /.card-body -->
+
+                                    <div class="card-footer">
+                                        <button type="submit" class="btn btn-primary">Update</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Control Sidebar -->
+        <%- include('../layoutComponent/ControlSidebar') -%>
+
+        <!-- Main Footer -->
+        <%- include('../layoutComponent/MainFooter') -%>
+    </div>
+
+    <!-- jQuery -->
+    <script src="javascripts/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="javascripts/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="javascripts/adminlte.min.js"></script>
+</body>
+
+</html>

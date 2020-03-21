@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <base href="/static/" />
+    <title>Admin-VyXinhGais</title>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="stylesheets/all.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="stylesheets/adminlte.min.css">
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+</head>
+
+<body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+
+        <!-- Navbar -->
+        <%- include('../layoutComponent/MainHeader') -%>
+
+        <!-- Main Sidebar Container -->
+        <%- include('../layoutComponent/MainSidebar', {user}) %>
+
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <% include ../components/ContentHeader %>
+            <%- ContentHeader('Tag page', [{content: 'abc', href:'/abc'}, {content: 'def', href: '#'}]) %>
+
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row mb-3">
+                        <div class="col-lg-8">
+                            <form action="/admin/tags" method="POST">
+                                <div class="input-group mb-3">
+                                    <input name='nameTag' type="text" class="form-control"
+                                        placeholder="Name of new tag">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" type="submit">Add</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Danh sách category</h3>
+                                    <div class="card-tools">
+                                        <ul class="pagination pagination-sm float-right">
+                                            <li class="page-item"><a class="page-link" href="#">«</a></li>
+                                            <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                            <li class="page-item"><a class="page-link" href="#">»</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Control Sidebar -->
+        <%- include('../layoutComponent/ControlSidebar') -%>
+
+        <!-- Main Footer -->
+        <%- include('../layoutComponent/MainFooter') -%>
+    </div>
+
+    <!-- jQuery -->
+    <script src="javascripts/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="javascripts/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="javascripts/adminlte.min.js"></script>
+</body>
+
+</html>

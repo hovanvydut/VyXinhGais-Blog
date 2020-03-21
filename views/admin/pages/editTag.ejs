@@ -54,14 +54,39 @@
                                             class="btn btn-block btn-outline-primary w-25 float-right mt-0 mr-1">
                                             Save
                                         </button>
-                                        <button id="btn-deleteTask" type="button"
-                                            class="btn btn-block btn-danger w-25 float-right mt-0 mr-1 text-white">
+                                        <button type="button" class="btn btn-danger" data-toggle="modal"
+                                            data-target="#modal-danger">
                                             Delete
                                         </button>
                                     </div>
                                 </div>
                             </form>
                         </div>
+                    </div>
+                    <div class="modal fade" id="modal-danger">
+                        <div class="modal-dialog">
+                            <div class="modal-content bg-danger">
+                                <form method="POST" action="/admin/tags/<%= tag.id %>">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Delete <%= tag.name %> tag</h4>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>One fine body…</p>
+                                    </div>
+                                    <div class="modal-footer justify-content-between">
+                                        <button type="button" class="btn btn-outline-light"
+                                            data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-outline-light">DELETE</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- /.modal-content -->
+                        </div>
+                        <!-- /.modal-dialog -->
                     </div>
                 </div>
             </div>
@@ -80,24 +105,6 @@
     <script src="javascripts/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE App -->
     <script src="javascripts/adminlte.min.js"></script>
-    <script>
-        $('#btn-deleteTask').click(function () {
-            jQuery.ajax({
-                method: 'delete',
-                url: '/admin/tags/<%= tag.id %>',
-                // data: {
-                //     _method: 'DELETE'
-                // },
-                success: function (result, status, xhr) {
-                    window.location.replace(result.urlRedirect);
-                },
-                error: function (xhr, status, error) {
-                    console.log(error);
-                }
-            })
-        })
-
-    </script>
 </body>
 
 </html>

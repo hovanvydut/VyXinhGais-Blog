@@ -4,7 +4,6 @@ exports.up = function(knex) {
     return knex.schema.createTable(TABLE_NAME, (table) => {
         table.string('id').primary();
         table.string('name').notNullable();
-        table.integer('count').unsigned();
     });
 };
 

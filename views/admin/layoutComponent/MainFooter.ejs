@@ -7,3 +7,12 @@
     <strong>Copyright &copy; 2014-2019 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights
     reserved.
 </footer>
+<script>
+    let navLink = Array.from(document.getElementsByClassName('nav-link'));
+    navLink.forEach(nav => {
+        if (document.location.pathname.indexOf(nav.getAttribute('href')) > -1) {
+            nav.classList.add('active');
+        }
+    })
+
+</script>

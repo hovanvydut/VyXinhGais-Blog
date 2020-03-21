@@ -53,7 +53,7 @@ const deleteTask = async (req, res) => {
     await knex('tags')
         .where({ id })
         .del();
-    res.json({ urlRedirect: '/admin/tags' });
+    return res.redirect('/admin/tags');
 };
 
 module.exports = {

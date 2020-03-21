@@ -92,10 +92,7 @@ const handleSignIn = async (req, res) => {
 
             // If a user is not logining, allow login
             // saveUninitialize:  false help skip empty session save back store
-            req.session.user = {
-                id: user.id,
-                name: user.name,
-            };
+            req.session.user = user;
 
             console.log('Login thanh cong');
             return res.redirect('/admin');

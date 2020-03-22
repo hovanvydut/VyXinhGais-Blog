@@ -44,38 +44,71 @@
                                     <input type="hidden" name="_method" value="PUT">
                                     <div class="card-body">
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">Name</label>
-                                            <input name="name" type="text" class="form-control" id="exampleInputEmail1"
-                                                placeholder="Enter email" value="<%= userNeedEdit.name %>">
+                                            <label for="exampleInputName">Name</label>
+                                            <input name="name" type="text"
+                                                <%- error && error.name !== '' ? "class='form-control is-invalid'" : "class='form-control'" %>
+                                                id="exampleInputName" placeholder="Enter name"
+                                                value="<%= error && error.name !== '' ? userSubmit.name : userNeedEdit.name %>">
+                                            <% if (error) { %>
+                                            <div class="invalid-feedback">
+                                                <%= error.name %>
+                                            </div>
+                                            <% } %>
                                         </div>
                                         <div class=" form-group">
                                             <label for="exampleInputEmail1">Email address</label>
-                                            <input name="email" type="email" class="form-control"
+                                            <input name="email" type="email"
+                                                <%- error && error.email !== '' ? "class='form-control is-invalid'" : "class='form-control'" %>
                                                 id="exampleInputEmail1" placeholder="Enter email"
-                                                value=<%= userNeedEdit.email %>>
+                                                value=<%= error && error.email !== '' ? userSubmit.email : userNeedEdit.email %>>
+                                            <% if (error) { %>
+                                            <div class="invalid-feedback">
+                                                <%= error.email %>
+                                            </div>
+                                            <% } %>
                                         </div>
                                         <div class="form-group">
                                             <label for="exampleInputPassword1">Reset Password</label>
-                                            <input name="password" type="password" class="form-control"
-                                                id="exampleInputPassword1" placeholder="Password">
+                                            <input name="resetPassword" type="password"
+                                                <%- error && error.resetPassword !== '' ? "class='form-control is-invalid'" : "class='form-control'" %>
+                                                id="exampleInputPassword1"
+                                                placeholder="If no reset password, please let empty">
+                                            <% if (error) { %>
+                                            <div class="invalid-feedback">
+                                                <%= error.resetPassword %>
+                                            </div>
+                                            <% } %>
                                         </div>
                                         <div class="form-group">
-                                            <label for="exampleInputPassword1">Retype Password</label>
-                                            <input name="retypePassword" type="password" class="form-control"
-                                                id="exampleInputPassword1" placeholder="Password">
+                                            <label for="exampleInputPassword2">Retype Password</label>
+                                            <input name="retypePassword" type="password"
+                                                <%- error && error.retypePassword !== '' ? "class='form-control is-invalid'" : "class='form-control'" %>
+                                                id="exampleInputPassword2"
+                                                placeholder="If no reset password, please let empty">
+                                            <% if (error) { %>
+                                            <div class="invalid-feedback">
+                                                <%= error.retypePassword %>
+                                            </div>
+                                            <% } %>
                                         </div>
                                         <div class="form-group">
                                             <label>Role</label>
-                                            <select name="role" class="custom-select">
+                                            <select name="role"
+                                                <%- error && error.role !== '' ? "class='custom-select is-invalid'" : "class='custom-select'" %>
                                                 <option value="moderator"
-                                                    <%- userNeedEdit.role === 'moderator' ? "selected" : null %>>
-                                                    Moderator
+                                                <%- userNeedEdit.role === 'moderator' ? "selected" : null %>>
+                                                Moderator
                                                 </option>
                                                 <option value="customer"
                                                     <%- userNeedEdit.role === 'customer' ? "selected" : null %>>
                                                     Customer
                                                 </option>
                                             </select>
+                                            <% if (error) { %>
+                                            <div class="invalid-feedback">
+                                                <%= error.role %>
+                                            </div>
+                                            <% } %>
                                         </div>
                                     </div>
                                     <!-- /.card-body -->

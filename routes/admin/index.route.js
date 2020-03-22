@@ -8,6 +8,7 @@ const storage = multer.diskStorage(multerConfig.storage);
 const upload = multer({ storage });
 
 const verify = require('../../middleware/verify');
+const validate = require('../../middleware/validation');
 const homeController = require('../../controller/home.controller');
 const userController = require('../../controller/user.controller');
 const postController = require('../../controller/post.controller');
@@ -35,6 +36,7 @@ router
         '/users/:userID',
         verify.isSignIn,
         verify.isAdmin,
+        validate.updateUser,
         userController.updateUser
     )
     .delete(

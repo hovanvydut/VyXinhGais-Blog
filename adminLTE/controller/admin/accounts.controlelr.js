@@ -1,5 +1,8 @@
+const nodemailer = require('nodemailer');
+const smtpTransport = require('nodemailer-smtp-transport');
 const bcrypt = require('bcryptjs');
 const knex = require('../../database/connection');
+const letterForgotPassword = require('../../common/letterForgotPwd');
 
 const renderSignInView = (req, res) => {
     const error = req.flash('errors')[0];
@@ -107,8 +110,41 @@ const handleSignIn = async (req, res) => {
 };
 
 const renderForgotPassword = (req, res) => {
-    console.log('controller forgot password');
+    console.log('render forgot password');
     return res.render('admin/pages/forgot-password');
+};
+
+const handleForgotPwd = async (req, res) => {
+    const { toEmail } = req.body;
+    console.log(toEmail);
+    const transporter = nodemailer.createTransport(
+        smtpTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.MAIL_ACCOUNT,
+                pass: process.env.MAIL_PASSWORD,
+            },
+            tls: { rejectUnauthorized: false },
+        })
+    );
+    try {
+        await transporter.sendMail({
+            from: process.env.MAIL_ACCOUNT,
+            to: toEmail,
+            subject: 'Reset Password | VyXinhGais ✔',
+            text: 'Hello world?',
+            html: letterForgotPassword(),
+        });
+    } catch (err) {
+        return res.redirect('/admin/accounts/check-mail');
+    }
+
+    return res.redirect('/admin/accounts/check-mail');
+};
+
+const renderCheckMail = (req, res) => {
+    console.log('render check mail message page');
+    return res.render('admin/pages/checkMailMessage');
 };
 
 const signout = function(req, res) {
@@ -123,6 +159,8 @@ module.exports = {
     renderSignUpView,
     handleSignUp,
     handleSignIn,
-    renderForgotPassword,
     signout,
+    renderForgotPassword,
+    handleForgotPwd,
+    renderCheckMail,
 };

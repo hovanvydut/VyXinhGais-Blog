@@ -13,11 +13,10 @@ router
     .get('/signup', controller.renderSignUpView)
     .post('/signup', middleware.validateSignUp, controller.handleSignUp);
 
-router.get(
-    '/forgot-password',
-    verify.signedIn,
-    controller.renderForgotPassword
-);
+router
+    .get('/forgot-password', verify.signedIn, controller.renderForgotPassword)
+    .post('/forgot-password', verify.signedIn, controller.handleForgotPwd)
+    .get('/check-mail', verify.signedIn, controller.renderCheckMail);
 
 router.get('/signout', controller.signout);
 

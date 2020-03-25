@@ -40,7 +40,11 @@ app.use('/api/v1', cors(), apiRouter);
 app.use('/admin', indexRouter);
 app.use('/admin/accounts', accountsRouter);
 app.use('/admin/error', (req, res) => {
-    res.render('admin/pages/error');
+    res.render('admin/pages/error', {
+        user: {
+            role: 'Error',
+        },
+    });
 });
 app.use('/', (req, res) => {
     res.send('home page');

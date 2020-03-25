@@ -11,6 +11,8 @@ const cors = require('cors');
 const app = express();
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
+const sessionStoreConfig = require('./common/session-store.config');
+const methodOverrideConfig = require('./common/methodOverride.config');
 
 const apiRouter = require('./routes/api/index');
 const indexRouter = require('./routes/admin/index.route');
@@ -20,48 +22,28 @@ const accountsRouter = require('./routes/admin/accounts.route');
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// express-mysql-session
-const options = {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    checkExpirationInterval: 10 * 60 * 1000,
-    expiration: 30 * 60 * 1000,
-};
-const sessionStore = new MySQLStore(options);
-
-app.use(
-    session({
-        key: process.env.SESSION_COOKIE_NAME,
-        secret: process.env.SESSION_COOKIE_SECRET,
-        store: sessionStore,
-        resave: false,
-        saveUninitialized: false,
-    })
+// session-store: express-session + express-mysql-session
+const sessionStore = new MySQLStore(
+    sessionStoreConfig.optionOfExpressMysqlSession()
 );
+app.use(session(sessionStoreConfig.optionOfExpressSession(sessionStore)));
 app.use(flash());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_PARSER_SECRET));
 app.use('/static', express.static(path.join(`${__dirname}`, 'public')));
-app.use(
-    methodOverride((req, res) => {
-        if (req.body && typeof req.body === 'object' && '_method' in req.body) {
-            const method = req.body._method;
-            delete req.body._method;
-            return method;
-        }
-    })
-);
+app.use(methodOverride(methodOverrideConfig));
 app.use(logger('dev'));
 
+// Route
 app.use('/api/v1', cors(), apiRouter);
 app.use('/admin', indexRouter);
 app.use('/admin/accounts', accountsRouter);
-app.use('admin/error', (req, res) => {
+app.use('/admin/error', (req, res) => {
     res.render('admin/pages/error');
+});
+app.use('/', (req, res) => {
+    res.send('home page');
 });
 
 // catch 404 and forward to error handler

@@ -106,6 +106,11 @@ const handleSignIn = async (req, res) => {
     return res.redirect('/admin/accounts/signin');
 };
 
+const renderForgotPassword = (req, res) => {
+    console.log('controller forgot password');
+    return res.render('admin/pages/forgot-password');
+};
+
 const signout = function(req, res) {
     req.session.destroy((err) => {
         console.log('Logout');
@@ -118,5 +123,6 @@ module.exports = {
     renderSignUpView,
     handleSignUp,
     handleSignIn,
+    renderForgotPassword,
     signout,
 };

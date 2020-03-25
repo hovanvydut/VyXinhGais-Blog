@@ -46,12 +46,21 @@ const renderEditUser = async (req, res) => {
     });
 };
 
-const updateUser = async (req, res) => {
+const updateUser = async (req, res, next) => {
     const { user } = req.session;
     const { userID } = req.params;
     const { error, userSubmit } = res.locals;
     const { name, email, resetPassword, role } = userSubmit;
     let oldPassword = user.password;
+
+    if (userID === user.id) {
+        req.flash(
+            'myMessage',
+            'Admin không được chỉnh sửa bất kì thông tin gì!'
+        );
+        const myErr = new Error('Admin dont allow edit any information');
+        return next(myErr);
+    }
 
     if (error.status === 'hasError') {
         req.flash('error', error);

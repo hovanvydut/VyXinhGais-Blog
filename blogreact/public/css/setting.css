@@ -1,0 +1,15 @@
+:root {
+    --primary-color: #ffffff;
+    --secondary-color: #f8f9fa;
+    --inky-black-color: rgba(0, 0, 0, 0.8);
+    --medium-black: rgba(0, 0, 0, 0.7);
+    --blackish-color: rgba(0, 0, 0, 0.6);
+    --smoky-color: #666666;
+    --black-color: #000000;
+    --white-color: #ffffff;
+    --neon-blue-color: #1eafed;
+    --light-grey-color: #bfbfbf;
+    --primary-font: 'Muli';
+    --secondary-font: 'Open Sans';
+    --third-font: 'Playfair Display';
+}

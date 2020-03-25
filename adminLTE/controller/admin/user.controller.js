@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs');
-const knex = require('../database/connection');
+const knex = require('../../database/connection');
 
 const renderUserPage = async (req, res) => {
     const { user } = req.session;

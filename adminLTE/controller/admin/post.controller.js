@@ -1,6 +1,6 @@
 const speakingUrl = require('speakingurl');
-const knex = require('./../database/connection');
-const generateId = require('./../common/generateId');
+const knex = require('../../database/connection');
+const generateId = require('../../common/generateId');
 
 const renderPostPage = async (req, res) => {
     const { user } = req.session;

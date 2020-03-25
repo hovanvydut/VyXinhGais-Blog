@@ -1,7 +1,7 @@
 const express = require('express');
 
 const router = express.Router();
-const controller = require('../../controller/accounts.controlelr');
+const controller = require('../../controller/admin/accounts.controlelr');
 const middleware = require('../../middleware/accounts.middleware');
 const verify = require('../../middleware/verify');
 

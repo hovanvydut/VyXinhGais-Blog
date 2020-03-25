@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs');
-const knex = require('./../database/connection');
+const knex = require('../../database/connection');
 
 const renderSignInView = (req, res) => {
     const error = req.flash('errors')[0];

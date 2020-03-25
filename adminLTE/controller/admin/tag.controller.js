@@ -1,5 +1,5 @@
-const knex = require('./../database/connection');
-const generateId = require('./../common/generateId');
+const knex = require('../../database/connection');
+const generateId = require('../../common/generateId');
 
 const domain = 'admin';
 

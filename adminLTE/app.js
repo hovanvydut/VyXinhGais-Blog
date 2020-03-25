@@ -6,11 +6,13 @@ const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
 const flash = require('connect-flash-plus');
 const logger = require('morgan');
+const cors = require('cors');
 
 const app = express();
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 
+const apiRouter = require('./routes/api/index');
 const indexRouter = require('./routes/admin/index.route');
 const accountsRouter = require('./routes/admin/accounts.route');
 
@@ -18,7 +20,7 @@ const accountsRouter = require('./routes/admin/accounts.route');
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// express mysql session
+// express-mysql-session
 const options = {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
@@ -55,6 +57,7 @@ app.use(
 );
 app.use(logger('dev'));
 
+app.use('/api/v1', cors(), apiRouter);
 app.use('/admin', indexRouter);
 app.use('/admin/accounts', accountsRouter);
 app.use('admin/error', (req, res) => {

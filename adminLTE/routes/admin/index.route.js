@@ -9,13 +9,13 @@ const upload = multer({ storage });
 
 const verify = require('../../middleware/verify');
 const validate = require('../../middleware/validation');
-const homeController = require('../../controller/home.controller');
-const userController = require('../../controller/user.controller');
-const postController = require('../../controller/post.controller');
-const newPostController = require('../../controller/newPost.controller');
-const category = require('../../controller/category.controller');
-const tagController = require('../../controller/tag.controller');
-const profileController = require('../../controller/profile.controller');
+const homeController = require('../../controller/admin/home.controller');
+const userController = require('../../controller/admin/user.controller');
+const postController = require('../../controller/admin/post.controller');
+const newPostController = require('../../controller/admin/newPost.controller');
+const category = require('../../controller/admin/category.controller');
+const tagController = require('../../controller/admin/tag.controller');
+const profileController = require('../../controller/admin/profile.controller');
 
 router.get('/', verify.isSignIn, homeController.renderHomePage);
 

@@ -10,7 +10,8 @@ exports.up = function(knex) {
             .foreign('author')
             .references('id')
             .inTable('users')
-            .onDelete('CASCADE');
+            .onDelete('CASCADE')
+            .onUpdate('CASCADE');
         table
             .string('linkPost')
             .unique()

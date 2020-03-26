@@ -10,8 +10,15 @@ router
     .post('/signin', verify.signedIn, controller.handleSignIn);
 
 router
-    .get('/signup', controller.renderSignUpView)
-    .post('/signup', middleware.validateSignUp, controller.handleSignUp);
+    .get('/signup', verify.signedIn, controller.renderSignUpView)
+    .post(
+        '/signup',
+        verify.signedIn,
+        middleware.validateSignUp,
+        controller.handleSignUp
+    )
+    .get('/active-email', controller.activeEmail)
+    .get('/resend-active-email', controller.resendActiveEmail);
 
 router
     .get('/forgot-password', verify.signedIn, controller.renderForgotPassword)

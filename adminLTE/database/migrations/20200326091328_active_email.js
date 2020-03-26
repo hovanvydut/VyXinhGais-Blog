@@ -1,6 +1,5 @@
+const TABLE_NAME = 'active_email';
 const generateId = require('./../../common/generateId');
-
-const TABLE_NAME = 'post_tags';
 
 exports.up = function(knex) {
     return knex.schema.createTable(TABLE_NAME, (table) => {
@@ -8,21 +7,15 @@ exports.up = function(knex) {
             .string('id')
             .primary()
             .defaultTo(generateId());
-
-        table.string('post_id').notNullable();
+        table.string('id_user').notNullable();
         table
-            .foreign('post_id')
+            .foreign('id_user')
             .references('id')
-            .inTable('posts')
+            .inTable('users')
             .onDelete('CASCADE')
             .onUpdate('CASCADE');
-        table.string('tag_id').notNullable();
-        table
-            .foreign('tag_id')
-            .references('id')
-            .inTable('tags')
-            .onDelete('CASCADE')
-            .onUpdate('CASCADE');
+        table.string('token').notNullable();
+        table.string('expire').notNullable();
     });
 };
 

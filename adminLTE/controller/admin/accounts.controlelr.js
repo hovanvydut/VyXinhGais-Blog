@@ -3,10 +3,12 @@ const smtpTransport = require('nodemailer-smtp-transport');
 const bcrypt = require('bcryptjs');
 const knex = require('../../database/connection');
 const letterForgotPassword = require('../../common/letterForgotPwd');
+const letterActiveEmail = require('../../common/letterActiveEmail');
+const generateId = require('../../common/generateId');
 
 const renderSignInView = (req, res) => {
-    const error = req.flash('errors')[0];
-    res.render('admin/pages/signin', { error });
+    const errors = req.flash('errors');
+    res.render('admin/pages/signin', { error: errors[0], email: errors[1] });
 };
 
 const renderSignUpView = (req, res) => {
@@ -37,15 +39,127 @@ const handleSignUp = async (req, res) => {
 
     // hash password
     const salt = bcrypt.genSaltSync(10);
-    console.log(salt);
-
     const hash = bcrypt.hashSync(user.password, salt);
-    console.log(hash);
-
     user.password = hash;
+    await knex('users').insert(user);
 
-    await knex.insert(user).into('users');
-    res.redirect('/admin/accounts/signin');
+    const expireToken = String(Date.now() + 30 * 60 * 1000);
+    const activeEmailData = {
+        id: generateId(),
+        id_user: user.id,
+        token: generateId(),
+        expire: expireToken,
+    };
+    await knex('active_email').insert(activeEmailData);
+
+    const transporter = nodemailer.createTransport(
+        smtpTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.MAIL_ACCOUNT,
+                pass: process.env.MAIL_PASSWORD,
+            },
+            tls: { rejectUnauthorized: false },
+        })
+    );
+    const toEmail = user.email;
+    const linkActive = `http://localhost:3000/admin/accounts/active-email?token=${activeEmailData.token}`;
+    await transporter.sendMail({
+        from: process.env.MAIL_ACCOUNT,
+        to: toEmail,
+        subject: 'Active your account | VyXinhGais ✔',
+        text: 'VyXinhGais Blog',
+        html: letterActiveEmail(linkActive),
+    });
+    return res.redirect('/admin/accounts/check-mail');
+};
+
+const activeEmail = async (req, res) => {
+    const { token } = req.query;
+    const activeEmailData = await knex('active_email')
+        .select()
+        .where({ token })
+        .first();
+    const currentTime = Date.now();
+
+    if (!activeEmailData) {
+        return res.send(
+            'Token da het han, vui long login -> homepage de yeu cau active email again!'
+        );
+    }
+
+    if (currentTime <= Number(activeEmailData.expire)) {
+        await knex('users')
+            .where({ id: activeEmailData.id_user })
+            .update({
+                is_active_email: true,
+            });
+
+        await knex('active_email')
+            .where({ id: activeEmailData.id })
+            .del();
+
+        if (req.session && req.session.user) {
+            req.session.user.is_active_email = 1;
+        }
+
+        return res.send(
+            'Email da duoc active thanh cong, vui long quay lai trang login de dang nhap: /admin/accounts/signin'
+        );
+    }
+
+    return res.send(
+        'Token da het han, vui long login -> homepage de yeu cau active email again!'
+    );
+};
+
+const resendActiveEmail = async (req, res) => {
+    const { user } = req.session;
+    const oldActiveEmailData = await knex('active_email')
+        .select()
+        .where({ id_user: user.id })
+        .first();
+
+    const expireToken = String(Date.now() + 30 * 60 * 1000);
+    const newActiveEmailData = {
+        id_user: user.id,
+        token: generateId(),
+        expire: expireToken,
+    };
+
+    if (oldActiveEmailData) {
+        await knex('active_email')
+            .where({ id: oldActiveEmailData.id })
+            .update(newActiveEmailData);
+    } else {
+        newActiveEmailData.id = generateId();
+        await knex('active_email').insert(newActiveEmailData);
+    }
+
+    const toEmail = user.email;
+    const linkActive = `http://localhost:3000/admin/accounts/active-email?token=${newActiveEmailData.token}`;
+    const transporter = nodemailer.createTransport(
+        smtpTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.MAIL_ACCOUNT,
+                pass: process.env.MAIL_PASSWORD,
+            },
+            tls: { rejectUnauthorized: false },
+        })
+    );
+    await transporter.sendMail({
+        from: process.env.MAIL_ACCOUNT,
+        to: toEmail,
+        subject: 'Active your account | VyXinhGais ✔',
+        text: 'VyXinhGais Blog',
+        html: letterActiveEmail(linkActive),
+    });
+    req.flash(
+        'resendActiveEmailSuccess',
+        `Đã gửi Email active thành công,vui lòng check mail ${user.email}`
+    );
+    return res.redirect('/admin');
 };
 
 const handleSignIn = async (req, res) => {
@@ -101,11 +215,11 @@ const handleSignIn = async (req, res) => {
             return res.redirect('/admin');
         }
         console.log('Sai mat khau');
-        req.flash('errors', ['Email or password is not correct!']);
+        req.flash('errors', ['Email or password is not correct!', email]);
         return res.redirect('/admin/accounts/signin');
     }
     console.log('Sai tài khoản');
-    req.flash('errors', ['Email or password is not correct!']);
+    req.flash('errors', ['Email or password is not correct!', email]);
     return res.redirect('/admin/accounts/signin');
 };
 
@@ -127,6 +241,7 @@ const handleForgotPwd = async (req, res) => {
             tls: { rejectUnauthorized: false },
         })
     );
+
     try {
         await transporter.sendMail({
             from: process.env.MAIL_ACCOUNT,
@@ -163,4 +278,6 @@ module.exports = {
     renderForgotPassword,
     handleForgotPwd,
     renderCheckMail,
+    activeEmail,
+    resendActiveEmail,
 };

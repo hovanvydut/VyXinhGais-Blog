@@ -42,6 +42,7 @@ module.exports = {
     'react/jsx-indent-props': 0,
     'no-case-declarations': 0,
     'react/jsx-props-no-spreading': 0,
+    camelcase: 0,
     'prettier/prettier': ['error', { endOfLine: 'auto' }]
   },
   env: {

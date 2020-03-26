@@ -13,7 +13,6 @@ import SearchBarComp from '../components/SearchBar';
 
 class Home extends Component {
   componentDidMount() {
-    console.log('Home: component did mount');
     const { getThumb } = this.props;
     getThumb('newest');
   }
@@ -32,7 +31,7 @@ class Home extends Component {
     const { thumbList } = this.props;
     const xhtml = [];
     thumbList.forEach(thumbItem => {
-      xhtml.push(<ArticleComp key={thumbItem._id} postThumbItem={thumbItem} />);
+      xhtml.push(<ArticleComp key={thumbItem.id} postThumbItem={thumbItem} />);
     });
     return xhtml;
   };

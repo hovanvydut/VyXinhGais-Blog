@@ -3,7 +3,7 @@
     <a href="/admin" class="brand-link">
         <img src="images/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
             style="opacity: .8">
-        <span class="brand-text font-weight-light"><b><%= user.role.toUpperCase() %></b></span>
+        <span class="brand-text font-weight-light"><b><%= user ? user.role.toUpperCase() : '' %></b></span>
     </a>
 
     <!-- Sidebar -->
@@ -11,11 +11,11 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <img src="<%= user.avatar %>" class="img-circle elevation-2" alt="User Image">
+                <img src="<%= user ? user.avatar : '' %>" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="/admin/profile/<%= user.id %>" class="d-block">
-                    <%= user.name %>
+                <a href="/admin/profile/<%= user ? user.id : '' %>" class="d-block">
+                    <%= user ? user.name : '' %>
                 </a>
             </div>
         </div>
@@ -32,7 +32,7 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        <% if (user.role === 'customer') { %>
+                        <% if (user && user.role === 'customer') { %>
                         <li class="nav-item">
                             <a href="/admin/myposts/<%= user.id %>" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
@@ -41,7 +41,7 @@
                         </li>
                         <% } %>
 
-                        <% if (user.role === 'admin') { %>
+                        <% if (user && user.role === 'admin') { %>
                         <li class="nav-item">
                             <a href="/admin/posts" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
@@ -57,7 +57,7 @@
                             </a>
                         </li>
 
-                        <% if (user.role === 'admin') { %>
+                        <% if (user && user.role === 'admin') { %>
                         <li class="nav-item">
                             <a href="/admin/categories" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
@@ -75,7 +75,7 @@
                     </ul>
                 </li>
 
-                <% if (user.role === 'admin') { %>
+                <% if (user && user.role === 'admin') { %>
                 <li class="nav-item">
                     <a href="/admin/users" class="nav-link">
                         <i class="nav-icon fas fa-th"></i>

@@ -1,10 +1,9 @@
-const nodemailer = require('nodemailer');
-const smtpTransport = require('nodemailer-smtp-transport');
 const bcrypt = require('bcryptjs');
 const knex = require('../../database/connection');
 const letterForgotPassword = require('../../common/letterForgotPwd');
 const letterActiveEmail = require('../../common/letterActiveEmail');
 const generateId = require('../../common/generateId');
+const sendMyMail = require('../../common/nodemailer.config');
 
 const renderSignInView = (req, res) => {
     const errors = req.flash('errors');
@@ -52,25 +51,14 @@ const handleSignUp = async (req, res) => {
     };
     await knex('active_email').insert(activeEmailData);
 
-    const transporter = nodemailer.createTransport(
-        smtpTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.MAIL_ACCOUNT,
-                pass: process.env.MAIL_PASSWORD,
-            },
-            tls: { rejectUnauthorized: false },
-        })
-    );
     const toEmail = user.email;
+    const fromName = 'VyXinhGais Blog';
+    const subject = 'Active mail';
+    const text = 'VyXinhGais Blog';
     const linkActive = `http://localhost:3000/admin/accounts/active-email?token=${activeEmailData.token}`;
-    await transporter.sendMail({
-        from: process.env.MAIL_ACCOUNT,
-        to: toEmail,
-        subject: 'Active your account | VyXinhGais ✔',
-        text: 'VyXinhGais Blog',
-        html: letterActiveEmail(linkActive),
-    });
+    const html = letterActiveEmail(linkActive);
+    sendMyMail(toEmail, fromName, subject, text, html);
+
     return res.redirect('/admin/accounts/check-mail');
 };
 
@@ -137,24 +125,13 @@ const resendActiveEmail = async (req, res) => {
     }
 
     const toEmail = user.email;
+    const fromName = 'VyXinhGais Blog';
+    const subject = 'Active mail';
+    const text = 'VyXinhGais Blog';
     const linkActive = `http://localhost:3000/admin/accounts/active-email?token=${newActiveEmailData.token}`;
-    const transporter = nodemailer.createTransport(
-        smtpTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.MAIL_ACCOUNT,
-                pass: process.env.MAIL_PASSWORD,
-            },
-            tls: { rejectUnauthorized: false },
-        })
-    );
-    await transporter.sendMail({
-        from: process.env.MAIL_ACCOUNT,
-        to: toEmail,
-        subject: 'Active your account | VyXinhGais ✔',
-        text: 'VyXinhGais Blog',
-        html: letterActiveEmail(linkActive),
-    });
+    const html = letterActiveEmail(linkActive);
+    sendMyMail(toEmail, fromName, subject, text, html);
+
     req.flash(
         'resendActiveEmailSuccess',
         `Đã gửi Email active thành công,vui lòng check mail ${user.email}`
@@ -223,37 +200,61 @@ const handleSignIn = async (req, res) => {
     return res.redirect('/admin/accounts/signin');
 };
 
-const renderForgotPassword = (req, res) => {
-    console.log('render forgot password');
-    return res.render('admin/pages/forgot-password');
+const signout = (req, res) => {
+    req.session.destroy((err) => {
+        console.log('Logout');
+        res.redirect('/admin/accounts/signin');
+    });
 };
 
-const handleForgotPwd = async (req, res) => {
-    const { toEmail } = req.body;
-    console.log(toEmail);
-    const transporter = nodemailer.createTransport(
-        smtpTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.MAIL_ACCOUNT,
-                pass: process.env.MAIL_PASSWORD,
-            },
-            tls: { rejectUnauthorized: false },
-        })
-    );
+const renderForgotPassword = (req, res) => {
+    const message = req.flash('emailNotExist');
+    return res.render('admin/pages/forgot-password', {
+        error: message[0],
+    });
+};
 
-    try {
-        await transporter.sendMail({
-            from: process.env.MAIL_ACCOUNT,
-            to: toEmail,
-            subject: 'Reset Password | VyXinhGais ✔',
-            text: 'Hello world?',
-            html: letterForgotPassword(),
-        });
-    } catch (err) {
-        return res.redirect('/admin/accounts/check-mail');
+const sendEmailToResetPassword = async (req, res) => {
+    // ?kiem tra mail da active chua, neu chua thi ko reset pwd dc
+    const { toEmail } = req.body;
+
+    const userNeedResetPwd = await knex('users')
+        .select()
+        .where({ email: toEmail })
+        .first();
+
+    if (!userNeedResetPwd) {
+        console.log('email khong ton tai');
+        req.flash('emailNotExist', 'Email khong ton tai');
+        return res.send('Email khong ton tai');
+        // return res.redirect('/admin/accounts/forgot-password');
     }
 
+    const newForgotPwdData = {
+        id_user: userNeedResetPwd.id,
+        token: generateId(),
+        expire: (Date.now() + 30 * 60 * 60).toString(),
+    };
+
+    const oldForgotPwdData = await knex('forgot_password')
+        .where({ id_user: userNeedResetPwd.id })
+        .select()
+        .first();
+
+    if (oldForgotPwdData) {
+        await knex('forgot_password')
+            .where({ id_user: userNeedResetPwd.id })
+            .update(newForgotPwdData);
+    } else {
+        await knex('forgot_password').insert(newForgotPwdData);
+    }
+
+    const fromName = 'VyXinhGais Blog';
+    const subject = 'Forgot password';
+    const text = 'VyXinhGais Blog';
+    const linkActive = `http://localhost:3000/admin/accounts/recover-password?token=${newForgotPwdData.token}`;
+    const html = letterForgotPassword(linkActive);
+    sendMyMail(toEmail, fromName, subject, text, html);
     return res.redirect('/admin/accounts/check-mail');
 };
 
@@ -262,11 +263,59 @@ const renderCheckMail = (req, res) => {
     return res.render('admin/pages/checkMailMessage');
 };
 
-const signout = function(req, res) {
-    req.session.destroy((err) => {
-        console.log('Logout');
-        res.redirect('/admin/accounts/signin');
-    });
+const renderRecoverPwd = (req, res) => {
+    console.log('renderRecoverPwd');
+    return res.render('admin/pages/recover-password');
+};
+
+const resetPassword = async (req, res) => {
+    const { token } = req.query;
+    const { retypePassword } = req.body;
+    let { newPassword } = req.body;
+
+    if (newPassword !== retypePassword) {
+        // show loi mat khau khong khop
+        return res.redirect(`/admin/accounts/recover-password?token=${token}`);
+    }
+
+    if (
+        !/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/.test(
+            newPassword
+        )
+    ) {
+        // show loi mat khau khong hop le
+        // req.flash here
+        return res.redirect(`/admin/accounts/recover-password?token=${token}`);
+    }
+
+    // kiem tra token co trong forgotpwd table ko
+    const forgotPwdData = await knex('forgot_password')
+        .where({ token })
+        .select()
+        .first();
+
+    if (!forgotPwdData) {
+        return res.send('Khong ton tai token trong forgot_password table!');
+    }
+    // kiem tra token da expire chua
+    const now = Date.now();
+    if (now > Number(forgotPwdData.expire)) {
+        return res.send('Token da expire');
+    }
+
+    // bcrypt pwd tai day
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(newPassword, salt);
+    newPassword = hash;
+    await knex('users')
+        .where({ id: forgotPwdData.id_user })
+        .update({
+            password: newPassword,
+        });
+    await knex('forgot_password')
+        .where({ id: forgotPwdData.id })
+        .del();
+    return res.send('reset pwd thanh cong');
 };
 
 module.exports = {
@@ -276,8 +325,10 @@ module.exports = {
     handleSignIn,
     signout,
     renderForgotPassword,
-    handleForgotPwd,
+    sendEmailToResetPassword,
     renderCheckMail,
     activeEmail,
     resendActiveEmail,
+    renderRecoverPwd,
+    resetPassword,
 };

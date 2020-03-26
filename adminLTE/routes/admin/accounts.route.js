@@ -17,13 +17,19 @@ router
         middleware.validateSignUp,
         controller.handleSignUp
     )
-    .get('/active-email', controller.activeEmail)
-    .get('/resend-active-email', controller.resendActiveEmail);
+    .get('/resend-active-email', controller.resendActiveEmail)
+    .get('/active-email', controller.activeEmail);
 
 router
     .get('/forgot-password', verify.signedIn, controller.renderForgotPassword)
-    .post('/forgot-password', verify.signedIn, controller.handleForgotPwd)
-    .get('/check-mail', verify.signedIn, controller.renderCheckMail);
+    .post(
+        '/forgot-password',
+        verify.signedIn,
+        controller.sendEmailToResetPassword
+    )
+    .get('/check-mail', verify.signedIn, controller.renderCheckMail)
+    .get('/recover-password', controller.renderRecoverPwd)
+    .post('/recover-password', controller.resetPassword);
 
 router.get('/signout', controller.signout);
 

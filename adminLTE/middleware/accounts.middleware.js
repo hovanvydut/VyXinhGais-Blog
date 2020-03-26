@@ -21,8 +21,6 @@ function validateSignUp(req, res, next) {
         status: 'noError',
     };
 
-    console.log(req.body);
-
     let { name } = req.body;
     if (/^(\s*[A-Za-z]{2,}\s*)+$/g.test(name)) {
         // xoá khoảng trắng 2 đầu chuỗi

@@ -1,12 +1,20 @@
 const speakingUrl = require('speakingurl');
 const knex = require('../../database/connection');
 const generateId = require('../../common/generateId');
+const { DBError } = require('../../common/customErr');
 
-const renderPostPage = async (req, res) => {
+const renderPostPage = async (req, res, next) => {
     const { user } = req.session;
-    const data = await knex.raw(
-        'SELECT p.id ,p.title, u.name, p.created_at FROM `posts` as p INNER JOIN `users` as u on p.author = u.id'
-    );
+    let data;
+
+    try {
+        data = await knex.raw(
+            'SELECT p.id ,p.title, u.name, p.created_at FROM `posts` as p INNER JOIN `users` as u on p.author = u.id'
+        );
+    } catch (err) {
+        return next(new DBError(err.message));
+    }
+
     res.render('admin/pages/post', {
         title: 'Danh sách tất cả các bài viết',
         breadscrumb: [
@@ -18,19 +26,29 @@ const renderPostPage = async (req, res) => {
     });
 };
 
-const renderEditPost = async (req, res) => {
+const renderEditPost = async (req, res, next) => {
     const { user } = req.session;
     const { idPost } = req.params;
+    let data;
+    let post;
+    let tags;
+    let postTags;
 
-    const data = await knex.raw(
-        'SELECT * FROM `posts` as p WHERE p.id = ' + `"${idPost}"`
-    );
-    const post = data[0][0];
+    try {
+        data = await knex.raw(
+            'SELECT * FROM `posts` as p WHERE p.id = ' + `"${idPost}"`
+        );
 
-    const tags = await knex('tags').select();
-    const postTags = await knex('post_tags')
-        .select()
-        .where({ post_id: post.id });
+        // eslint-disable-next-line
+        post = data[0][0];
+
+        tags = await knex('tags').select();
+        postTags = await knex('post_tags')
+            .select()
+            .where({ post_id: post.id });
+    } catch (err) {
+        return next(new DBError(err.message));
+    }
 
     res.render('admin/pages/editPost', {
         title: 'Edit post',
@@ -45,7 +63,7 @@ const renderEditPost = async (req, res) => {
     });
 };
 
-const updatePost = async (req, res) => {
+const updatePost = async (req, res, next) => {
     const { idPost } = req.params;
     const { title, content, tags, description } = req.body;
     const linkPost = `${speakingUrl(title)}-${idPost}`;
@@ -82,16 +100,20 @@ const updatePost = async (req, res) => {
         });
         return res.redirect('/admin/posts');
     } catch (err) {
-        req.flash('errorMessage', err);
-        return res.redirect('/admin/error');
+        return next(new DBError(err.message));
     }
 };
 
-const deletePost = async (req, res) => {
+const deletePost = async (req, res, next) => {
     const { idPost } = req.params;
-    await knex('posts')
-        .where({ id: idPost })
-        .del();
+
+    try {
+        await knex('posts')
+            .where({ id: idPost })
+            .del();
+    } catch (err) {
+        return next(new DBError(err.message));
+    }
 
     return res.redirect('/admin/posts');
 };

@@ -7,7 +7,8 @@ exports.up = function(knex) {
         table.string('email').notNullable();
         table.string('password').notNullable();
         table.string('avatar').defaultTo('/static/uploads/default-avatar.png');
-        table.string('role').defaultTo('customer');
+        table.string('role', 20).defaultTo('customer');
+        table.boolean('is_active_email').defaultTo(false);
     });
 };
 

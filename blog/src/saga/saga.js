@@ -3,13 +3,16 @@ import axios from 'axios';
 import * as types from '../constants/ActionTypes';
 import * as actionPost from '../actions/posts';
 import * as actionUi from '../actions/ui';
+import * as config from '../constants/config';
+
+const { DOMAIN } = config;
 
 // delay
 function* getThumbSaga(action) {
   yield put(actionUi.showLoading());
   const { subject } = action.payload;
   const { data, status } = yield axios.get(
-    `http://localhost:4400/api/v1/thumb-posts?subject=${subject}`
+    `${DOMAIN}/api/v1/thumb-posts?subject=${subject}`
   );
   if (status === 200) {
     yield put(actionPost.getThumbSuccess(data));
@@ -24,9 +27,7 @@ function* getPostSaga(action) {
   const { linkPost } = action.payload;
   yield put(actionUi.showLoading());
   try {
-    const response = yield axios.get(
-      `http://localhost:4400/api/v1/posts?linkPost=${linkPost}`
-    );
+    const response = yield axios.get(`${DOMAIN}/api/v1/posts/${linkPost}`);
     yield put(actionPost.getPostSuccess(response.data));
   } catch (error) {
     const errorMessage = `${error.response.status}:${error.response.statusText}`;

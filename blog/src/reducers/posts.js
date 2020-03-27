@@ -47,6 +47,7 @@ function PostReducer(state = initialState, action) {
       };
     }
     case types.GET_POST_FAILED: {
+      // eslint-disable-next-line
       const { errorMessage } = action.payload;
       return {
         ...state,

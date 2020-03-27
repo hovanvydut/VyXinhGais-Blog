@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <base href="/static/" />
-    <title>Log in</title>
+    <title>Sign In</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -29,12 +29,12 @@
         <!-- /.login-logo -->
         <div class="card">
             <div class="card-body login-card-body">
-                <p class="login-box-msg">Sign in to start your session</p>
+                <p class="login-box-msg">Sign in to start your session3</p>
                 <form action="/admin/accounts/signin" method="POST">
                     <div class="input-group mb-3">
                         <input name="email" type="email"
                             <%- error ? "class='form-control is-invalid'" : "class='form-control'" %>
-                            placeholder="Email">
+                            <%= email ? `value=${email}` : '' %> placeholder="Email">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-envelope"></span>

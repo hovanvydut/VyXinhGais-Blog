@@ -1,9 +1,12 @@
+# WILL UPDATE LATER
+
 # Feature
 
 -   Profile (Click avatar after login);
 -   Write new post
 -   CRUD post, user, tag, category
 -   ...updating
+-   https://myaccount.google.com/lesssecureapps
 
 # START
 

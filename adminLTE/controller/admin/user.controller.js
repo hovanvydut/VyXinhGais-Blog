@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const knex = require('../../database/connection');
+const { DBError } = require('./../../common/customErr');
 
 const renderUserPage = async (req, res) => {
     const { user } = req.session;
@@ -15,7 +16,7 @@ const renderUserPage = async (req, res) => {
     });
 };
 
-const renderEditUser = async (req, res) => {
+const renderEditUser = async (req, res, next) => {
     let error = req.flash('error');
     let userSubmit = req.flash('userSubmit');
     if (error) {
@@ -27,11 +28,15 @@ const renderEditUser = async (req, res) => {
 
     const { user } = req.session;
     const { userID } = req.params;
-
-    const userNeedEdit = await knex('users')
-        .select()
-        .where({ id: userID })
-        .first();
+    let userNeedEdit;
+    try {
+        userNeedEdit = await knex('users')
+            .select()
+            .where({ id: userID })
+            .first();
+    } catch (err) {
+        return next(new DBError(err.message));
+    }
 
     return res.render('admin/pages/editUser', {
         title: 'Edit user',
@@ -47,19 +52,18 @@ const renderEditUser = async (req, res) => {
 };
 
 const updateUser = async (req, res, next) => {
+    // ? user is admin
     const { user } = req.session;
+
+    // ? userID: id of user need update(except admin);
     const { userID } = req.params;
     const { error, userSubmit } = res.locals;
     const { name, email, resetPassword, role } = userSubmit;
     let oldPassword = user.password;
 
     if (userID === user.id) {
-        req.flash(
-            'myMessage',
-            'Admin không được chỉnh sửa bất kì thông tin gì!'
-        );
-        const myErr = new Error('Admin dont allow edit any information');
-        return next(myErr);
+        req.flash('blankMessage', 'Admin dont allow modify any yourself');
+        return res.redirect('/admin/blank-message');
     }
 
     if (error.status === 'hasError') {
@@ -68,39 +72,58 @@ const updateUser = async (req, res, next) => {
         return res.redirect(`/admin/users/${userID}`);
     }
 
+    // ? if set new passwowd, then update oldPassword into new password;
     if (error.setNewPassword) {
         console.log(resetPassword);
         const salt = bcrypt.genSaltSync(10);
         oldPassword = bcrypt.hashSync(resetPassword, salt);
     }
 
-    await knex('users')
-        .where({ id: userID })
-        .update({
-            name,
-            email,
-            password: oldPassword,
-            role,
-        });
+    try {
+        await knex('users')
+            .where({ id: userID })
+            .update({
+                name,
+                email,
+                password: oldPassword,
+                role,
+            });
+        await knex('sessions')
+            .where('data', 'like', `%${userID}%`)
+            .del();
+    } catch (err) {
+        return next(new DBError(err.message));
+    }
+
     req.flash('updateSuccess', 'Cập nhật thành công');
     return res.redirect('/admin/users');
 };
 
-const deleteUser = async (req, res) => {
+const deleteUser = async (req, res, next) => {
+    // ? user is admin
     const { user } = req.session;
+    // ? userID: id of user need delete(except admin);
     const { userID } = req.params;
 
     if (user.id !== userID) {
-        await knex('users')
-            .where({ id: userID })
-            .del();
+        try {
+            await knex('users')
+                .where({ id: userID })
+                .del();
+            // ? delete all session relative with userID
+            await knex('sessions')
+                .where('data', 'like', `%${userID}%`)
+                .del();
+        } catch (err) {
+            return next(new DBError(err.message));
+        }
 
         req.flash('deleteSuccess', 'Xoá thành công');
         return res.redirect('/admin/users');
     }
 
-    req.flash('myMessage', 'Bạn không được phép xoá chính bạn');
-    return res.redirect('/admin/error');
+    req.flash('blankMessage', 'You dont allow destroy yourself');
+    return res.redirect('/admin/blank-message');
 };
 
 module.exports = {

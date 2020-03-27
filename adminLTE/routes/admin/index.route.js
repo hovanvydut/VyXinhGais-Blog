@@ -17,31 +17,33 @@ const category = require('../../controller/admin/category.controller');
 const tagController = require('../../controller/admin/tag.controller');
 const profileController = require('../../controller/admin/profile.controller');
 
-router.get('/', verify.isSignIn, homeController.renderHomePage);
+router
+    .get('/', verify.isSignIn, homeController.renderHomePage)
+    .get('/blank-message', homeController.blankMessage);
 
 router
     .get(
         '/users',
-        verify.isSignIn,
+        verify.isSignInAndActiveEmail,
         verify.isAdmin,
         userController.renderUserPage
     )
     .get(
         '/users/:userID',
-        verify.isSignIn,
+        verify.isSignInAndActiveEmail,
         verify.isAdmin,
         userController.renderEditUser
     )
     .put(
         '/users/:userID',
-        verify.isSignIn,
+        verify.isSignInAndActiveEmail,
         verify.isAdmin,
         validate.updateUser,
         userController.updateUser
     )
     .delete(
         '/users/:userID',
-        verify.isSignIn,
+        verify.isSignInAndActiveEmail,
         verify.isAdmin,
         userController.deleteUser
     );
@@ -55,49 +57,81 @@ router.get(
 router
     .get(
         '/posts',
-        verify.isSignIn,
+        verify.isSignInAndActiveEmail,
         verify.isAdmin,
         postController.renderPostPage
     )
     .get(
         '/posts/:idPost',
-        verify.isSignIn,
+        verify.isSignInAndActiveEmail,
         verify.isAdmin,
         postController.renderEditPost
     )
     .put(
         '/posts/:idPost',
-        verify.isSignIn,
+        verify.isSignInAndActiveEmail,
         verify.isAdmin,
         postController.updatePost
     )
     .delete(
         '/posts/:idPost',
-        verify.isSignIn,
+        verify.isSignInAndActiveEmail,
         verify.isAdmin,
         postController.deletePost
     );
 
 router
-    .get('/newpost', verify.isSignIn, newPostController.renderNewPostPage)
+    .get(
+        '/newpost',
+        verify.isSignInAndActiveEmail,
+        newPostController.renderNewPostPage
+    )
     .post(
         '/newpost/image',
-        verify.isSignIn,
+        verify.isSignInAndActiveEmail,
         upload.single('imageUpload'),
         newPostController.uploadImg
     )
-    .post('/newpost', verify.isSignIn, newPostController.savePost);
+    .post(
+        '/newpost',
+        verify.isSignInAndActiveEmail,
+        newPostController.savePost
+    );
 
-router.get('/categories', verify.isSignIn, category.renderCategory);
+router.get(
+    '/categories',
+    verify.isSignInAndActiveEmail,
+    category.renderCategory
+);
 
 router
-    .get('/tags', verify.isSignIn, verify.isAdmin, tagController.renderTagPage)
-    .post('/tags', verify.isSignIn, verify.isAdmin, tagController.addNewTag)
-    .get('/tags/:id', verify.isSignIn, verify.isAdmin, tagController.editTag)
-    .put('/tags/:id', verify.isSignIn, verify.isAdmin, tagController.updateTag)
+    .get(
+        '/tags',
+        verify.isSignInAndActiveEmail,
+        verify.isAdmin,
+        tagController.renderTagPage
+    )
+    .post(
+        '/tags',
+        verify.isSignInAndActiveEmail,
+        verify.isAdmin,
+        tagController.addNewTag
+    )
+    .get(
+        '/tags/:id',
+        verify.isSignInAndActiveEmail,
+        verify.isAdmin,
+        tagController.editTag
+    )
+    .put(
+        '/tags/:id',
+        verify.isSignInAndActiveEmail,
+        verify.isAdmin,
+        tagController.updateTag
+    )
     .delete(
         '/tags/:id',
-        verify.isSignIn,
+        verify.isSignInAndActiveEmail,
         verify.isAdmin,
         tagController.deleteTask
     );

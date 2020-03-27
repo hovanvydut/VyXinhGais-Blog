@@ -10,7 +10,7 @@ class Article extends React.Component {
       description,
       imgThumb,
       linkPost,
-      created,
+      created_at,
       tags
     } = postThumbItem;
     const link = `/post/${linkPost}`;
@@ -32,11 +32,11 @@ class Article extends React.Component {
           <div className="article__info">
             <div>
               <i className="far fa-calendar-alt" />
-              <span>{created}</span>
+              <span>{created_at}</span>
             </div>
             <div>
               <i className="far fa-folder-open" />
-              <span>{tags.map(tag => tag.name).join(', ')}</span>
+              {/* <span>{tags.map(tag => tag.name).join(', ')}</span> */}
             </div>
             <div>
               <i className="fas fa-comment" />

@@ -1,9 +1,10 @@
 const knex = require('../../database/connection');
+const { DBError } = require('../../common/customErr');
 
 const renderProfile = (req, res) => {
     const { user } = req.session;
     const { userID } = req.params;
-    console.log(user);
+
     if (user.id === userID) {
         return res.render('admin/pages/profile', {
             title: 'Profile',
@@ -14,8 +15,9 @@ const renderProfile = (req, res) => {
             user,
         });
     }
-    req.flash('myMessage', 'Ko duoc truy cap id cua nguoi khac');
-    return res.redirect('/admin/error');
+
+    req.flash('blankMessage', 'Dont allow access infomation of other users');
+    return res.redirect('/admin/blank-message');
 };
 
 module.exports = { renderProfile };

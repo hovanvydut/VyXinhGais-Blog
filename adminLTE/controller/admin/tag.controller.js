@@ -1,30 +1,49 @@
 const knex = require('../../database/connection');
 const generateId = require('../../common/generateId');
+const { DBError } = require('../../common/customErr');
 
 const domain = 'admin';
 
-const renderTagPage = async (req, res) => {
+const renderTagPage = async (req, res, next) => {
     const { user } = req.session;
-    const tags = await knex.select().from('tags');
+    let tags;
+
+    try {
+        tags = await knex.select().from('tags');
+    } catch (err) {
+        return next(new DBError(err.message));
+    }
+
     res.render(`${domain}/pages/tag`, {
         user,
         tags,
     });
 };
 
-const addNewTag = async (req, res) => {
-    await knex
-        .insert({ id: generateId(), name: req.body.nameTag })
-        .into('tags');
+const addNewTag = async (req, res, next) => {
+    try {
+        await knex
+            .insert({ id: generateId(), name: req.body.nameTag })
+            .into('tags');
+    } catch (err) {
+        return next(new DBError(err.message));
+    }
+
     res.redirect('/admin/tags');
 };
 
-const editTag = async (req, res) => {
+const editTag = async (req, res, next) => {
     const { id } = req.params;
-    const tag = await knex('tags')
-        .where({ id })
-        .select();
     const { user } = req.session;
+    let tag;
+
+    try {
+        tag = await knex('tags')
+            .where({ id })
+            .select();
+    } catch (err) {
+        return next(new DBError(err.message));
+    }
 
     res.render('admin/pages/editTag', {
         title: 'Chỉnh sửa tag',
@@ -37,22 +56,34 @@ const editTag = async (req, res) => {
     });
 };
 
-const updateTag = async function(req, res) {
+const updateTag = async function(req, res, next) {
     const { id } = req.params;
     const { tagName } = req.body;
-    await knex('tags')
-        .where({ id })
-        .update({
-            name: tagName,
-        });
+
+    try {
+        await knex('tags')
+            .where({ id })
+            .update({
+                name: tagName,
+            });
+    } catch (err) {
+        return next(new DBError(err.message));
+    }
+
     res.redirect('/admin/tags');
 };
 
-const deleteTask = async (req, res) => {
+const deleteTask = async (req, res, next) => {
     const { id } = req.params;
-    await knex('tags')
-        .where({ id })
-        .del();
+
+    try {
+        await knex('tags')
+            .where({ id })
+            .del();
+    } catch (err) {
+        return next(new DBError(err.message));
+    }
+
     return res.redirect('/admin/tags');
 };
 

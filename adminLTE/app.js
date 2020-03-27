@@ -39,13 +39,6 @@ app.use(logger('dev'));
 app.use('/api/v1', cors(), apiRouter);
 app.use('/admin', indexRouter);
 app.use('/admin/accounts', accountsRouter);
-app.use('/admin/error', (req, res) => {
-    res.render('admin/pages/error', {
-        user: {
-            role: 'Error',
-        },
-    });
-});
 app.use('/', (req, res) => {
     res.send('home page');
 });
@@ -58,15 +51,13 @@ app.use((req, res, next) => {
 // error handler
 app.use((err, req, res, next) => {
     // set locals, only providing error in development
-    const { user } = req.session;
     const myMessage = req.flash('myMessage');
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
 
     // render the error page
     res.status(err.status || 500);
-    res.render('admin/pages/error', {
-        user,
+    res.render('admin/pages/404', {
         myMessage,
     });
 });

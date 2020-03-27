@@ -9,6 +9,14 @@ const renderHomePage = (req, res) => {
     });
 };
 
+const blankMessage = (req, res) => {
+    const message = req.flash('blankMessage');
+    return res.render('admin/pages/blankMessage', {
+        message: message[0],
+    });
+};
+
 module.exports = {
     renderHomePage,
+    blankMessage,
 };

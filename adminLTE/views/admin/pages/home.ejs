@@ -34,11 +34,14 @@
             <%- ContentHeader('Home page', [{content: 'abc', href:'/abc'}, {content: 'def', href: '#'}]) %>
             <%- resendActiveEmailSuccess ? resendActiveEmailSuccess : '' %>
             <%- user.is_active_email ? '' : `Bạn chưa active email, vui lòng kiểm tra hòm thư ${user.email} hoặc <a href="/admin/accounts/resend-active-email">click vào đây</a> để gửi lại token` %>
-            <h3>Lam chuc nang auto Logout khi close browser or tab</h3>
-            <h3>Upload anh len cloudinary</h3>
-            <h3>Chuc nang mypost</h3>
-            <h3>Chuc nang xac thuc bang email</h3>
-            <h3>reset server bang cron job</h3>
+            <h3>1. Lam chuc nang gui email khi thay doi password</h3>
+            <h3>2. Try catch de xu li loi + add comment cho toan source code</h3>
+            <h3>3. Lam chuc nang auto Logout khi close browser or tab</h3>
+            <h3>3. Upload anh len cloudinary</h3>
+            <h3>4. Chuc nang mypost</h3>
+            <h3>5. reset forgot_password expire, reset user is not active email in 24h</h3>
+            <h3>6. Test sms nexmo</h3>
+            <h3>6. Upload db image to github</h3>
         </div>
 
         <!-- Control Sidebar -->

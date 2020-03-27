@@ -1,10 +1,18 @@
 const speakingUrl = require('speakingurl');
 const knex = require('../../database/connection');
 const generateId = require('../../common/generateId');
+const { DBError } = require('../../common/customErr');
 
-const renderNewPostPage = async (req, res) => {
+const renderNewPostPage = async (req, res, next) => {
     const { user } = req.session;
-    const tags = await knex('tags').select();
+    let tags;
+
+    try {
+        tags = await knex('tags').select();
+    } catch (err) {
+        return next(new DBError(err.message));
+    }
+
     res.render('admin/pages/newPost', {
         title: 'Viết bài',
         breadscrumb: [
@@ -16,21 +24,25 @@ const renderNewPostPage = async (req, res) => {
     });
 };
 
-const savePost = async (req, res) => {
+const savePost = async (req, res, next) => {
     const { user } = req.session;
     const { title, content, tags, description } = req.body;
     const idPost = generateId();
     const linkPost = `${speakingUrl(title)}-${idPost}`;
 
-    await knex('posts').insert({
-        id: idPost,
-        title,
-        content: content.replace(/\.\.(?=\/+static)/g, ''),
-        author: user.id,
-        linkPost,
-        description,
-        imgThumb: 'link img thumb',
-    });
+    try {
+        await knex('posts').insert({
+            id: idPost,
+            title,
+            content: content.replace(/\.\.(?=\/+static)/g, ''),
+            author: user.id,
+            linkPost,
+            description,
+            imgThumb: 'link img thumb',
+        });
+    } catch (err) {
+        return next(new DBError(err.message));
+    }
 
     let temp = [];
     if (typeof tags !== 'object') {
@@ -39,11 +51,15 @@ const savePost = async (req, res) => {
         temp = tags;
     }
     temp.forEach(async (tagId) => {
-        await knex('post_tags').insert({
-            id: generateId(),
-            post_id: idPost,
-            tag_id: tagId,
-        });
+        try {
+            await knex('post_tags').insert({
+                id: generateId(),
+                post_id: idPost,
+                tag_id: tagId,
+            });
+        } catch (err) {
+            return next(new DBError(err.message));
+        }
     });
 
     return res.redirect('/admin/posts');

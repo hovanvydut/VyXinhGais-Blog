@@ -17,7 +17,9 @@ const category = require('../../controller/admin/category.controller');
 const tagController = require('../../controller/admin/tag.controller');
 const profileController = require('../../controller/admin/profile.controller');
 
-router.get('/', verify.isSignIn, homeController.renderHomePage);
+router
+    .get('/', verify.isSignIn, homeController.renderHomePage)
+    .get('/blank-message', homeController.blankMessage);
 
 router
     .get(

@@ -11,6 +11,10 @@ const cors = require('cors');
 const app = express();
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
+const {
+    deleteUserIsNotActiveEmail,
+    testCronJob,
+} = require('./common/cron-job.config');
 const sessionStoreConfig = require('./common/session-store.config');
 const methodOverrideConfig = require('./common/methodOverride.config');
 
@@ -34,6 +38,10 @@ app.use(cookieParser(process.env.COOKIE_PARSER_SECRET));
 app.use('/static', express.static(path.join(`${__dirname}`, 'public')));
 app.use(methodOverride(methodOverrideConfig));
 app.use(logger('dev'));
+
+// Cron job
+deleteUserIsNotActiveEmail.start();
+testCronJob.start();
 
 // Route
 app.use('/api/v1', cors(), apiRouter);

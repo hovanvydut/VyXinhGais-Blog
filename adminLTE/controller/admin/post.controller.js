@@ -8,21 +8,29 @@ const renderPostPage = async (req, res, next) => {
     let data;
 
     try {
-        data = await knex.raw(
-            'SELECT p.id ,p.title, u.name, p.created_at FROM `posts` as p INNER JOIN `users` as u on p.author = u.id'
-        );
+        data = await knex('posts')
+            .innerJoin('users', 'posts.author', '=', 'users.id')
+            .select(
+                'posts.id',
+                'posts.title',
+                knex.ref('users.name').as('author'),
+                knex.ref('users.id').as('author_id'),
+                'posts.created_at'
+            )
+            .limit(10)
+            .offset(0);
     } catch (err) {
         return next(new DBError(err.message));
     }
 
-    res.render('admin/pages/post', {
+    return res.render('admin/pages/post', {
         title: 'Danh sách tất cả các bài viết',
         breadscrumb: [
             { content: 'hihi', href: '/abc' },
             { content: 'haha', href: '#' },
         ],
         user,
-        data: data[0],
+        data,
     });
 };
 
@@ -35,14 +43,13 @@ const renderEditPost = async (req, res, next) => {
     let postTags;
 
     try {
-        data = await knex.raw(
-            'SELECT * FROM `posts` as p WHERE p.id = ' + `"${idPost}"`
-        );
-
-        // eslint-disable-next-line
-        post = data[0][0];
+        post = await knex('posts')
+            .select()
+            .where({ id: idPost })
+            .first();
 
         tags = await knex('tags').select();
+
         postTags = await knex('post_tags')
             .select()
             .where({ post_id: post.id });
@@ -50,7 +57,7 @@ const renderEditPost = async (req, res, next) => {
         return next(new DBError(err.message));
     }
 
-    res.render('admin/pages/editPost', {
+    return res.render('admin/pages/editPost', {
         title: 'Edit post',
         breadscrumb: [
             { content: 'danh sách bài viết', href: '/post' },
@@ -69,28 +76,30 @@ const updatePost = async (req, res, next) => {
     const linkPost = `${speakingUrl(title)}-${idPost}`;
 
     try {
-        await knex('posts').update({
-            id: idPost,
-            title,
-            content: content.replace(
-                new RegExp('(../)?..(?=/static/uploads)', 'g'),
-                ''
-            ),
-            linkPost,
-            description,
-            imgThumb: 'link img thumb',
-        });
+        await knex('posts')
+            .where({ id: idPost })
+            .update({
+                title,
+                content: content.replace(
+                    new RegExp('(../)?..(?=/static/uploads)', 'g'),
+                    ''
+                ),
+                linkPost,
+                description,
+                imgThumb: 'link img thumb',
+            });
 
+        // ? delete all old tags
         await knex('post_tags')
             .where({ post_id: idPost })
             .del();
 
+        // ? if tags = array => typeof array === "object"; this help avoid tags = undefined
         let temp = [];
-        if (typeof tags !== 'object') {
-            temp.push(tags);
-        } else {
+        if (typeof tags === 'object') {
             temp = tags;
         }
+
         temp.forEach(async (tagId) => {
             await knex('post_tags').insert({
                 id: generateId(),
@@ -98,6 +107,7 @@ const updatePost = async (req, res, next) => {
                 tag_id: tagId,
             });
         });
+
         return res.redirect('/admin/posts');
     } catch (err) {
         return next(new DBError(err.message));
@@ -118,9 +128,38 @@ const deletePost = async (req, res, next) => {
     return res.redirect('/admin/posts');
 };
 
+const renderMyPost = async (req, res, next) => {
+    const { user } = req.session;
+    let data;
+    try {
+        data = await knex('posts')
+            .where({ author: user.id })
+            .limit(10)
+            .offset(0);
+        data.forEach((row) => {
+            // eslint-disable-next-line
+            row.author = user.name;
+            // eslint-disable-next-line
+            row.author_id = user.id;
+        });
+        return res.render('admin/pages/post', {
+            title: 'Danh sách tất cả các bài viết',
+            breadscrumb: [
+                { content: 'hihi', href: '/abc' },
+                { content: 'haha', href: '#' },
+            ],
+            user,
+            data,
+        });
+    } catch (err) {
+        return next(new DBError(err.message));
+    }
+};
+
 module.exports = {
     renderPostPage,
     renderEditPost,
     deletePost,
     updatePost,
+    renderMyPost,
 };

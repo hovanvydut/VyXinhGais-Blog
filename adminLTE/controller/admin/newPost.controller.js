@@ -62,6 +62,7 @@ const savePost = async (req, res, next) => {
         }
     });
 
+    if (user.role === 'customer') return res.redirect('/admin/my-posts');
     return res.redirect('/admin/posts');
 };
 

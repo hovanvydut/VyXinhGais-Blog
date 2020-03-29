@@ -78,7 +78,8 @@ router
         verify.isSignInAndActiveEmail,
         verify.isAdmin,
         postController.deletePost
-    );
+    )
+    .get('/my-posts', postController.renderMyPost);
 
 router
     .get(

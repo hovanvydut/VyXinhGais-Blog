@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <base href="/static/" />
+    <title>Admin-VyXinhGais</title>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="stylesheets/all.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="stylesheets/adminlte.min.css">
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+</head>
+
+<body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+
+        <!-- Navbar -->
+        <%- include('../layoutComponent/MainHeader') -%>
+
+        <!-- Main Sidebar Container -->
+        <%- include('../layoutComponent/MainSidebar', {user}) %>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <% include ../components/ContentHeader %>
+            <%- ContentHeader(title, breadscrumb) %>
+
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-6 offset-3">
+                            <form method="post" action="/admin/categories/<%= category ? category.id : '' %>">
+                                <input type="hidden" name="_method" value="PUT" />
+                                <div class="card card-primary">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Edit</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label for="inputName">Category Name</label>
+                                            <input name="categoryName" type="text" id="inputName" class="form-control"
+                                                value='<%= category ? category.name: '' %>'>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button type="submit"
+                                            class="btn btn-block btn-outline-primary w-25 float-right mt-0 mr-1">
+                                            Save
+                                        </button>
+                                        <button type="button" class="btn btn-danger" data-toggle="modal"
+                                            data-target="#modal-danger">
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="modal-danger">
+                        <div class="modal-dialog">
+                            <div class="modal-content bg-danger">
+                                <form method="POST" action="/admin/categories/<%= category ? category.id: '' %>">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Delete <%= category ? category.name : '' %></h4>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p><%= category ? category.linkCategory : '' %></p>
+                                    </div>
+                                    <div class="modal-footer justify-content-between">
+                                        <button type="button" class="btn btn-outline-light"
+                                            data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-outline-light">DELETE</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- /.modal-content -->
+                        </div>
+                        <!-- /.modal-dialog -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Control Sidebar -->
+        <%- include('../layoutComponent/ControlSidebar') -%>
+
+        <!-- Main Footer -->
+        <%- include('../layoutComponent/MainFooter') -%>
+    </div>
+
+    <%- include('../layoutComponent/commonScript') -%>
+
+</body>
+
+</html>

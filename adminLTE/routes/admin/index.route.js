@@ -99,11 +99,28 @@ router
         newPostController.savePost
     );
 
-router.get(
-    '/categories',
-    verify.isSignInAndActiveEmail,
-    category.renderCategory
-);
+router
+    .get('/categories', verify.isSignInAndActiveEmail, category.renderCategory)
+    .post(
+        '/categories',
+        verify.isSignInAndActiveEmail,
+        category.createNewCategory
+    )
+    .get(
+        '/categories/:linkCategory',
+        verify.isSignInAndActiveEmail,
+        category.renderEditCategory
+    )
+    .delete(
+        '/categories/:idCategory',
+        verify.isSignInAndActiveEmail,
+        category.deleteCategory
+    )
+    .put(
+        '/categories/:idCategory',
+        verify.isSignInAndActiveEmail,
+        category.updateCategory
+    );
 
 router
     .get(

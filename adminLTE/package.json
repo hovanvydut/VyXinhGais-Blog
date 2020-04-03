@@ -30,6 +30,7 @@
         "node-cron": "^2.0.3",
         "nodemailer": "^6.4.6",
         "nodemailer-smtp-transport": "^2.7.4",
+        "socket.io": "^2.3.0",
         "speakingurl": "^14.0.1"
     },
     "devDependencies": {

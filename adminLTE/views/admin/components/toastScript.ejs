@@ -1,0 +1,30 @@
+<!-- Toastr -->
+<script src="javascripts/toastr.min.js"></script>
+<script>
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+    // toastr.info('Are you the 6 fingered man?');
+    try {
+        const status = "<%- message ? message.status : '' %>";
+        const name = "<%- message ? message.name : '' %>";
+        toastr[status](name);
+    } catch (err) {
+        console.log(err);
+    }
+
+</script>

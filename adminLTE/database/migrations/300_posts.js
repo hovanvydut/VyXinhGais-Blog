@@ -5,11 +5,21 @@ exports.up = function(knex) {
         table.string('id').primary();
         table.string('title').notNullable();
         table.text('content', 'longtext').notNullable();
-        table.string('author').notNullable();
+        table.string('author', 100).notNullable();
         table
             .foreign('author')
             .references('id')
             .inTable('users')
+            .onDelete('CASCADE')
+            .onUpdate('CASCADE');
+        table
+            .string('category', 100)
+            .index()
+            .notNullable();
+        table
+            .foreign('category')
+            .references('id')
+            .inTable('categories')
             .onDelete('CASCADE')
             .onUpdate('CASCADE');
         table.string('linkPost').notNullable();

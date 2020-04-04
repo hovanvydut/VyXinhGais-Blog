@@ -5,16 +5,19 @@ const { DBError } = require('../../common/customErr');
 
 const renderPostPage = async (req, res, next) => {
     const { user } = req.session;
+    const message = req.flash('message')[0];
     let data;
 
     try {
         data = await knex('posts')
             .innerJoin('users', 'posts.author', '=', 'users.id')
+            .innerJoin('categories', 'posts.category', '=', 'categories.id')
             .select(
                 'posts.id',
                 'posts.title',
                 knex.ref('users.name').as('author'),
                 knex.ref('users.id').as('author_id'),
+                knex.ref('categories.name').as('category_name'),
                 'posts.created_at'
             )
             .limit(10)
@@ -31,24 +34,27 @@ const renderPostPage = async (req, res, next) => {
         ],
         user,
         data,
+        message,
     });
 };
 
 const renderEditPost = async (req, res, next) => {
     const { user } = req.session;
     const { idPost } = req.params;
-    let data;
     let post;
     let tags;
     let postTags;
+    let categories;
 
     try {
-        post = await knex('posts')
-            .select()
-            .where({ id: idPost })
-            .first();
-
-        tags = await knex('tags').select();
+        [post, tags, categories] = await Promise.all([
+            await knex('posts')
+                .select()
+                .where({ id: idPost })
+                .first(),
+            await knex('tags').select(),
+            await knex('categories').select(),
+        ]);
 
         postTags = await knex('post_tags')
             .select()
@@ -67,32 +73,35 @@ const renderEditPost = async (req, res, next) => {
         tags,
         post,
         postTags,
+        categories,
     });
 };
 
 const updatePost = async (req, res, next) => {
     const { idPost } = req.params;
-    const { title, content, tags, description } = req.body;
+    const { title, content, tags, description, category } = req.body;
     const linkPost = `${speakingUrl(title)}-${idPost}`;
 
     try {
-        await knex('posts')
-            .where({ id: idPost })
-            .update({
-                title,
-                content: content.replace(
-                    new RegExp('(../)?..(?=/static/uploads)', 'g'),
-                    ''
-                ),
-                linkPost,
-                description,
-                imgThumb: 'link img thumb',
-            });
-
-        // ? delete all old tags
-        await knex('post_tags')
-            .where({ post_id: idPost })
-            .del();
+        await Promise.all([
+            knex('posts')
+                .where({ id: idPost })
+                .update({
+                    title,
+                    content: content.replace(
+                        new RegExp('(../)?..(?=/static/uploads)', 'g'),
+                        ''
+                    ),
+                    linkPost,
+                    description,
+                    category,
+                    imgThumb: 'link img thumb',
+                }),
+            // ? delete all old tags
+            knex('post_tags')
+                .where({ post_id: idPost })
+                .del(),
+        ]);
 
         // ? if tags = array => typeof array === "object"; this help avoid tags = undefined
         let temp = [];
@@ -100,14 +109,20 @@ const updatePost = async (req, res, next) => {
             temp = tags;
         }
 
-        temp.forEach(async (tagId) => {
-            await knex('post_tags').insert({
-                id: generateId(),
-                post_id: idPost,
-                tag_id: tagId,
-            });
-        });
+        await Promise.all(
+            temp.map((tagId) =>
+                knex('post_tags').insert({
+                    id: generateId(),
+                    post_id: idPost,
+                    tag_id: tagId,
+                })
+            )
+        );
 
+        req.flash('message', {
+            status: 'success',
+            name: 'Update post successfully!',
+        });
         return res.redirect('/admin/posts');
     } catch (err) {
         return next(new DBError(err.message));
@@ -125,6 +140,10 @@ const deletePost = async (req, res, next) => {
         return next(new DBError(err.message));
     }
 
+    req.flash('message', {
+        status: 'success',
+        name: 'Delete post successfully!',
+    });
     return res.redirect('/admin/posts');
 };
 
@@ -142,6 +161,7 @@ const renderMyPost = async (req, res, next) => {
             // eslint-disable-next-line
             row.author_id = user.id;
         });
+
         return res.render('admin/pages/post', {
             title: 'Danh sách tất cả các bài viết',
             breadscrumb: [

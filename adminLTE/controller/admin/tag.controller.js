@@ -6,6 +6,7 @@ const domain = 'admin';
 
 const renderTagPage = async (req, res, next) => {
     const { user } = req.session;
+    const message = req.flash('message')[0];
     let tags;
 
     try {
@@ -17,6 +18,7 @@ const renderTagPage = async (req, res, next) => {
     res.render(`${domain}/pages/tag`, {
         user,
         tags,
+        message,
     });
 };
 
@@ -29,6 +31,11 @@ const addNewTag = async (req, res, next) => {
         return next(new DBError(err.message));
     }
 
+    // ? message'status must be in [success, info, warning, error]
+    req.flash('message', {
+        status: 'success',
+        name: 'Create new tag successfully!',
+    });
     res.redirect('/admin/tags');
 };
 
@@ -70,6 +77,10 @@ const updateTag = async function(req, res, next) {
         return next(new DBError(err.message));
     }
 
+    req.flash('message', {
+        status: 'success',
+        name: 'Update new tag successfully!',
+    });
     res.redirect('/admin/tags');
 };
 
@@ -84,6 +95,10 @@ const deleteTask = async (req, res, next) => {
         return next(new DBError(err.message));
     }
 
+    req.flash('message', {
+        status: 'success',
+        name: 'Delete new tag successfully!',
+    });
     return res.redirect('/admin/tags');
 };
 

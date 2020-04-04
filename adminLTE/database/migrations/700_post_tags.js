@@ -1,4 +1,4 @@
-const generateId = require('./../../common/generateId');
+const generateId = require('../../common/generateId');
 
 const TABLE_NAME = 'post_tags';
 
@@ -8,7 +8,6 @@ exports.up = function(knex) {
             .string('id')
             .primary()
             .defaultTo(generateId());
-
         table.string('post_id').notNullable();
         table
             .foreign('post_id')

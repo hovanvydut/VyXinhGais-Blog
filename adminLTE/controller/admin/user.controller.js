@@ -4,7 +4,10 @@ const { DBError } = require('./../../common/customErr');
 
 const renderUserPage = async (req, res) => {
     const { user } = req.session;
+    const message = req.flash('message')[0];
+
     const userList = await knex('users').select();
+
     return res.render('admin/pages/user', {
         title: 'Quan li user',
         breadscrumb: [
@@ -13,6 +16,7 @@ const renderUserPage = async (req, res) => {
         ],
         user,
         userList,
+        message,
     });
 };
 
@@ -80,22 +84,27 @@ const updateUser = async (req, res, next) => {
     }
 
     try {
-        await knex('users')
-            .where({ id: userID })
-            .update({
-                name,
-                email,
-                password: oldPassword,
-                role,
-            });
-        await knex('sessions')
-            .where('data', 'like', `%${userID}%`)
-            .del();
+        await Promise.all([
+            knex('users')
+                .where({ id: userID })
+                .update({
+                    name,
+                    email,
+                    password: oldPassword,
+                    role,
+                }),
+            knex('sessions')
+                .where('data', 'like', `%${userID}%`)
+                .del(),
+        ]);
     } catch (err) {
         return next(new DBError(err.message));
     }
 
-    req.flash('updateSuccess', 'Cập nhật thành công');
+    req.flash('message', {
+        status: 'success',
+        name: 'Update user successfully!',
+    });
     return res.redirect('/admin/users');
 };
 
@@ -107,18 +116,23 @@ const deleteUser = async (req, res, next) => {
 
     if (user.id !== userID) {
         try {
-            await knex('users')
-                .where({ id: userID })
-                .del();
-            // ? delete all session relative with userID
-            await knex('sessions')
-                .where('data', 'like', `%${userID}%`)
-                .del();
+            await Promise.all(
+                knex('users')
+                    .where({ id: userID })
+                    .del(),
+                // ? delete all session relative with userID
+                knex('sessions')
+                    .where('data', 'like', `%${userID}%`)
+                    .del()
+            );
         } catch (err) {
             return next(new DBError(err.message));
         }
 
-        req.flash('deleteSuccess', 'Xoá thành công');
+        req.flash('message', {
+            status: 'success',
+            name: 'Delete user successfully!',
+        });
         return res.redirect('/admin/users');
     }
 

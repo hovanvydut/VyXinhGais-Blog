@@ -1,5 +1,5 @@
 const TABLE_NAME = 'forgot_password';
-const generateId = require('./../../common/generateId');
+const generateId = require('../../common/generateId');
 
 exports.up = function(knex) {
     return knex.schema.createTable(TABLE_NAME, (table) => {

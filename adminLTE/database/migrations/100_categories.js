@@ -1,10 +1,10 @@
 const TABLE_NAME = 'categories';
-const generateId = require('./../../common/generateId');
+const generateId = require('../../common/generateId');
 
 exports.up = function(knex) {
     return knex.schema.createTable(TABLE_NAME, (table) => {
         table
-            .string('id')
+            .string('id', 100)
             .primary()
             .defaultTo(generateId());
         table.string('name').notNullable();

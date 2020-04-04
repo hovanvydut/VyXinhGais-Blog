@@ -14,7 +14,8 @@
     <link rel="stylesheet" href="stylesheets/adminlte.min.css">
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-    <!-- tinyMCE -->
+    <!-- Toastr -->
+    <link rel="stylesheet" href="stylesheets/toastr.min.css">
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -57,7 +58,7 @@
                                                 <th style="width: 30px; text-align: center;">#</th>
                                                 <th>Tiêu đề</th>
                                                 <th>Tác giả</th>
-                                                <th>Tag</th>
+                                                <th>Category</th>
                                                 <th>Thời gian</th>
                                                 <th>#</th>
                                             </tr>
@@ -71,7 +72,7 @@
                                                     <a
                                                         href="/admin/profile/<%= post.author_id %>"><%= post.author %></a>
                                                 </td>
-                                                <td><span class="badge bg-danger">Công nghệ</span></td>
+                                                <td><span class="badge bg-danger"><%= post.category_name %></span></td>
                                                 <td><%= post.created_at.toLocaleString() %></td>
                                                 <td class="d-flex justify-content-end">
                                                     <button type="button" class="btn btn-danger" data-toggle="modal"
@@ -128,6 +129,7 @@
     </div>
 
     <%- include('../layoutComponent/commonScript') -%>
+    <%- include('../components/toastScript') -%>
 </body>
 
 </html>

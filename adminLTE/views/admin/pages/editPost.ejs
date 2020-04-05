@@ -96,6 +96,35 @@
                                             </div>
                                         </div>
                                         <% } %>
+                                        <div class="row mt-1">
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    <label for="inputGroupFile02">Thumbnail for post </label>
+                                                    <div class="input-group mb-3">
+                                                        <div class="custom-file">
+                                                            <input name="imgThumb" type="file" class="custom-file-input"
+                                                                id="inputGroupFile02">
+                                                            <label class="custom-file-label" for="inputGroupFile02"
+                                                                aria-describedby="inputGroupFileAddon02">Choose
+                                                                file</label>
+                                                        </div>
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text"
+                                                                id="inputGroupFileAddon02">Upload</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="widget-user-image">
+                                                    <img class="img-circle elevation-2" src="<%= post.imgThumb %>"
+                                                        alt="Image thumbnail for post"
+                                                        style="width: 45px; height: 45px">
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="card-footer text-right">
                                         <button type="submit" id="save-btn" class="btn btn-primary">Update</button>

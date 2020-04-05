@@ -1,3 +1,5 @@
+const config = require('./../../common/config');
+
 const TABLE_NAME = 'posts';
 
 exports.up = function(knex) {
@@ -24,7 +26,10 @@ exports.up = function(knex) {
             .onUpdate('CASCADE');
         table.string('linkPost').notNullable();
         table.string('description').notNullable();
-        table.string('imgThumb').notNullable();
+        table
+            .string('imgThumb')
+            .notNullable()
+            .defaultTo(config.defaultPostThumb());
         table.datetime('created_at').defaultTo(knex.fn.now());
         table.timestamp('updated_at').defaultTo(knex.fn.now());
     });

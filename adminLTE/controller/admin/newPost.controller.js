@@ -2,6 +2,7 @@ const speakingUrl = require('speakingurl');
 const knex = require('../../database/connection');
 const generateId = require('../../common/generateId');
 const { DBError } = require('../../common/customErr');
+const config = require('./../../common/config');
 
 const renderNewPostPage = async (req, res, next) => {
     const { user } = req.session;
@@ -18,8 +19,8 @@ const renderNewPostPage = async (req, res, next) => {
     res.render('admin/pages/newPost', {
         title: 'Viết bài',
         breadscrumb: [
-            { content: 'danh sách bài viết', href: '/post' },
-            { content: 'bài viết mới', href: '#' },
+            { content: 'Home', href: '/admin' },
+            { content: 'Write new post', href: '#' },
         ],
         user,
         tags,
@@ -31,7 +32,20 @@ const savePost = async (req, res, next) => {
     const { user } = req.session;
     const { title, content, tags, description, category } = req.body;
     const idPost = generateId();
-    const linkPost = `${speakingUrl(title)}-${idPost}`;
+    const linkPost = `${speakingUrl(title)}-${generateId(1)}`;
+
+    let path;
+    let imgThumb;
+    try {
+        path = req.file.path
+            .split('\\')
+            .slice(1)
+            .join('/');
+        imgThumb = `${process.env.HOST}/static/${path}`;
+        imgThumb = imgThumb.replace(/(?<!:)\/+(?=\/(?=))/g, '');
+    } catch (err) {
+        imgThumb = config.defaultPostThumb();
+    }
 
     try {
         await knex('posts').insert({
@@ -42,14 +56,14 @@ const savePost = async (req, res, next) => {
             linkPost,
             description,
             category,
-            imgThumb: 'link img thumb',
+            imgThumb,
         });
 
         let temp = [];
-        if (typeof tags !== 'object') {
-            temp.push(tags);
-        } else {
+        if (typeof tags === 'object') {
             temp = tags;
+        } else if (typeof tags === 'string') {
+            temp.push(tags);
         }
 
         await Promise.all(

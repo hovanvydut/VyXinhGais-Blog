@@ -2,6 +2,7 @@ const speakingUrl = require('speakingurl');
 const knex = require('../../database/connection');
 const generateId = require('../../common/generateId');
 const { DBError } = require('../../common/customErr');
+const config = require('./../../common/config');
 
 const renderPostPage = async (req, res, next) => {
     const { user } = req.session;
@@ -15,6 +16,7 @@ const renderPostPage = async (req, res, next) => {
             .select(
                 'posts.id',
                 'posts.title',
+                'posts.imgThumb',
                 knex.ref('users.name').as('author'),
                 knex.ref('users.id').as('author_id'),
                 knex.ref('categories.name').as('category_name'),
@@ -29,8 +31,8 @@ const renderPostPage = async (req, res, next) => {
     return res.render('admin/pages/post', {
         title: 'Danh sách tất cả các bài viết',
         breadscrumb: [
-            { content: 'hihi', href: '/abc' },
-            { content: 'haha', href: '#' },
+            { content: 'Home', href: '/admin' },
+            { content: 'Posts', href: '#' },
         ],
         user,
         data,
@@ -66,8 +68,9 @@ const renderEditPost = async (req, res, next) => {
     return res.render('admin/pages/editPost', {
         title: 'Edit post',
         breadscrumb: [
-            { content: 'danh sách bài viết', href: '/post' },
-            { content: 'bài viết mới', href: '#' },
+            { content: 'Home', href: '/admin' },
+            { content: 'Posts', href: '/admin/posts' },
+            { content: 'Edit post', href: '#' },
         ],
         user,
         tags,
@@ -80,7 +83,21 @@ const renderEditPost = async (req, res, next) => {
 const updatePost = async (req, res, next) => {
     const { idPost } = req.params;
     const { title, content, tags, description, category } = req.body;
-    const linkPost = `${speakingUrl(title)}-${idPost}`;
+    const linkPost = `${speakingUrl(title)}-${generateId(1)}`;
+
+    let path;
+    let imgThumb;
+    try {
+        path = req.file.path
+            .split('\\')
+            .slice(1)
+            .join('/');
+        imgThumb = `${process.env.HOST}/static/${path}`;
+        imgThumb = imgThumb.replace(/(?<!:)\/+(?=\/(?=))/g, '');
+    } catch (err) {
+        imgThumb = config.defaultPostThumb();
+    }
+    console.log(imgThumb);
 
     try {
         await Promise.all([
@@ -95,7 +112,7 @@ const updatePost = async (req, res, next) => {
                     linkPost,
                     description,
                     category,
-                    imgThumb: 'link img thumb',
+                    imgThumb,
                 }),
             // ? delete all old tags
             knex('post_tags')
@@ -107,6 +124,8 @@ const updatePost = async (req, res, next) => {
         let temp = [];
         if (typeof tags === 'object') {
             temp = tags;
+        } else if (typeof tags === 'string') {
+            temp.push(tags);
         }
 
         await Promise.all(
@@ -149,7 +168,9 @@ const deletePost = async (req, res, next) => {
 
 const renderMyPost = async (req, res, next) => {
     const { user } = req.session;
+    const message = req.flash('message')[0];
     let data;
+
     try {
         data = await knex('posts')
             .where({ author: user.id })
@@ -165,11 +186,12 @@ const renderMyPost = async (req, res, next) => {
         return res.render('admin/pages/post', {
             title: 'Danh sách tất cả các bài viết',
             breadscrumb: [
-                { content: 'hihi', href: '/abc' },
-                { content: 'haha', href: '#' },
+                { content: 'Home', href: '/admin' },
+                { content: 'My posts', href: '#' },
             ],
             user,
             data,
+            message,
         });
     } catch (err) {
         return next(new DBError(err.message));

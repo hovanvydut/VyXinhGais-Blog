@@ -56,6 +56,7 @@
                                         <thead>
                                             <tr>
                                                 <th style="width: 30px; text-align: center;">#</th>
+                                                <td>#</td>
                                                 <th>Tiêu đề</th>
                                                 <th>Tác giả</th>
                                                 <th>Category</th>
@@ -67,7 +68,15 @@
                                             <% data ? data.forEach((post, idx) => { %>
                                             <tr>
                                                 <td><%= idx + 1 %></td>
-                                                <td><a href="/admin/posts/<%= post.id %>"><%= post.title %></a></td>
+                                                <td>
+                                                    <div class="widget-user-image">
+                                                        <img class="img-circle elevation-2" src="<%= post.imgThumb %>"
+                                                            alt="Image thumbnail for post"
+                                                            style="width: 45px; height: 45px;">
+                                                    </div>
+                                                </td>
+                                                <td><a href="/admin/posts/<%= post.id %>"><%= post.title %></a>
+                                                </td>
                                                 <td>
                                                     <a
                                                         href="/admin/profile/<%= post.author_id %>"><%= post.author %></a>

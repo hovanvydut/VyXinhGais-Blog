@@ -4,7 +4,7 @@ const multer = require('multer');
 const router = express.Router();
 const multerConfig = require('./../../common/multer.config');
 
-const storage = multer.diskStorage(multerConfig.storage);
+const storage = multer.diskStorage(multerConfig.storage('public/uploads'));
 const upload = multer({ storage });
 
 const verify = require('../../middleware/verify');
@@ -71,6 +71,7 @@ router
         '/posts/:idPost',
         verify.isSignInAndActiveEmail,
         verify.isAdmin,
+        upload.single('imageUpload'),
         postController.updatePost
     )
     .delete(
@@ -96,6 +97,7 @@ router
     .post(
         '/newpost',
         verify.isSignInAndActiveEmail,
+        upload.single('imgThumb'),
         newPostController.savePost
     );
 

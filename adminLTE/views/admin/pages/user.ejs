@@ -55,8 +55,10 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 30px; text-align: center;">#</th>
+                                            <td>#</td>
                                             <th>Email</th>
-                                            <td>Role</td>
+                                            <th>Name</th>
+                                            <th>Role</th>
                                             <th>#</th>
                                         </tr>
                                     </thead>
@@ -64,7 +66,16 @@
                                         <% userList.forEach((iterator, idx) => { %>
                                         <tr>
                                             <td><%= idx + 1 %></td>
+                                            <td>
+                                                <div class="widget-user-image">
+                                                    <img class="img-circle elevation-2" src="<%= iterator.avatar %>"
+                                                        alt="Image thumbnail for post"
+                                                        style="width: 45px; height: 45px;">
+                                                </div>
+                                            </td>
                                             <td><%- `<a href="/admin/users/${iterator.id}">${iterator.email}</a>` %>
+                                            </td>
+                                            <td><a href="/admin/profile/<%= iterator.id %>"><%= iterator.name %></a>
                                             </td>
                                             <td><%= iterator.role %></td>
                                             <td class="d-flex justify-content-end">

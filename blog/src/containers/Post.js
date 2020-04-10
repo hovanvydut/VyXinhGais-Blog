@@ -5,17 +5,19 @@ import { Redirect } from 'react-router-dom';
 import SearchBarComp from '../components/SearchBar';
 import CategoriesComp from '../components/Categories';
 import PopularArticleComp from '../components/PopularArticle';
-import HashTagComp from '../components/HaskTag';
+import HashTagComp from '../components/HashTag';
 import NewsLetterComp from '../components/NewsLetter';
 import PostComp from '../components/Post';
 import LoadingBar from '../components/LoadingBar';
 import * as postAction from '../actions/posts';
+import * as actionTag from '../actions/tags';
 
 class Post extends Component {
   componentDidMount() {
-    const { match, getPost } = this.props;
+    const { match, getPost, getAllTags, allTags } = this.props;
     const { linkPost } = match.params;
     getPost(linkPost);
+    if (!allTags) getAllTags();
   }
 
   showLoading = () => {
@@ -29,7 +31,7 @@ class Post extends Component {
   };
 
   render() {
-    const { postDetail } = this.props;
+    const { postDetail, allTags } = this.props;
     if (postDetail.status === 'failed') {
       return <Redirect to="/error" />;
     }
@@ -43,7 +45,7 @@ class Post extends Component {
           <SearchBarComp />
           <CategoriesComp />
           <PopularArticleComp />
-          <HashTagComp />
+          <HashTagComp allTags={allTags || []} />
           <NewsLetterComp />
           <div className="categories">
             <h3 className="categories__title">Archives</h3>
@@ -85,19 +87,25 @@ Post.propTypes = {
   match: PropTypes.object,
   getPost: PropTypes.func,
   postDetail: PropTypes.object,
-  loading: PropTypes.object
+  loading: PropTypes.object,
+  allTags: PropTypes.array,
+  getAllTags: PropTypes.func,
 };
 
 const mapStateToProps = state => {
   return {
     postDetail: state.posts.post_detail,
-    loading: state.ui.loading
+    loading: state.ui.loading,
+    allTags: state.tags.allTags,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    getPost: linkPost => dispatch(postAction.getPost(linkPost))
+    getPost: linkPost => dispatch(postAction.getPost(linkPost)),
+    getAllTags: () => {
+      dispatch(actionTag.getAllTags());
+    },
   };
 };
 

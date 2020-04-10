@@ -1,14 +1,23 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import PaginationComp from '../components/Pagination';
 import SearchBarComp from '../components/SearchBar';
 import CategoriesComp from '../components/Categories';
 import PopularArticleComp from '../components/PopularArticle';
-import HashTagComp from '../components/HaskTag';
+import HashTagComp from '../components/HashTag';
 import NewsLetterComp from '../components/NewsLetter';
 import ArticleTravel from '../components/ArticleTravel';
+import * as actionTag from '../actions/tags';
 
 class Travel extends Component {
+  componentDidMount() {
+    const { allTags, getAllTags } = this.props;
+    if (!allTags) getAllTags();
+  }
+
   render() {
+    const { allTags } = this.props;
     return (
       <main className="travel-post">
         <section className="posts">
@@ -21,7 +30,7 @@ class Travel extends Component {
           <SearchBarComp />
           <CategoriesComp />
           <PopularArticleComp />
-          <HashTagComp />
+          <HashTagComp allTags={allTags || []} />
           <NewsLetterComp />
           <div className="categories">
             <h3 className="categories__title">Archives</h3>
@@ -59,4 +68,22 @@ class Travel extends Component {
   }
 }
 
-export default Travel;
+Travel.propTypes = {
+  allTags: PropTypes.array,
+  getAllTags: PropTypes.func,
+};
+
+const mapStateToProps = state => {
+  return {
+    allTags: state.tags.allTags,
+  };
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    getAllTags: () => {
+      dispatch(actionTag.getAllTags());
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Travel);

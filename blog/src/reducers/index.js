@@ -2,9 +2,10 @@ import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import posts from './posts';
 import ui from './ui';
+import tags from './tags';
 import rootSaga from '../saga/saga';
 
-const rootReducer = combineReducers({ posts, ui });
+const rootReducer = combineReducers({ posts, ui, tags });
 const sagaMiddleware = createSagaMiddleware();
 
 const composeEnhancers =

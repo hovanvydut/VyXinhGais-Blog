@@ -8,3 +8,7 @@ export const GET_POST_FAILED = 'GET_POST_FAILED';
 
 export const SHOW_LOADING = 'SHOW_LOADING';
 export const HIDE_LOADING = 'HIDE_LOADING';
+
+export const GET_ALL_TAGS = 'GET_ALL_TAGS';
+export const GET_ALL_TAGS_SUCCESS = 'GET_ALL_TAGS_SUCCESS';
+export const GET_ALL_TAGS_FAILED = 'GET_ALL_TAGS_FAILED';

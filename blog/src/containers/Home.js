@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import LoadingBar from '../components/LoadingBar';
 import * as actionPost from '../actions/posts';
+import * as actionTag from '../actions/tags';
 import ArticleComp from '../components/Article';
 import CategoriesComp from '../components/Categories';
-import HashTagComp from '../components/HaskTag';
+import HashTagComp from '../components/HashTag';
 import NewsLetterComp from '../components/NewsLetter';
 import PaginationComp from '../components/Pagination';
 import PopularArticleComp from '../components/PopularArticle';
@@ -13,8 +14,9 @@ import SearchBarComp from '../components/SearchBar';
 
 class Home extends Component {
   componentDidMount() {
-    const { getThumb } = this.props;
+    const { getThumb, getAllTags } = this.props;
     getThumb('newest');
+    getAllTags();
   }
 
   showLoading = () => {
@@ -37,6 +39,8 @@ class Home extends Component {
   };
 
   render() {
+    console.log('2');
+    const { allTags } = this.props;
     return (
       <main>
         <section className="posts">
@@ -48,7 +52,7 @@ class Home extends Component {
           <SearchBarComp />
           <CategoriesComp />
           <PopularArticleComp />
-          <HashTagComp />
+          <HashTagComp allTags={allTags || []} />
           <NewsLetterComp />
           <div className="categories">
             <h3 className="categories__title">Archives</h3>
@@ -89,21 +93,29 @@ class Home extends Component {
 Home.propTypes = {
   getThumb: PropTypes.func,
   thumbList: PropTypes.array,
-  loading: PropTypes.object
+  loading: PropTypes.object,
+  getAllTags: PropTypes.func,
+  allTags: PropTypes.array,
 };
 
 const mapStateToProps = state => {
   return {
     thumbList: state.posts.post_thumb.home,
-    loading: state.ui.loading
+    loading: state.ui.loading,
+    allTags: state.tags.allTags,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     getThumb: subject => {
+      console.log('getThumb');
       dispatch(actionPost.getThumb(subject));
-    }
+    },
+    getAllTags: () => {
+      console.log('getAllTags');
+      dispatch(actionTag.getAllTags());
+    },
   };
 };
 

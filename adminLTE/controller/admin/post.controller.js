@@ -85,7 +85,7 @@ const updatePost = async (req, res, next) => {
     const { title, content, tags, description, category } = req.body;
     const linkPost = `${speakingUrl(title)}-${generateId(1)}`;
 
-    let path;
+    /* let path;
     let imgThumb;
     try {
         path = req.file.path
@@ -96,8 +96,7 @@ const updatePost = async (req, res, next) => {
         imgThumb = imgThumb.replace(/(?<!:)\/+(?=\/(?=))/g, '');
     } catch (err) {
         imgThumb = config.defaultPostThumb();
-    }
-    console.log(imgThumb);
+    } */
 
     try {
         await Promise.all([
@@ -112,7 +111,7 @@ const updatePost = async (req, res, next) => {
                     linkPost,
                     description,
                     category,
-                    imgThumb,
+                    // imgThumb,
                 }),
             // ? delete all old tags
             knex('post_tags')

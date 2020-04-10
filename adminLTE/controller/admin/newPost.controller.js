@@ -36,6 +36,7 @@ const savePost = async (req, res, next) => {
 
     let path;
     let imgThumb;
+    console.log(content);
     try {
         path = req.file.path
             .split('\\')
@@ -51,7 +52,10 @@ const savePost = async (req, res, next) => {
         await knex('posts').insert({
             id: idPost,
             title,
-            content: content.replace(/\.\.(?=\/+static)/g, ''),
+            content: content.replace(
+                /\.\.(?=\/+static)/g,
+                process.env.HOST.slice(0, -1)
+            ),
             author: user.id,
             linkPost,
             description,
@@ -95,6 +99,7 @@ const uploadImg = function(req, res) {
     let imgPath = `${process.env.HOST}/static/${path}`;
     imgPath = imgPath.replace(/(?<!:)\/+(?=\/(?=))/g, '');
 
+    console.log(imgPath);
     // ? send img path to tinyMCE
     return res.status(200).json({
         location: imgPath,

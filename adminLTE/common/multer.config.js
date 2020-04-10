@@ -9,7 +9,7 @@ module.exports = {
         filename(req, file, cb) {
             cb(
                 null,
-                `${file.fieldname}${generateId(5)}${Date.now()}${path.extname(
+                `${file.fieldname}-${generateId(5)}${Date.now()}${path.extname(
                     file.originalname
                 )}`
             );

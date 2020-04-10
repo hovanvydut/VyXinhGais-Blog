@@ -11,12 +11,12 @@ const cors = require('cors');
 const app = express();
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
+const sessionStoreConfig = require('./common/session-store.config');
+const methodOverrideConfig = require('./common/methodOverride.config');
 const {
     deleteUserIsNotActiveEmail,
     testCronJob,
 } = require('./common/cron-job.config');
-const sessionStoreConfig = require('./common/session-store.config');
-const methodOverrideConfig = require('./common/methodOverride.config');
 
 const apiRouter = require('./routes/api/index');
 const indexRouter = require('./routes/admin/index.route');

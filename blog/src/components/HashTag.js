@@ -21,7 +21,7 @@ class HashTag extends React.Component {
   }
 }
 HashTag.propTypes = {
-  allTags: PropTypes.array
+  allTags: PropTypes.array,
 };
 
 export default HashTag;

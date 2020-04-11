@@ -3,9 +3,10 @@ import createSagaMiddleware from 'redux-saga';
 import posts from './posts';
 import ui from './ui';
 import tags from './tags';
+import categories from './categories';
 import rootSaga from '../saga/saga';
 
-const rootReducer = combineReducers({ posts, ui, tags });
+const rootReducer = combineReducers({ posts, ui, tags, categories });
 const sagaMiddleware = createSagaMiddleware();
 
 const composeEnhancers =

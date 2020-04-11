@@ -11,7 +11,7 @@ class Article extends React.Component {
       imgThumb,
       linkPost,
       created_at,
-      tags
+      category,
     } = postThumbItem;
     const link = `/post/${linkPost}`;
     return (
@@ -20,7 +20,7 @@ class Article extends React.Component {
           <Link
             to={link}
             style={{
-              backgroundImage: `url(${imgThumb})`
+              backgroundImage: `url(${imgThumb})`,
             }}
             className="article__thumb"
           />
@@ -32,11 +32,11 @@ class Article extends React.Component {
           <div className="article__info">
             <div>
               <i className="far fa-calendar-alt" />
-              <span>{created_at}</span>
+              <span>{new Date(created_at).toLocaleString()}</span>
             </div>
             <div>
               <i className="far fa-folder-open" />
-              {/* <span>{tags.map(tag => tag.name).join(', ')}</span> */}
+              <span>{category}</span>
             </div>
             <div>
               <i className="fas fa-comment" />
@@ -56,7 +56,7 @@ class Article extends React.Component {
 }
 
 Article.propTypes = {
-  postThumbItem: PropTypes.object
+  postThumbItem: PropTypes.object,
 };
 
 export default Article;

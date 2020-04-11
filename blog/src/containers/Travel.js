@@ -9,15 +9,17 @@ import HashTagComp from '../components/HashTag';
 import NewsLetterComp from '../components/NewsLetter';
 import ArticleTravel from '../components/ArticleTravel';
 import * as actionTag from '../actions/tags';
+import * as actionCategories from '../actions/categories';
 
 class Travel extends Component {
   componentDidMount() {
-    const { allTags, getAllTags } = this.props;
+    const { allTags, getAllTags, getAllCategories, allCategories } = this.props;
     if (!allTags) getAllTags();
+    if (!allCategories) getAllCategories();
   }
 
   render() {
-    const { allTags } = this.props;
+    const { allTags, allCategories } = this.props;
     return (
       <main className="travel-post">
         <section className="posts">
@@ -28,7 +30,7 @@ class Travel extends Component {
         </section>
         <aside className="sidebar">
           <SearchBarComp />
-          <CategoriesComp />
+          <CategoriesComp allCategories={allCategories || []} />
           <PopularArticleComp />
           <HashTagComp allTags={allTags || []} />
           <NewsLetterComp />
@@ -71,17 +73,23 @@ class Travel extends Component {
 Travel.propTypes = {
   allTags: PropTypes.array,
   getAllTags: PropTypes.func,
+  allCategories: PropTypes.array,
+  getAllCategories: PropTypes.func,
 };
 
 const mapStateToProps = state => {
   return {
     allTags: state.tags.allTags,
+    allCategories: state.categories.allCategories,
   };
 };
 const mapDispatchToProps = dispatch => {
   return {
     getAllTags: () => {
       dispatch(actionTag.getAllTags());
+    },
+    getAllCategories: () => {
+      dispatch(actionCategories.getAllCategories());
     },
   };
 };

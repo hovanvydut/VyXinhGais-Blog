@@ -8,7 +8,6 @@ import PaginationComp from '../components/Pagination';
 
 class Fashion extends Component {
   componentDidMount() {
-    console.log('Fashion: component did mount');
     const { getThumb } = this.props;
     getThumb('newest');
   }
@@ -27,7 +26,7 @@ class Fashion extends Component {
     const { thumbList } = this.props;
     const xhtml = [];
     thumbList.forEach(thumbItem => {
-      xhtml.push(<ArticleComp key={thumbItem._id} postThumbItem={thumbItem} />);
+      xhtml.push(<ArticleComp key={thumbItem.id} postThumbItem={thumbItem} />);
     });
     return xhtml;
   };
@@ -48,13 +47,13 @@ class Fashion extends Component {
 Fashion.propTypes = {
   getThumb: PropTypes.func,
   thumbList: PropTypes.array,
-  loading: PropTypes.object
+  loading: PropTypes.object,
 };
 
 const mapStateToProps = state => {
   return {
     thumbList: state.posts.post_thumb.home,
-    loading: state.ui.loading
+    loading: state.ui.loading,
   };
 };
 
@@ -62,7 +61,7 @@ const mapDispatchToProps = dispatch => {
   return {
     getThumb: subject => {
       dispatch(actionPost.getThumb(subject));
-    }
+    },
   };
 };
 

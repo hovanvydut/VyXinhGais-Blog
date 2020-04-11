@@ -11,13 +11,22 @@ import PostComp from '../components/Post';
 import LoadingBar from '../components/LoadingBar';
 import * as postAction from '../actions/posts';
 import * as actionTag from '../actions/tags';
+import * as actionCategories from '../actions/categories';
 
 class Post extends Component {
   componentDidMount() {
-    const { match, getPost, getAllTags, allTags } = this.props;
+    const {
+      match,
+      getPost,
+      getAllTags,
+      allTags,
+      getAllCategories,
+      allCategories,
+    } = this.props;
     const { linkPost } = match.params;
     getPost(linkPost);
     if (!allTags) getAllTags();
+    if (!allCategories) getAllCategories();
   }
 
   showLoading = () => {
@@ -31,7 +40,7 @@ class Post extends Component {
   };
 
   render() {
-    const { postDetail, allTags } = this.props;
+    const { postDetail, allTags, allCategories } = this.props;
     if (postDetail.status === 'failed') {
       return <Redirect to="/error" />;
     }
@@ -43,7 +52,7 @@ class Post extends Component {
         </section>
         <aside className="sidebar">
           <SearchBarComp />
-          <CategoriesComp />
+          <CategoriesComp allCategories={allCategories || []} />
           <PopularArticleComp />
           <HashTagComp allTags={allTags || []} />
           <NewsLetterComp />
@@ -90,6 +99,8 @@ Post.propTypes = {
   loading: PropTypes.object,
   allTags: PropTypes.array,
   getAllTags: PropTypes.func,
+  allCategories: PropTypes.array,
+  getAllCategories: PropTypes.func,
 };
 
 const mapStateToProps = state => {
@@ -97,6 +108,7 @@ const mapStateToProps = state => {
     postDetail: state.posts.post_detail,
     loading: state.ui.loading,
     allTags: state.tags.allTags,
+    allCategories: state.categories.allCategories,
   };
 };
 
@@ -105,6 +117,9 @@ const mapDispatchToProps = dispatch => {
     getPost: linkPost => dispatch(postAction.getPost(linkPost)),
     getAllTags: () => {
       dispatch(actionTag.getAllTags());
+    },
+    getAllCategories: () => {
+      dispatch(actionCategories.getAllCategories());
     },
   };
 };

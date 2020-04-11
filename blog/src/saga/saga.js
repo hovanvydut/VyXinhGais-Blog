@@ -3,6 +3,7 @@ import axios from 'axios';
 import * as types from '../constants/ActionTypes';
 import * as actionPost from '../actions/posts';
 import * as actionTag from '../actions/tags';
+import * as actionCategories from '../actions/categories';
 import * as actionUi from '../actions/ui';
 import * as config from '../constants/config';
 
@@ -12,12 +13,15 @@ const { HOST } = config;
 function* getThumbSaga(action) {
   yield put(actionUi.showLoading());
   const { subject } = action.payload;
-  const { data, status } = yield axios.get(
-    `${HOST}/api/v1/thumb-posts?subject=${subject}`
-  );
-  if (status === 200) {
-    yield put(actionPost.getThumbSuccess(data));
+  try {
+    const response = yield axios.get(
+      `${HOST}/api/v1/thumb-posts?subject=${subject}`
+    );
+    yield put(actionPost.getThumbSuccess(response.data));
+  } catch (err) {
+    // console.log(err);
   }
+
   yield put(actionUi.hideLoading());
 }
 
@@ -46,10 +50,21 @@ function* getAllTagSaga() {
   }
 }
 
+function* getAllCategoriesSaga() {
+  try {
+    const response = yield axios.get(`${HOST}/api/v1/categories`);
+    yield put(actionCategories.getAllCategoriesSuccess(response.data));
+  } catch (error) {
+    const errorMessage = `${error?.response?.status}:${error?.response?.statusText}`;
+    yield put(actionCategories.getAllCategoriesFailed(errorMessage));
+  }
+}
+
 function* rootSaga() {
   yield takeLatest(types.GET_THUMB, getThumbSaga);
   yield takeLatest(types.GET_POST, getPostSaga);
   yield takeLatest(types.GET_ALL_TAGS, getAllTagSaga);
+  yield takeLatest(types.GET_ALL_CATEGORIES, getAllCategoriesSaga);
 }
 
 export default rootSaga;

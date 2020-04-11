@@ -2,11 +2,11 @@ import * as types from '../constants/ActionTypes';
 
 const initialState = {
   post_thumb: {
-    home: []
+    home: [],
   },
   post_detail: {
-    status: 'success'
-  }
+    status: 'success',
+  },
 };
 
 function PostReducer(state = initialState, action) {
@@ -20,13 +20,13 @@ function PostReducer(state = initialState, action) {
       return {
         ...state,
         post_thumb: {
-          home: data
-        }
+          home: data,
+        },
       };
     }
     case types.GET_THUMB_FAILED: {
       return {
-        ...state
+        ...state,
       };
     }
 
@@ -34,8 +34,8 @@ function PostReducer(state = initialState, action) {
       return {
         ...state,
         post_detail: {
-          status: 'success'
-        }
+          status: 'success',
+        },
       };
     }
     case types.GET_POST_SUCCESS: {
@@ -43,7 +43,7 @@ function PostReducer(state = initialState, action) {
       post.status = 'success';
       return {
         ...state,
-        post_detail: post
+        post_detail: post,
       };
     }
     case types.GET_POST_FAILED: {
@@ -52,8 +52,8 @@ function PostReducer(state = initialState, action) {
       return {
         ...state,
         post_detail: {
-          status: 'failed'
-        }
+          status: 'failed',
+        },
       };
     }
 

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import LoadingBar from '../components/LoadingBar';
 import * as actionPost from '../actions/posts';
 import * as actionTag from '../actions/tags';
+import * as actionCategory from '../actions/categories';
 import ArticleComp from '../components/Article';
 import CategoriesComp from '../components/Categories';
 import HashTagComp from '../components/HashTag';
@@ -14,9 +15,10 @@ import SearchBarComp from '../components/SearchBar';
 
 class Home extends Component {
   componentDidMount() {
-    const { getThumb, getAllTags } = this.props;
+    const { getThumb, getAllTags, getAllCategories } = this.props;
     getThumb('newest');
     getAllTags();
+    getAllCategories();
   }
 
   showLoading = () => {
@@ -39,8 +41,7 @@ class Home extends Component {
   };
 
   render() {
-    console.log('2');
-    const { allTags } = this.props;
+    const { allTags, allCategories } = this.props;
     return (
       <main>
         <section className="posts">
@@ -50,7 +51,7 @@ class Home extends Component {
         </section>
         <aside className="sidebar">
           <SearchBarComp />
-          <CategoriesComp />
+          <CategoriesComp allCategories={allCategories || []} />
           <PopularArticleComp />
           <HashTagComp allTags={allTags || []} />
           <NewsLetterComp />
@@ -96,6 +97,8 @@ Home.propTypes = {
   loading: PropTypes.object,
   getAllTags: PropTypes.func,
   allTags: PropTypes.array,
+  allCategories: PropTypes.array,
+  getAllCategories: PropTypes.func,
 };
 
 const mapStateToProps = state => {
@@ -103,18 +106,20 @@ const mapStateToProps = state => {
     thumbList: state.posts.post_thumb.home,
     loading: state.ui.loading,
     allTags: state.tags.allTags,
+    allCategories: state.categories.allCategories,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     getThumb: subject => {
-      console.log('getThumb');
       dispatch(actionPost.getThumb(subject));
     },
     getAllTags: () => {
-      console.log('getAllTags');
       dispatch(actionTag.getAllTags());
+    },
+    getAllCategories: () => {
+      dispatch(actionCategory.getAllCategories());
     },
   };
 };

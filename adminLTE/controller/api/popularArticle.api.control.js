@@ -3,6 +3,7 @@ const knex = require('../../database/connection');
 const getAllPopularArticle = async (req, res) => {
     // `${process.env.HOST}/api/v1/popular-article
     try {
+        // console.log('hello');
         const data = await knex('posts')
             .select(
                 'posts.id',

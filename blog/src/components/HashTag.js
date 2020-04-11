@@ -6,7 +6,9 @@ class HashTag extends React.Component {
     const { allTags } = this.props;
     return allTags.map(tag => (
       <li key={tag.id}>
-        <a href={`/tags/${tag.name}`}>{tag.name.toUpperCase()}</a>
+        <a href={`/tags/${tag.name}`}>
+          {`${tag.name.toUpperCase()} (${tag.countPost})`}
+        </a>
       </li>
     ));
   };

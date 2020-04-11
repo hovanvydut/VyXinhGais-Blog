@@ -5,6 +5,7 @@ import * as actionPost from '../actions/posts';
 import * as actionTag from '../actions/tags';
 import * as actionCategories from '../actions/categories';
 import * as actionUi from '../actions/ui';
+import * as actionPopularArticle from '../actions/popularArticle';
 import * as config from '../constants/config';
 
 const { HOST } = config;
@@ -60,11 +61,22 @@ function* getAllCategoriesSaga() {
   }
 }
 
+function* getPopularArticleSaga() {
+  try {
+    const response = yield axios.get(`${HOST}/api/v1/popular-article`);
+    yield put(actionPopularArticle.getPopularArticleSuccess(response.data));
+  } catch (error) {
+    const errorMessage = `${error?.response?.status}:${error?.response?.statusText}`;
+    yield put(actionPopularArticle.getPopularArticleFailed(errorMessage));
+  }
+}
+
 function* rootSaga() {
   yield takeLatest(types.GET_THUMB, getThumbSaga);
   yield takeLatest(types.GET_POST, getPostSaga);
   yield takeLatest(types.GET_ALL_TAGS, getAllTagSaga);
   yield takeLatest(types.GET_ALL_CATEGORIES, getAllCategoriesSaga);
+  yield takeLatest(types.GET_POPULAR_ARTICLE, getPopularArticleSaga);
 }
 
 export default rootSaga;

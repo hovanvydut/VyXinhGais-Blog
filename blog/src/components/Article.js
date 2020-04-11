@@ -12,6 +12,7 @@ class Article extends React.Component {
       linkPost,
       created_at,
       category,
+      countView,
     } = postThumbItem;
     const link = `/post/${linkPost}`;
     return (
@@ -39,8 +40,8 @@ class Article extends React.Component {
               <span>{category}</span>
             </div>
             <div>
-              <i className="fas fa-comment" />
-              <span>5</span>
+              <i className="far fa-eye" />
+              <span>{countView}</span>
             </div>
           </div>
           <p className="article__summary">{description}</p>

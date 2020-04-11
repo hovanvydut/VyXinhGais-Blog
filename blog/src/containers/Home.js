@@ -5,6 +5,7 @@ import LoadingBar from '../components/LoadingBar';
 import * as actionPost from '../actions/posts';
 import * as actionTag from '../actions/tags';
 import * as actionCategory from '../actions/categories';
+import * as actionPopularArticle from '../actions/popularArticle';
 import ArticleComp from '../components/Article';
 import CategoriesComp from '../components/Categories';
 import HashTagComp from '../components/HashTag';
@@ -15,10 +16,16 @@ import SearchBarComp from '../components/SearchBar';
 
 class Home extends Component {
   componentDidMount() {
-    const { getThumb, getAllTags, getAllCategories } = this.props;
+    const {
+      getThumb,
+      getAllTags,
+      getAllCategories,
+      getPopularArticle,
+    } = this.props;
     getThumb('newest');
     getAllTags();
     getAllCategories();
+    getPopularArticle();
   }
 
   showLoading = () => {
@@ -41,7 +48,7 @@ class Home extends Component {
   };
 
   render() {
-    const { allTags, allCategories } = this.props;
+    const { allTags, allCategories, allPopularArticle } = this.props;
     return (
       <main>
         <section className="posts">
@@ -52,7 +59,7 @@ class Home extends Component {
         <aside className="sidebar">
           <SearchBarComp />
           <CategoriesComp allCategories={allCategories || []} />
-          <PopularArticleComp />
+          <PopularArticleComp allPopularArticle={allPopularArticle || []} />
           <HashTagComp allTags={allTags || []} />
           <NewsLetterComp />
           <div className="categories">
@@ -99,6 +106,8 @@ Home.propTypes = {
   allTags: PropTypes.array,
   allCategories: PropTypes.array,
   getAllCategories: PropTypes.func,
+  getPopularArticle: PropTypes.func,
+  allPopularArticle: PropTypes.array,
 };
 
 const mapStateToProps = state => {
@@ -107,6 +116,7 @@ const mapStateToProps = state => {
     loading: state.ui.loading,
     allTags: state.tags.allTags,
     allCategories: state.categories.allCategories,
+    allPopularArticle: state.popularArticle.allPopularArticle,
   };
 };
 
@@ -120,6 +130,9 @@ const mapDispatchToProps = dispatch => {
     },
     getAllCategories: () => {
       dispatch(actionCategory.getAllCategories());
+    },
+    getPopularArticle: () => {
+      dispatch(actionPopularArticle.getPopularArticle());
     },
   };
 };

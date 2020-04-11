@@ -12,6 +12,7 @@ import LoadingBar from '../components/LoadingBar';
 import * as postAction from '../actions/posts';
 import * as actionTag from '../actions/tags';
 import * as actionCategories from '../actions/categories';
+import * as actionPopularArticle from '../actions/popularArticle';
 
 class Post extends Component {
   componentDidMount() {
@@ -22,11 +23,14 @@ class Post extends Component {
       allTags,
       getAllCategories,
       allCategories,
+      allPopularArticle,
+      getPopularArticle,
     } = this.props;
     const { linkPost } = match.params;
     getPost(linkPost);
     if (!allTags) getAllTags();
     if (!allCategories) getAllCategories();
+    if (!allPopularArticle) getPopularArticle();
   }
 
   showLoading = () => {
@@ -40,7 +44,12 @@ class Post extends Component {
   };
 
   render() {
-    const { postDetail, allTags, allCategories } = this.props;
+    const {
+      postDetail,
+      allTags,
+      allCategories,
+      allPopularArticle,
+    } = this.props;
     if (postDetail.status === 'failed') {
       return <Redirect to="/error" />;
     }
@@ -53,7 +62,7 @@ class Post extends Component {
         <aside className="sidebar">
           <SearchBarComp />
           <CategoriesComp allCategories={allCategories || []} />
-          <PopularArticleComp />
+          <PopularArticleComp allPopularArticle={allPopularArticle || []} />
           <HashTagComp allTags={allTags || []} />
           <NewsLetterComp />
           <div className="categories">
@@ -101,6 +110,8 @@ Post.propTypes = {
   getAllTags: PropTypes.func,
   allCategories: PropTypes.array,
   getAllCategories: PropTypes.func,
+  allPopularArticle: PropTypes.array,
+  getPopularArticle: PropTypes.func,
 };
 
 const mapStateToProps = state => {
@@ -109,6 +120,7 @@ const mapStateToProps = state => {
     loading: state.ui.loading,
     allTags: state.tags.allTags,
     allCategories: state.categories.allCategories,
+    allPopularArticle: state.popularArticle.allPopularArticle,
   };
 };
 
@@ -120,6 +132,9 @@ const mapDispatchToProps = dispatch => {
     },
     getAllCategories: () => {
       dispatch(actionCategories.getAllCategories());
+    },
+    getPopularArticle: () => {
+      dispatch(actionPopularArticle.getPopularArticle());
     },
   };
 };

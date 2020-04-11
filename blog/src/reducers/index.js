@@ -4,9 +4,16 @@ import posts from './posts';
 import ui from './ui';
 import tags from './tags';
 import categories from './categories';
+import popularArticle from './popularArticle';
 import rootSaga from '../saga/saga';
 
-const rootReducer = combineReducers({ posts, ui, tags, categories });
+const rootReducer = combineReducers({
+  posts,
+  ui,
+  tags,
+  categories,
+  popularArticle,
+});
 const sagaMiddleware = createSagaMiddleware();
 
 const composeEnhancers =

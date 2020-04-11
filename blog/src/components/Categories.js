@@ -4,10 +4,11 @@ import PropTypes from 'prop-types';
 class Categories extends React.Component {
   showAllCategories = () => {
     const { allCategories } = this.props;
+
     return allCategories.map(category => (
       <li key={category.id}>
         <a href={`/category/${category.linkCategory}`}>
-          {category.name} <span>(6)</span>
+          {category.name} <span>({category.countPost})</span>
         </a>
       </li>
     ));

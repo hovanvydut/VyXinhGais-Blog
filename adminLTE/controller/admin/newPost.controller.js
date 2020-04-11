@@ -34,9 +34,24 @@ const savePost = async (req, res, next) => {
     const idPost = generateId();
     const linkPost = `${speakingUrl(title)}-${generateId(1)}`;
 
+    if (!category) {
+        req.flash(
+            'blankMessage',
+            'Categories is empty! Admin, please create a new category '
+        );
+        return res.redirect('/admin/blank-message');
+    }
+
+    if (!tags) {
+        req.flash(
+            'blankMessage',
+            'Categories is empty! Admin, please create a new tag '
+        );
+        return res.redirect('/admin/blank-message');
+    }
+
     let path;
     let imgThumb;
-    console.log(content);
     try {
         path = req.file.path
             .split('\\')
@@ -49,11 +64,13 @@ const savePost = async (req, res, next) => {
     }
 
     try {
+        const removeDoubleDotAtSrcAttrImg = /\.\.(?=\/+static)/g;
+
         await knex('posts').insert({
             id: idPost,
             title,
             content: content.replace(
-                /\.\.(?=\/+static)/g,
+                removeDoubleDotAtSrcAttrImg,
                 process.env.HOST.slice(0, -1)
             ),
             author: user.id,
@@ -63,6 +80,10 @@ const savePost = async (req, res, next) => {
             imgThumb,
         });
 
+        await knex('categories')
+            .where({ id: category })
+            .increment('countPost', 1);
+
         let temp = [];
         if (typeof tags === 'object') {
             temp = tags;
@@ -70,6 +91,7 @@ const savePost = async (req, res, next) => {
             temp.push(tags);
         }
 
+        // ? one `posts` have many `tags`
         await Promise.all(
             temp.map((tagId) =>
                 knex('post_tags').insert({
@@ -77,6 +99,15 @@ const savePost = async (req, res, next) => {
                     post_id: idPost,
                     tag_id: tagId,
                 })
+            )
+        );
+
+        // ? update `tags`.`countPost` = `countPost` + 1
+        await Promise.all(
+            temp.map((tagId) =>
+                knex('tags')
+                    .where({ id: tagId })
+                    .increment('countPost', 1)
             )
         );
     } catch (err) {

@@ -30,6 +30,10 @@ exports.up = function(knex) {
             .string('imgThumb')
             .notNullable()
             .defaultTo(config.defaultPostThumb());
+        table
+            .integer('countView')
+            .unsigned()
+            .defaultTo(0);
         table.datetime('created_at').defaultTo(knex.fn.now());
         table.timestamp('updated_at').defaultTo(knex.fn.now());
     });

@@ -27,7 +27,27 @@ const createNewCategory = async (req, res, next) => {
     let { nameCategory } = req.body;
     nameCategory = nameCategory.trim().replace(multipleSpace, '');
 
+    if (nameCategory.length === 0) {
+        req.flash('message', {
+            status: 'error',
+            name: 'Name of category should not empty!',
+        });
+        return res.redirect('/admin/categories');
+    }
+
     try {
+        const allCategories = await knex('categories').select();
+        allCategories.forEach((category) => {
+            if (category.name.toLowerCase() === nameCategory.toLowerCase()) {
+                req.flash('message', {
+                    status: 'error',
+                    name:
+                        'Name of category existed, please choose another name!',
+                });
+                return res.redirect('/admin/categories');
+            }
+        });
+
         await knex('categories').insert({
             id: generateId(),
             name: nameCategory,

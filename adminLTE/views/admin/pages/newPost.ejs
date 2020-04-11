@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <base href="/static/" />
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
     <title>Admin-VyXinhGais</title>
 
     <!-- Font Awesome Icons -->
@@ -166,6 +167,9 @@
             content_style: ".mymention{ color: gray; }",
             contextmenu: "link image imagetools table configurepermanentpen",
             a11y_advanced_options: true,
+            extended_valid_elements: [
+                'p[class="full-post__para"|align<center?justify?left?right|class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown|onkeypress|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style|title]',
+            ],
             formats: {
                 // Changes the default format for h1 to have a class of heading
                 h1: {
@@ -175,6 +179,10 @@
                 p: {
                     block: 'p',
                     classes: 'full-post__para'
+                },
+                h2: {
+                    block: 'h2',
+                    classes: 'full-post__subtitle'
                 }
             },
             images_upload_handler: function (blobInfo, success, failure) {

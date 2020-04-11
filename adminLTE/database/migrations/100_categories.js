@@ -9,6 +9,10 @@ exports.up = function(knex) {
             .defaultTo(generateId());
         table.string('name').notNullable();
         table.string('linkCategory').notNullable();
+        table
+            .integer('countPost')
+            .unsigned()
+            .defaultTo(0);
     });
 };
 

@@ -99,6 +99,22 @@ const updatePost = async (req, res, next) => {
     } */
 
     try {
+        const oldPost = await knex('posts')
+            .select(['id', 'category'])
+            .where({ id: idPost })
+            .first();
+
+        if (category !== oldPost.category) {
+            await Promise.all([
+                knex('categories')
+                    .where({ id: category })
+                    .increment('countPost', 1),
+                knex('categories')
+                    .where({ id: oldPost.category })
+                    .decrement('countPost', 1),
+            ]);
+        }
+
         await Promise.all([
             knex('posts')
                 .where({ id: idPost })
@@ -106,7 +122,7 @@ const updatePost = async (req, res, next) => {
                     title,
                     content: content.replace(
                         new RegExp('(../)?..(?=/static/uploads)', 'g'),
-                        ''
+                        process.env.HOST.slice(0, -1)
                     ),
                     linkPost,
                     description,

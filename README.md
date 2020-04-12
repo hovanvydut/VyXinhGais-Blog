@@ -1,3 +1,21 @@
+
+# SETUP
+- Clone my project
+- Prerequisite: installed XAMP (this project uses MySQL)
+- ---
+adminLTE
+- $ cd adminLTE
+- $ npm i
+- config file env, use your email (remember enable less-sercure app --> [https://myaccount.google.com/lesssecureapps](https://myaccount.google.com/lesssecureapps)). Recommend use port 3000 for this.
+- $ knex migrate:latest
+- access localhost:3000/admin/signup to register account, then verify your account and go to database, re-edit `users` table at `role	`column with `admin` value to get full accessable feature
+- Remember create tags and category before you create your posts
+---
+blog
+- $ cd blog
+- $ npm i
+- $ npm start
+- This use port 3001
 # Feature
 ## Admin
 SignIn/SignUp:
@@ -8,17 +26,18 @@ SignIn/SignUp:
 Manager users:
 - When admin CRUD infomation of user, its session will be destroyed
 - Write new Post: use tinyMCE
+- Reset password
 
 Write new post
 - Upload thumbnail for post
-- Insert image in post, code,...
+- Write post by use tinyMCE editor
 
 Manager tags
 - CRUD
 
 Manager categories
 - CRUD
-- 
+
 ## Blog
 - use React + Redux saga
 

@@ -1,12 +1,12 @@
 
 # SETUP
 - Clone my project
-- Prerequisite: installed XAMP (this project uses MySQL)
+- Prerequisite: installed XAMP (this project uses MySQL), one google account, one cloudinary account
 - ---
 adminLTE
 - $ cd adminLTE
 - $ npm i
-- config file env, use your email (remember enable less-sercure app --> [https://myaccount.google.com/lesssecureapps](https://myaccount.google.com/lesssecureapps)). Recommend use port 3000 for this.
+- config file env, use your email (remember enable less-sercure app --> [https://myaccount.google.com/lesssecureapps](https://myaccount.google.com/lesssecureapps)) and config cloudinary. Recommend use port 3000 for this.
 - $ knex migrate:latest
 - access localhost:3000/admin/signup to register account, then verify your account and go to database, re-edit `users` table at `role	`column with `admin` value to get full accessable feature
 - Remember create tags and category before you create your posts

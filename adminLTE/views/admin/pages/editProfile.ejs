@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <base href="/static/" />
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+    <title>Admin-VyXinhGais</title>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="stylesheets/all.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="stylesheets/adminlte.min.css">
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <!-- tinyMCE -->
+</head>
+
+<body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+
+        <!-- Navbar -->
+        <%- include('../layoutComponent/MainHeader') -%>
+
+        <!-- Main Sidebar Container -->
+        <%- include('../layoutComponent/MainSidebar', {user}) %>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <% include ../components/ContentHeader %>
+            <%- ContentHeader(title, breadscrumb) %>
+
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-6 offset-3">
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">Edit information</h3>
+                                </div>
+                                <form action="/admin/profile/edit/<%= userNeedView.id %>" method="POST"
+                                    enctype="multipart/form-data">
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label for="avatar">File input</label>
+                                            <div class="input-group">
+                                                <div class="custom-file">
+                                                    <input name="avatar" type="file" class="custom-file-input"
+                                                        id="avatar">
+                                                    <label class="custom-file-label" for="avatar">Choose
+                                                        file</label>
+                                                </div>
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text" id="">Upload</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /.card-body -->
+
+                                    <div class="card-footer">
+                                        <button type="submit" class="btn btn-primary">Update</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Control Sidebar -->
+        <%- include('../layoutComponent/ControlSidebar') -%>
+
+        <!-- Main Footer -->
+        <%- include('../layoutComponent/MainFooter') -%>
+    </div>
+
+    <%- include('../layoutComponent/commonScript') -%>
+    <script>
+        $('#avatar').on('change', function () {
+            //get the file name
+            var fileName = $(this).val();
+            console.log(fileName);
+            //replace the "Choose a file" label
+            $(this).next('.custom-file-label').html(fileName);
+        })
+
+    </script>
+
+</body>
+
+</html>

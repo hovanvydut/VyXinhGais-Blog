@@ -15,6 +15,7 @@ const postController = require('../../controller/admin/post.controller');
 const newPostController = require('../../controller/admin/newPost.controller');
 const category = require('../../controller/admin/category.controller');
 const tagController = require('../../controller/admin/tag.controller');
+
 const profileController = require('../../controller/admin/profile.controller');
 
 router
@@ -48,11 +49,19 @@ router
         userController.deleteUser
     );
 
-router.get(
-    '/profile/:userID',
-    verify.isSignIn,
-    profileController.renderProfile
-);
+router
+    .get(
+        '/profile/edit/:userID',
+        verify.isSignInAndActiveEmail,
+        profileController.renderEditProfile
+    )
+    .post(
+        '/profile/edit/:userID',
+        verify.isSignInAndActiveEmail,
+        upload.single('avatar'),
+        profileController.updateInfo
+    )
+    .get('/profile/:userID', verify.isSignIn, profileController.renderProfile);
 
 router
     .get(

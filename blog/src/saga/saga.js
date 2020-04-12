@@ -1,4 +1,4 @@
-import { takeLatest, put } from 'redux-saga/effects';
+import { takeLatest, put, delay } from 'redux-saga/effects';
 import axios from 'axios';
 import * as types from '../constants/ActionTypes';
 import * as actionPost from '../actions/posts';
@@ -22,7 +22,7 @@ function* getThumbSaga(action) {
   } catch (err) {
     // console.log(err);
   }
-
+  delay(1000);
   yield put(actionUi.hideLoading());
 }
 
@@ -38,6 +38,7 @@ function* getPostSaga(action) {
     const errorMessage = `${error?.response?.status}:${error?.response?.statusText}`;
     yield put(actionPost.getPostFailed(errorMessage));
   }
+  delay(1000);
   yield put(actionUi.hideLoading());
 }
 

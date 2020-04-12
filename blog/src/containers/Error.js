@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 const styles = {
   section: {
     width: '100%',
-    position: 'relative'
+    position: 'relative',
   },
   h1: {
     fontSize: '10rem',
@@ -12,8 +12,8 @@ const styles = {
     top: '50%',
     left: '50%',
     content: '',
-    transform: 'translate(-50%, -50%)'
-  }
+    transform: 'translate(-50%, -50%)',
+  },
 };
 
 class Error extends Component {

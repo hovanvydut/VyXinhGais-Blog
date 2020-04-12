@@ -36,7 +36,7 @@ document.onreadystatechange = function first() {
           });
         });
       })();
-    }, 1000);
+    }, 500);
   }
 };
 

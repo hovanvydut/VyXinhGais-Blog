@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
 class MainMenu extends React.Component {
   constructor(props) {
@@ -9,34 +9,35 @@ class MainMenu extends React.Component {
         {
           id: 1,
           name: 'Home',
-          path: '/'
+          path: '/',
         },
         {
           id: 2,
           name: 'Fashion',
-          path: '/fashion'
+          path: '/fashion',
         },
         {
           id: 3,
           name: 'Travel',
-          path: '/travel.html'
+          path: '/travel.html',
         },
         {
           id: 4,
           name: 'About',
-          path: '/about.html'
+          path: '/about.html',
         },
         {
           id: 5,
           name: 'Contact',
-          path: '/contact.html'
-        }
-      ]
+          path: '/contact.html',
+        },
+      ],
     };
   }
 
   showList = () => {
     const { listMenu } = this.state;
+
     const xhtml = [];
     listMenu.forEach(item => {
       xhtml.push(
@@ -57,4 +58,4 @@ class MainMenu extends React.Component {
   }
 }
 
-export default MainMenu;
+export default withRouter(MainMenu);

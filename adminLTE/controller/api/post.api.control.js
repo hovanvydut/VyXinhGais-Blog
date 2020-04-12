@@ -38,9 +38,28 @@ const getPost = async (req, res) => {
     let data;
     try {
         data = await knex('posts')
-            .select()
+            .select(
+                'posts.id',
+                'posts.title',
+                'posts.content',
+                'posts.linkPost',
+                'posts.description',
+                'posts.imgThumb',
+                'posts.countView',
+                'posts.created_at',
+                'users.name as authorName',
+                'users.avatar as linkAvatarOfAuthor'
+            )
             .where({ linkPost })
+            .innerJoin('users', 'users.id', '=', 'posts.author')
             .first();
+
+        const tags = await knex('post_tags')
+            .select('tags.id', 'tags.name')
+            .where({ post_id: data.id })
+            .innerJoin('tags', 'tags.id', '=', 'post_tags.tag_id');
+
+        data.tags = tags;
 
         await knex('posts')
             .where({ linkPost })

@@ -4,10 +4,14 @@ SignIn/SignUp:
 - Active email by nodemailer, if user dont active email, user only access home page (After 30m, active email will expire, so user must login to home page to request resend active email)
 - Dont allow multiple sign in to the same account. If so, destroy all session of that account (logout);
 - Forgot password: one reset password email will be send when request
-- 
+- destroy session's user when admin update information of users
 Manager users:
 - When admin CRUD infomation of user, its session will be destroyed
 - Write new Post: use tinyMCE
+
+Write new post
+- Upload thumbnail for post
+- Insert image in post, code,...
 
 Manager tags
 - CRUD

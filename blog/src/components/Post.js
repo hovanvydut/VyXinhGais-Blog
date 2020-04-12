@@ -5,7 +5,7 @@ import parse from 'html-react-parser';
 class Post extends Component {
   render() {
     const { postDetail } = this.props;
-    const { content, author, tags } = postDetail;
+    const { content, authorName, linkAvatarOfAuthor, tags } = postDetail;
     return (
       <article>
         {parse(String(content))}
@@ -14,7 +14,7 @@ class Post extends Component {
           <ul>
             {tags
               ? tags.map(tag => (
-                  <li key={tag._id}>
+                  <li key={tag.id}>
                     <a href={`/tags?name=${tag.name}`}>{tag.name}</a>
                   </li>
                 ))
@@ -23,14 +23,12 @@ class Post extends Component {
         </div>
         <div className="full-post__author">
           <div>
-            <img src="images/person_1.jpg" alt="person_1.jpg" />
+            <img src={linkAvatarOfAuthor} alt={authorName} />
           </div>
           <div>
-            <h3 className="full-post__author-name">
-              {author ? author.name : ''}
-            </h3>
+            <h3 className="full-post__author-name">{authorName}</h3>
             <p className="full-post__author-introduce">
-              {author ? author.description : ''}
+              Fill introduction here
             </p>
           </div>
         </div>
@@ -40,7 +38,7 @@ class Post extends Component {
 }
 
 Post.propTypes = {
-  postDetail: PropTypes.object
+  postDetail: PropTypes.object,
 };
 
 export default Post;

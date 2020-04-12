@@ -28,6 +28,7 @@ Manager users:
 - Write new Post: use tinyMCE
 - Reset password
 
+
 Write new post
 - Upload thumbnail for post
 - Write post by use tinyMCE editor

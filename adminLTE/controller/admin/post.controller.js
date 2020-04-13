@@ -1,8 +1,10 @@
 const speakingUrl = require('speakingurl');
+const fs = require('fs');
 const knex = require('../../database/connection');
 const generateId = require('../../common/generateId');
 const { DBError } = require('../../common/customErr');
 const config = require('./../../common/config');
+const cloudinary = require('./../../common/cloudinary.config');
 
 const renderPostPage = async (req, res, next) => {
     const { user } = req.session;
@@ -85,7 +87,8 @@ const updatePost = async (req, res, next) => {
     const { title, content, tags, description, category } = req.body;
     const linkPost = `${speakingUrl(title)}-${generateId(1)}`;
 
-    /* let path;
+    /* // ? old method
+    let path;
     let imgThumb;
     try {
         path = req.file.path
@@ -98,12 +101,35 @@ const updatePost = async (req, res, next) => {
         imgThumb = config.defaultPostThumb();
     } */
 
-    try {
-        const oldPost = await knex('posts')
-            .select(['id', 'category'])
-            .where({ id: idPost })
-            .first();
+    // ! start: replace method old upload method by cloudinary upload
+    const oldPost = await knex('posts')
+        .select()
+        .where({ id: idPost })
+        .first();
 
+    let imgThumb;
+    try {
+        const uploadedImg = await cloudinary.uploader.upload(req.file.path, {
+            tags: 'thumbnail',
+            folder: 'VyXinhGais-Blog/thumbnail',
+        });
+        console.log(uploadedImg.url);
+        imgThumb = uploadedImg.url;
+
+        const oldPulicId = oldPost.imgThumb.match(
+            /VyXinhGais-Blog\/thumbnail\/\w+/
+        )[0];
+        await cloudinary.uploader.destroy(oldPulicId, {
+            invalidate: true,
+        });
+
+        fs.unlinkSync(req.file.path);
+    } catch (err) {
+        imgThumb = oldPost.imgThumb;
+    }
+    // ! end: replace method old upload method by cloudinary upload
+
+    try {
         if (category !== oldPost.category) {
             await Promise.all([
                 knex('categories')
@@ -127,7 +153,7 @@ const updatePost = async (req, res, next) => {
                     linkPost,
                     description,
                     category,
-                    // imgThumb,
+                    imgThumb,
                 }),
             // ? delete all old tags
             knex('post_tags')

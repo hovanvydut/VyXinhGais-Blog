@@ -38,8 +38,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-lg-12">
-                            <form method="POST" action="/admin/posts/<%= post.id %>">
-                                <input type="hidden" name="_method" value="PUT">
+                            <form method="POST" action="/admin/posts/<%= post.id %>" enctype="multipart/form-data">
                                 <div class="card">
                                     <div class="card-header">
                                         <div class="form-group">
@@ -100,12 +99,12 @@
                                         <div class="row mt-1">
                                             <div class="col-lg-12">
                                                 <div class="form-group">
-                                                    <label for="inputGroupFile02">Thumbnail for post </label>
+                                                    <label for="thumbNail">Thumbnail for post </label>
                                                     <div class="input-group mb-3">
                                                         <div class="custom-file">
                                                             <input name="imgThumb" type="file" class="custom-file-input"
-                                                                id="inputGroupFile02">
-                                                            <label class="custom-file-label" for="inputGroupFile02"
+                                                                id="thumbNail">
+                                                            <label class="custom-file-label" for="thumbNail"
                                                                 aria-describedby="inputGroupFileAddon02">Choose
                                                                 file</label>
                                                         </div>
@@ -121,8 +120,8 @@
                                         <div class="row">
                                             <div class="col-lg-12">
                                                 <div class="widget-user-image">
-                                                    <img class="img-circle elevation-2" src="<%= post.imgThumb %>"
-                                                        alt="Image thumbnail for post"
+                                                    <img id="preview-thumbnail" class="img-circle elevation-2"
+                                                        src="<%= post.imgThumb %>" alt="Image thumbnail for post"
                                                         style="width: 45px; height: 45px">
                                                 </div>
                                             </div>
@@ -225,11 +224,19 @@
                         return;
                     }
                     success(json.location);
+
                 };
                 formData = new FormData();
                 formData.append('imageUpload', blobInfo.blob(), blobInfo.filename());
                 xhr.send(formData);
             }
+        });
+
+    </script>
+    <script>
+        $('#thumbNail').on('change', function () {
+            var fileName = $(this).val();
+            $(this).next('.custom-file-label').html(fileName);
         });
 
     </script>

@@ -1,6 +1,8 @@
 const speakingUrl = require('speakingurl');
+const fs = require('fs');
 const knex = require('../../database/connection');
 const generateId = require('../../common/generateId');
+const cloudinary = require('./../../common/cloudinary.config');
 const { DBError } = require('../../common/customErr');
 const config = require('./../../common/config');
 
@@ -50,6 +52,7 @@ const savePost = async (req, res, next) => {
         return res.redirect('/admin/blank-message');
     }
 
+    /* // ? old method
     let path;
     let imgThumb;
     try {
@@ -62,6 +65,21 @@ const savePost = async (req, res, next) => {
     } catch (err) {
         imgThumb = config.defaultPostThumb();
     }
+    */
+
+    // ! start: replace method old upload method by cloudinary upload
+    let imgThumb;
+    try {
+        const uploadedImg = await cloudinary.uploader.upload(req.file.path, {
+            tags: 'thumbnail',
+            folder: 'VyXinhGais-Blog/thumbnail',
+        });
+        imgThumb = uploadedImg.url;
+        fs.unlinkSync(req.file.path);
+    } catch (err) {
+        imgThumb = config.defaultPostThumb();
+    }
+    // ! end: replace method old upload method by cloudinary upload
 
     try {
         const removeDoubleDotAtSrcAttrImg = /\.\.(?=\/+static)/g;
@@ -122,7 +140,8 @@ const savePost = async (req, res, next) => {
     return res.redirect('/admin/posts');
 };
 
-const uploadImg = function(req, res) {
+const uploadImg = async function(req, res) {
+    /* // ? old method
     const path = req.file.path
         .split('\\')
         .slice(1)
@@ -130,11 +149,31 @@ const uploadImg = function(req, res) {
     let imgPath = `${process.env.HOST}/static/${path}`;
     imgPath = imgPath.replace(/(?<!:)\/+(?=\/(?=))/g, '');
 
-    console.log(imgPath);
-    // ? send img path to tinyMCE
+    // send img path to tinyMCE
     return res.status(200).json({
         location: imgPath,
     });
+    */
+
+    // ! start: replace method old upload method by cloudinary upload
+    let uploadedImg;
+    try {
+        uploadedImg = await cloudinary.uploader.upload(req.file.path, {
+            tags: 'ImgForPost',
+            folder: 'VyXinhGais-Blog/ImgForPost',
+        });
+        fs.unlinkSync(req.file.path);
+    } catch (err) {
+        return res
+            .status(404)
+            .json('Error occurred when upload image to cloud');
+    }
+
+    // ? send img path to tinyMCE
+    return res.status(200).json({
+        location: uploadedImg.url,
+    });
+    // ! end: replace method old upload method by cloudinary upload
 };
 
 module.exports = {

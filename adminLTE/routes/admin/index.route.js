@@ -76,11 +76,11 @@ router
         verify.isAdmin,
         postController.renderEditPost
     )
-    .put(
+    .post(
         '/posts/:idPost',
         verify.isSignInAndActiveEmail,
         verify.isAdmin,
-        upload.single('imageUpload'),
+        upload.single('imgThumb'),
         postController.updatePost
     )
     .delete(
@@ -97,6 +97,7 @@ router
         verify.isSignInAndActiveEmail,
         newPostController.renderNewPostPage
     )
+    // ? method help upload thumbnail from tinyMCE editor
     .post(
         '/newpost/image',
         verify.isSignInAndActiveEmail,

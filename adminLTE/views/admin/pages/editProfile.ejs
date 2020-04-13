@@ -81,13 +81,10 @@
 
     <%- include('../layoutComponent/commonScript') -%>
     <script>
-        $('#avatar').on('change', function () {
-            //get the file name
+        $('#avatar').on('change', function (e) {
             var fileName = $(this).val();
-            console.log(fileName);
-            //replace the "Choose a file" label
             $(this).next('.custom-file-label').html(fileName);
-        })
+        });
 
     </script>
 

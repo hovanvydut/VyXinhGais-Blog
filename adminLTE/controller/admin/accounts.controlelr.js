@@ -9,7 +9,7 @@ const { DBError, SendMailError } = require('../../common/customErr');
 const renderSignInView = (req, res) => {
     // error sent by handleSingIn
     const errors = req.flash('errors');
-    res.render('admin/pages/signin', { error: errors[0], email: errors[1] });
+    res.render('admin/pages/signIn', { error: errors[0], email: errors[1] });
 };
 
 const handleSignIn = async (req, res, next) => {
@@ -82,7 +82,7 @@ const handleSignIn = async (req, res, next) => {
 
 const renderSignUpView = (req, res) => {
     const error = req.flash('error')[0]; // error sent by handleSignUp
-    res.render('admin/pages/signup', { error });
+    res.render('admin/pages/signUp', { error });
 };
 
 const handleSignUp = async (req, res, next) => {
@@ -174,7 +174,7 @@ const activeEmail = async (req, res) => {
 
     // ? And if token is not expried,
     // ? we proceed to update `users`.is_active_email,
-    // ? delete row include token in `active_email`
+    // ? and delete row include token in `active_email`
     // ? then update the session, if the session is the email-activated user's own
     await Promise.all([
         knex('users')

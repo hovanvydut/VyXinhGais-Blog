@@ -31,13 +31,13 @@ const sessionStore = new MySQLStore(
     sessionStoreConfig.optionOfExpressMysqlSession()
 );
 app.use(session(sessionStoreConfig.optionOfExpressSession(sessionStore)));
-app.use(flash());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_PARSER_SECRET));
 app.use('/static', express.static(path.join(`${__dirname}`, 'public')));
 app.use(methodOverride(methodOverrideConfig));
 app.use(logger('dev'));
+app.use(flash());
 
 // Cron job
 deleteUserIsNotActiveEmail.start();
@@ -59,6 +59,7 @@ app.use((req, res, next) => {
 // error handler
 app.use((err, req, res, next) => {
     // set locals, only providing error in development
+    console.log(err);
     const myMessage = req.flash('myMessage');
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};

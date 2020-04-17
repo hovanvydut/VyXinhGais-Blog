@@ -107,7 +107,7 @@ const updatePost = async (req, res, next) => {
         .where({ id: idPost })
         .first();
 
-    let imgThumb;
+    let { imgThumb } = oldPost;
     try {
         const uploadedImg = await cloudinary.uploader.upload(req.file.path, {
             tags: 'thumbnail',
@@ -116,19 +116,22 @@ const updatePost = async (req, res, next) => {
         console.log(uploadedImg.url);
         imgThumb = uploadedImg.url;
 
-        const oldPulicId = oldPost.imgThumb.match(
+        const tmp = oldPost.imgThumb.match(
             /VyXinhGais-Blog\/thumbnail\/\w+/
         )[0];
-        await cloudinary.uploader.destroy(oldPulicId, {
-            invalidate: true,
-        });
+        const oldPulicId = tmp ? tmp[0] : 'error';
 
+        cloudinary.uploader
+            .destroy(oldPulicId, {
+                invalidate: true,
+            })
+            .catch((err) => console.log(err));
         fs.unlinkSync(req.file.path);
     } catch (err) {
-        imgThumb = oldPost.imgThumb;
+        console.log(err);
     }
     // ! end: replace method old upload method by cloudinary upload
-
+    console.log(imgThumb);
     try {
         if (category !== oldPost.category) {
             await Promise.all([

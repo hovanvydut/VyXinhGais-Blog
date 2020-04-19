@@ -6,6 +6,7 @@ import tags from './tags';
 import categories from './categories';
 import popularArticle from './popularArticle';
 import rootSaga from '../saga/saga';
+import Auth from './auth';
 
 const rootReducer = combineReducers({
   posts,
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   tags,
   categories,
   popularArticle,
+  Auth,
 });
 const sagaMiddleware = createSagaMiddleware();
 

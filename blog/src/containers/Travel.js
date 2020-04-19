@@ -9,17 +9,19 @@ import HashTagComp from '../components/HashTag';
 import NewsLetterComp from '../components/NewsLetter';
 import ArticleTravel from '../components/ArticleTravel';
 import * as actionTag from '../actions/tags';
+import * as actionPopularArticle from '../actions/popularArticle';
 import * as actionCategories from '../actions/categories';
 
 class Travel extends Component {
   componentDidMount() {
-    const { allTags, getAllTags, getAllCategories, allCategories } = this.props;
-    if (!allTags) getAllTags();
-    if (!allCategories) getAllCategories();
+    const { getAllTags, getAllCategories, getPopularArticle } = this.props;
+    getAllTags();
+    getAllCategories();
+    getPopularArticle();
   }
 
   render() {
-    const { allTags, allCategories } = this.props;
+    const { allTags, allCategories, allPopularArticle } = this.props;
     return (
       <main className="travel-post">
         <section className="posts">
@@ -31,7 +33,7 @@ class Travel extends Component {
         <aside className="sidebar">
           <SearchBarComp />
           <CategoriesComp allCategories={allCategories || []} />
-          <PopularArticleComp />
+          <PopularArticleComp allPopularArticle={allPopularArticle || []} />
           <HashTagComp allTags={allTags || []} />
           <NewsLetterComp />
           <div className="categories">
@@ -75,12 +77,15 @@ Travel.propTypes = {
   getAllTags: PropTypes.func,
   allCategories: PropTypes.array,
   getAllCategories: PropTypes.func,
+  getPopularArticle: PropTypes.func,
+  allPopularArticle: PropTypes.array,
 };
 
 const mapStateToProps = state => {
   return {
     allTags: state.tags.allTags,
     allCategories: state.categories.allCategories,
+    allPopularArticle: state.popularArticle.allPopularArticle,
   };
 };
 const mapDispatchToProps = dispatch => {
@@ -90,6 +95,9 @@ const mapDispatchToProps = dispatch => {
     },
     getAllCategories: () => {
       dispatch(actionCategories.getAllCategories());
+    },
+    getPopularArticle: () => {
+      dispatch(actionPopularArticle.getPopularArticle());
     },
   };
 };

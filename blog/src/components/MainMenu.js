@@ -19,7 +19,7 @@ class MainMenu extends React.Component {
         {
           id: 3,
           name: 'Travel',
-          path: '/travel.html',
+          path: '/travel',
         },
         {
           id: 4,
@@ -28,8 +28,13 @@ class MainMenu extends React.Component {
         },
         {
           id: 5,
-          name: 'Contact',
-          path: '/contact.html',
+          name: 'Forum',
+          path: '/forum',
+        },
+        {
+          id: 6,
+          name: 'Login',
+          path: '/login',
         },
       ],
     };

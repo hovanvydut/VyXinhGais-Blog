@@ -4,7 +4,7 @@ const imageminMozjpeg = require('imagemin-mozjpeg');
 
 const imageMin = async (req, res, next) => {
     try {
-        const { path } = req.file;
+        const path = req.file ? req.file.path : null;
         if (path) {
             await imagemin([path], {
                 destination: 'public/uploads',

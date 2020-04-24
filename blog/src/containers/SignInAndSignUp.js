@@ -2,11 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import {
-  cambiar_login,
-  cambiar_sign_up,
-  ocultar_login_sign_up,
-} from './scripts/sigin';
+import { cambiar_login, cambiar_sign_up } from './scripts/sigin';
 import './stylesheets/SignInAndSignOut.css';
 import { loginRequest, signUpRequest } from '../actions/auth';
 
@@ -119,7 +115,7 @@ class SignInAndSignOut extends Component {
             <div className="cont_back_info">
               <div className="cont_img_back_grey">
                 <img
-                  src="https://images.unsplash.com/42/U7Fc1sy5SCUDIu4tlJY3_NY_by_PhilippHenzler_philmotion.de.jpg?ixlib=rb-0.3.5&q=50&fm=jpg&crop=entropy&s=7686972873678f32efaf2cd79671673d"
+                  src="/images/U7Fc1sy5SCUDIu4tlJY3_NY_by_PhilippHenzler_philmotion.de.jpg"
                   alt=""
                 />
               </div>
@@ -127,14 +123,11 @@ class SignInAndSignOut extends Component {
             <div className="cont_forms">
               <div className="cont_img_back_">
                 <img
-                  src="https://images.unsplash.com/42/U7Fc1sy5SCUDIu4tlJY3_NY_by_PhilippHenzler_philmotion.de.jpg?ixlib=rb-0.3.5&q=50&fm=jpg&crop=entropy&s=7686972873678f32efaf2cd79671673d"
+                  src="/images/U7Fc1sy5SCUDIu4tlJY3_NY_by_PhilippHenzler_philmotion.de.jpg"
                   alt=""
                 />
               </div>
               <div className="cont_form_login">
-                <a href="/tmp" onClick={ocultar_login_sign_up}>
-                  <i className="material-icons"></i>
-                </a>
                 <h2>LOGIN</h2>
                 <input
                   name="emailLogin"
@@ -159,9 +152,6 @@ class SignInAndSignOut extends Component {
                 </button>
               </div>
               <div className="cont_form_sign_up">
-                <a href="/tmp" onClick={ocultar_login_sign_up}>
-                  <i className="material-icons"></i>
-                </a>
                 <h2>SIGN UP</h2>
                 <input
                   name="fullnameSignUp"

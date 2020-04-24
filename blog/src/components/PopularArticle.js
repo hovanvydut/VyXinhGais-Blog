@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 class PopularArticle extends React.Component {
   showArticle = () => {
@@ -7,8 +8,8 @@ class PopularArticle extends React.Component {
     return allPopularArticle.map(article => (
       <li className="popular-item" key={article.id}>
         <div className="popular-item__left">
-          <div
-            href={`/posts/${article.linkPost}`}
+          <Link
+            to={`/post/${article.linkPost}`}
             style={{
               backgroundImage: `url(${article.imgThumb})`,
             }}
@@ -17,17 +18,17 @@ class PopularArticle extends React.Component {
         </div>
         <div className="popular-item__right">
           <h3>
-            <a
-              href={`/posts/${article.linkPost}`}
+            <Link
+              to={`/post/${article.linkPost}`}
               className="popular-item__title"
             >
               {article.title}
-            </a>
+            </Link>
           </h3>
           <ul className="popular-item__info">
             <li>
               <i className="far fa-calendar-alt" />
-              <span>{new Date(article.created_at).toLocaleString()}</span>
+              <span>{new Date(article.created_at).toLocaleDateString()}</span>
             </li>
             <li>
               <i className="fas fa-user" />

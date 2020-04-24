@@ -8,7 +8,11 @@ class Post extends Component {
     const { content, authorName, linkAvatarOfAuthor, tags } = postDetail;
     return (
       <article>
+        <h1 className="full-post__main-title">{postDetail.title}</h1>
+        <p className="full-post__para">{postDetail.description}</p>
         {parse(String(content))}
+        <br />
+        <br />
         {/* AUTHOR AND TAGS */}
         <div className="full-post__tag">
           <ul>

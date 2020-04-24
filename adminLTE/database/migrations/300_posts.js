@@ -25,7 +25,7 @@ exports.up = function(knex) {
             .onDelete('CASCADE')
             .onUpdate('CASCADE');
         table.string('linkPost').notNullable();
-        table.string('description').notNullable();
+        table.text('description', 'mediumtext').notNullable();
         table
             .string('imgThumb')
             .notNullable()

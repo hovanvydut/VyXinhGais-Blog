@@ -9,13 +9,14 @@ const upload = multer({ storage });
 
 const verify = require('../../middleware/verify');
 const validate = require('../../middleware/validation');
+const imageMin = require('./../../middleware/imageMin.middle');
+
 const homeController = require('../../controller/admin/home.controller');
 const userController = require('../../controller/admin/user.controller');
 const postController = require('../../controller/admin/post.controller');
 const newPostController = require('../../controller/admin/newPost.controller');
 const category = require('../../controller/admin/category.controller');
 const tagController = require('../../controller/admin/tag.controller');
-
 const profileController = require('../../controller/admin/profile.controller');
 
 router
@@ -59,6 +60,7 @@ router
         '/profile/edit/:userID',
         verify.isSignInAndActiveEmail,
         upload.single('avatar'),
+        imageMin,
         profileController.updateInfo
     )
     .get('/profile/:userID', verify.isSignIn, profileController.renderProfile);
@@ -81,6 +83,7 @@ router
         verify.isSignInAndActiveEmail,
         verify.isAdmin,
         upload.single('imgThumb'),
+        imageMin,
         postController.updatePost
     )
     .delete(
@@ -102,12 +105,14 @@ router
         '/newpost/image',
         verify.isSignInAndActiveEmail,
         upload.single('imageUpload'),
+        imageMin,
         newPostController.uploadImg
     )
     .post(
         '/newpost',
         verify.isSignInAndActiveEmail,
         upload.single('imgThumb'),
+        imageMin,
         newPostController.savePost
     );
 

@@ -113,12 +113,10 @@ const updatePost = async (req, res, next) => {
             tags: 'thumbnail',
             folder: 'VyXinhGais-Blog/thumbnail',
         });
-        console.log(uploadedImg.url);
+        console.log('* ', uploadedImg.url);
         imgThumb = uploadedImg.url;
 
-        const tmp = oldPost.imgThumb.match(
-            /VyXinhGais-Blog\/thumbnail\/\w+/
-        )[0];
+        const tmp = oldPost.imgThumb.match(/VyXinhGais-Blog\/thumbnail\/\w+/);
         const oldPulicId = tmp ? tmp[0] : 'error';
 
         cloudinary.uploader
@@ -131,7 +129,7 @@ const updatePost = async (req, res, next) => {
         console.log(err);
     }
     // ! end: replace method old upload method by cloudinary upload
-    console.log(imgThumb);
+
     try {
         if (category !== oldPost.category) {
             await Promise.all([
@@ -140,6 +138,7 @@ const updatePost = async (req, res, next) => {
                     .increment('countPost', 1),
                 knex('categories')
                     .where({ id: oldPost.category })
+                    .whereNot('countPost', 0)
                     .decrement('countPost', 1),
             ]);
         }
@@ -171,7 +170,6 @@ const updatePost = async (req, res, next) => {
         } else if (typeof tags === 'string') {
             temp.push(tags);
         }
-
         await Promise.all(
             temp.map((tagId) =>
                 knex('post_tags').insert({

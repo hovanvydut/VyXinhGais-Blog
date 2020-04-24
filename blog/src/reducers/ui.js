@@ -2,8 +2,8 @@ import * as types from '../constants/ActionTypes';
 
 const initialState = {
   loading: {
-    show: false
-  }
+    show: false,
+  },
 };
 
 const uiReducer = (state = initialState, action) => {

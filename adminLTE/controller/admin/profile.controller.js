@@ -71,8 +71,13 @@ const renderEditProfile = async (req, res, next) => {
 const updateInfo = async (req, res, next) => {
     const { user } = req.session;
     const { userID } = req.params;
+
+    if (!req.file) {
+        req.flash('blankMessage', 'Please select imate to update');
+        return res.redirect('/admin/blank-message');
+    }
+
     const { path } = req.file;
-    let uploadedImg;
 
     if (user.id !== userID && user.role !== 'admin') {
         req.flash(
@@ -83,34 +88,43 @@ const updateInfo = async (req, res, next) => {
     }
 
     try {
-        // ? upload image in local to cloudinary
-        uploadedImg = await cloudinary.uploader.upload(path, {
-            tags: 'avatar',
-            folder: 'VyXinhGais-Blog/avatar',
-        });
+        const [uploadedImg, oldDataOfUser] = await Promise.all([
+            // ? upload image in local to cloudinary
+            await cloudinary.uploader.upload(path, {
+                tags: 'avatar',
+                folder: 'VyXinhGais-Blog/avatar',
+            }), // ? delete old-avatar in cloud
+            await knex('users')
+                .select()
+                .where({ id: userID })
+                .first(),
+        ]);
 
-        // ? delete old-avatar in cloud
-        const oldDataOfUser = await knex('users')
-            .select()
-            .where({ id: userID })
-            .first();
-        const oldPulicId = oldDataOfUser.avatar.match(
-            /VyXinhGais-Blog\/avatar\/\w+/
-        )[0];
-        await cloudinary.uploader.destroy(oldPulicId, {
+        const tmp = oldDataOfUser.avatar.match(/VyXinhGais-Blog\/avatar\/\w+/);
+        const oldPulicId = tmp && tmp.length > 0 ? tmp[0] : 'error';
+
+        cloudinary.uploader.destroy(oldPulicId, {
             invalidate: true,
         });
+        // delete image on local
+        fs.unlink(path, (err) => {
+            if (err) console.log(err);
+            else {
+                console.log('* Delete local file successfully!');
+            }
+        });
 
-        // ? update new avatar and delete file in local
+        // ? update new avatar
         await knex('users')
             .where({ id: userID })
             .update({
                 avatar: uploadedImg.url,
             });
-        fs.unlinkSync(path);
 
         console.log(`* ${uploadedImg.public_id}`);
         console.log(`* ${uploadedImg.url}`);
+
+        // update session
         if (req.session.user.id === userID) {
             req.session.user.avatar = uploadedImg.url;
         }
@@ -119,7 +133,6 @@ const updateInfo = async (req, res, next) => {
             status: 'success',
             name: 'Update your profile successfully!',
         });
-
         return res.redirect(`/admin/profile/${userID}`);
     } catch (err) {
         return next(new Error(err.message));

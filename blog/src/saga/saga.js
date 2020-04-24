@@ -6,6 +6,7 @@ import * as actionTag from '../actions/tags';
 import * as actionCategories from '../actions/categories';
 import * as actionUi from '../actions/ui';
 import * as actionPopularArticle from '../actions/popularArticle';
+import * as authActionCreator from '../actions/auth';
 import * as config from '../constants/config';
 
 const { HOST } = config;
@@ -72,12 +73,54 @@ function* getPopularArticleSaga() {
   }
 }
 
+function* loginSaga(action) {
+  const { email, password } = action.payload;
+  yield put(actionUi.showLoading());
+  try {
+    const response = yield axios.post(`${HOST}/api/v1/login`, {
+      email,
+      password,
+    });
+    yield put(authActionCreator.loginSuccess(response.data));
+  } catch (error) {
+    // const errorMessage = `${error?.response?.status}:${error?.response?.statusText}`;
+    // yield put(actionPost.getPostFailed(errorMessage));
+    console.log(error.message);
+  }
+  delay(1000);
+  yield put(actionUi.hideLoading());
+}
+
+function* signUpSaga(action) {
+  const { fullname, email, password, retypePassword } = action.payload;
+  yield put(actionUi.showLoading());
+  try {
+    const response = yield axios.post(`${HOST}/api/v1/signup`, {
+      fullname,
+      email,
+      password,
+      retypePassword,
+    });
+
+    console.log(response);
+    // yield put(authActionCreator.signUp(response.data));
+  } catch (error) {
+    // const errorMessage = `${error?.response?.status}:${error?.response?.statusText}`;
+    // yield put(actionPost.getPostFailed(errorMessage));
+    console.log(error);
+  }
+  delay(1000);
+  yield put(actionUi.hideLoading());
+}
+
 function* rootSaga() {
   yield takeLatest(types.GET_THUMB, getThumbSaga);
   yield takeLatest(types.GET_POST, getPostSaga);
   yield takeLatest(types.GET_ALL_TAGS, getAllTagSaga);
   yield takeLatest(types.GET_ALL_CATEGORIES, getAllCategoriesSaga);
   yield takeLatest(types.GET_POPULAR_ARTICLE, getPopularArticleSaga);
+  yield takeLatest(types.USER_LOGIN_REQUEST, loginSaga);
+  yield takeLatest(types.USER_SIGNUP_REQUEST, signUpSaga);
 }
 
 export default rootSaga;

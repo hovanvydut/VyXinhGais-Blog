@@ -9,6 +9,8 @@ import Fashion from './Fashion';
 import Travel from './Travel';
 import Post from './Post';
 import Error from './Error';
+import SignInAndSignUp from './SignInAndSignUp';
+import Forum from './Forum';
 
 class App extends React.Component {
   render() {
@@ -30,8 +32,10 @@ class App extends React.Component {
           <Switch>
             <Route path="/" exact component={Home} />
             <Route path="/fashion" component={Fashion} />
-            <Route path="/travel.html" component={Travel} />
+            <Route path="/travel" component={Travel} />
             <Route path="/post/:linkPost" component={Post} />
+            <Route path="/forum" component={Forum} />
+            <Route path="/login" component={SignInAndSignUp} />
             <Route path="/error" component={Error} />
             <Route path="*" component={Error} />
           </Switch>

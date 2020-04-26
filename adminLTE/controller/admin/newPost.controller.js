@@ -27,6 +27,7 @@ const renderNewPostPage = async (req, res, next) => {
         user,
         tags,
         categories,
+        tinyAPIKey: process.env.TINY_API_KEY,
     });
 };
 

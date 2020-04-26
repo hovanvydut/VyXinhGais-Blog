@@ -79,6 +79,7 @@ const renderEditPost = async (req, res, next) => {
         post,
         postTags,
         categories,
+        tinyAPIKey: process.env.TINY_API_KEY,
     });
 };
 

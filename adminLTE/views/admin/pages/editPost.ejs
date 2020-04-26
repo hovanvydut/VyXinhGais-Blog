@@ -149,8 +149,8 @@
     <%- include('../layoutComponent/commonScript') -%>
 
     <!-- tinyMCE -->
-    <script src="https://cdn.tiny.cloud/1/2915bg1q653j3923vjzn1e30iaq6aijt5sd0c429mcvdh9ov/tinymce/5/tinymce.min.js"
-        referrerpolicy="origin"></script>
+    <script src=<%= "https://cdn.tiny.cloud/1/" + tinyAPIKey + "/tinymce/5/tinymce.min.js" %> referrerpolicy="origin">
+    </script>
     <script>
         const URL_UPLOAD = '/admin/newpost/image';
         tinymce.init({

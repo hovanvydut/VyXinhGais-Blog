@@ -55,8 +55,8 @@ const editTag = async (req, res, next) => {
     res.render('admin/pages/editTag', {
         title: 'Chỉnh sửa tag',
         breadscrumb: [
-            { content: 'hihi', href: '/abc' },
-            { content: 'haha', href: '#' },
+            { content: 'Home', href: '/' },
+            { content: 'Tags', href: '#' },
         ],
         user,
         tag: tag[0],

@@ -6,7 +6,7 @@
 <script src="javascripts/adminlte.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script>
-    var socket = io('http://localhost:3000/admin');
+    var socket = io('/admin');
     socket.on('news', function (data) {
         console.log(data);
         socket.emit('my other event', {

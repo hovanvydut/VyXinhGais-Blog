@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <base href="/static/" />
-    <link rel="shortcut icon" href="images/favicon.ico">
-    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.ico">
+    <link rel="shortcut icon" href="images/favico.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favico.ico">
     <title>Admin-VyXinhGais</title>
 
     <!-- Font Awesome Icons -->
@@ -137,13 +137,9 @@
         const URL_UPLOAD = '/admin/newpost/image';
         tinymce.init({
             selector: 'textarea#myEditor',
-            plugins: 'print preview importcss tinydrive searchreplace autolink autosave save directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons',
-            tinydrive_token_provider: 'URL_TO_YOUR_TOKEN_PROVIDER',
-            tinydrive_dropbox_app_key: 'YOUR_DROPBOX_APP_KEY',
-            tinydrive_google_drive_key: 'YOUR_GOOGLE_DRIVE_KEY',
-            tinydrive_google_drive_client_id: 'YOUR_GOOGLE_DRIVE_CLIENT_ID',
+            plugins: 'print preview importcss searchreplace autolink autosave save directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons',
             mobile: {
-                plugins: 'print preview importcss tinydrive searchreplace autolink autosave save directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount textpattern noneditable help charmap quickbars emoticons advtable'
+                plugins: 'print preview importcss searchreplace autolink autosave save directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount textpattern noneditable help charmap quickbars emoticons advtable'
             },
             menubar: 'file edit view insert format tools table tc help',
             toolbar: 'bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | image codesample | numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile media template link anchor  | a11ycheck ltr rtl | showcomments addcomment | outdent indent |',

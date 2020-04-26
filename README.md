@@ -1,5 +1,5 @@
 - admin: https://vyxinhgaisblog.herokuapp.com/
-- client: ...
+- client: https://reverent-mayer-cf419f.netlify.app/
 
 # SETUP
 

@@ -31,7 +31,7 @@ class App extends React.Component {
 
           <Switch>
             <Route path="/" exact component={Home} />
-            <Route path="/fashion" component={Fashion} />
+            <Route path="/blog" component={Fashion} />
             <Route path="/travel" component={Travel} />
             <Route path="/post/:linkPost" component={Post} />
             <Route path="/forum" component={Forum} />

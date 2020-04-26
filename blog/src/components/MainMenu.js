@@ -13,8 +13,8 @@ class MainMenu extends React.Component {
         },
         {
           id: 2,
-          name: 'Fashion',
-          path: '/fashion',
+          name: 'Blog',
+          path: '/blog',
         },
         {
           id: 3,

@@ -116,16 +116,18 @@ const deleteUser = async (req, res, next) => {
 
     if (user.id !== userID) {
         try {
-            await Promise.all(
+            await Promise.all([
                 knex('users')
                     .where({ id: userID })
                     .del(),
+
                 // ? delete all session relative with userID
                 knex('sessions')
                     .where('data', 'like', `%${userID}%`)
-                    .del()
-            );
+                    .del(),
+            ]);
         } catch (err) {
+            console.log(err);
             return next(new DBError(err.message));
         }
 

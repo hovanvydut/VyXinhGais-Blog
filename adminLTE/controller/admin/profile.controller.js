@@ -22,8 +22,8 @@ const renderProfile = async (req, res, next) => {
         return res.render('admin/pages/profile', {
             title: 'Profile',
             breadscrumb: [
-                { content: 'home', href: '/admin' },
-                { content: 'profile', href: '/admin/profile' },
+                { content: 'Home', href: '/admin' },
+                { content: 'Profile', href: '/admin/profile' },
             ],
             user,
             userNeedView,

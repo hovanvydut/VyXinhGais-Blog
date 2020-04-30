@@ -136,7 +136,7 @@ const handleSignUp = async (req, res, next) => {
     const fromName = 'VyXinhGais Blog';
     const subject = 'Active mail';
     const text = 'VyXinhGais Blog';
-    const linkActive = `http://localhost:3000/admin/accounts/active-email?token=${activeEmailData.token}`;
+    const linkActive = `${process.env.HOST}admin/accounts/active-email?token=${activeEmailData.token}`;
     const html = letterActiveEmail(linkActive);
 
     try {
@@ -150,7 +150,7 @@ const handleSignUp = async (req, res, next) => {
 };
 
 const activeEmail = async (req, res) => {
-    // ? http://localhost:3000/admin/accounts/active-email?token=abcxyz
+    // ? ${process.env.HOST}/admin/accounts/active-email?token=abcxyz
     const { token } = req.query;
 
     // ? activeEmailData = {id: ..., id_user: ..., token: ..., expire: ...}
@@ -204,12 +204,6 @@ const resendActiveEmail = async (req, res, next) => {
     // ? get infomation of current user;
     const { user } = req.session;
 
-    // ? get data of current user in `active_email`
-    const oldActiveEmailData = await knex('active_email')
-        .select()
-        .where({ id_user: user.id })
-        .first();
-
     const expireToken = String(Date.now() + 30 * 60 * 1000);
     const newActiveEmailData = {
         id_user: user.id,
@@ -219,15 +213,13 @@ const resendActiveEmail = async (req, res, next) => {
 
     // ? if request active email of current user exist in `active_email`
     try {
-        if (oldActiveEmailData) {
-            // ? yes, update new token and new expire token
-            await knex('active_email')
-                .where({ id: oldActiveEmailData.id })
-                .update(newActiveEmailData);
-        } else {
-            // ? no, insert new data into `active_email`
-            await knex('active_email').insert(newActiveEmailData);
-        }
+        // ? yes, update new token and new expire token
+        await knex('active_email')
+            .where({ id_user: user.id })
+            .update(newActiveEmailData);
+
+        // ? no, insert new data into `active_email`
+        await knex('active_email').insert(newActiveEmailData);
     } catch (err) {
         return next(new DBError(err.message));
     }
@@ -236,7 +228,7 @@ const resendActiveEmail = async (req, res, next) => {
     const fromName = 'VyXinhGais Blog';
     const subject = 'Active mail';
     const text = 'VyXinhGais Blog';
-    const linkActive = `http://localhost:3000/admin/accounts/active-email?token=${newActiveEmailData.token}`;
+    const linkActive = `${process.env.HOST}admin/accounts/active-email?token=${newActiveEmailData.token}`;
     const html = letterActiveEmail(linkActive);
 
     // ? send active mail
@@ -292,26 +284,24 @@ const sendEmailToResetPassword = async (req, res, next) => {
         expire: expireToken,
     };
 
-    // ? check request of current user need reset pwd exist `forgot_password`
-    const oldForgotPwdData = await knex('forgot_password')
-        .where({ id_user: userNeedResetPwd.id })
-        .select()
-        .first();
-
-    if (oldForgotPwdData) {
-        // ? if has, then update old data by new token + new expire token
+    try {
+        // ? delete all old `forgot_password` of current user
         await knex('forgot_password')
             .where({ id_user: userNeedResetPwd.id })
-            .update(newForgotPwdData);
-    } else {
-        // ? if not, then insert new data
-        await knex('forgot_password').insert(newForgotPwdData);
+            .del();
+
+        await knex('forgot_password').insert({
+            id: generateId(),
+            ...newForgotPwdData,
+        });
+    } catch (err) {
+        return next(new SendMailError(err.message));
     }
 
     const fromName = 'VyXinhGais Blog';
     const subject = 'Forgot password';
     const text = 'VyXinhGais Blog';
-    const linkActive = `http://localhost:3000/admin/accounts/recover-password?token=${newForgotPwdData.token}`;
+    const linkActive = `${process.env.HOST}admin/accounts/recover-password?token=${newForgotPwdData.token}`;
     const html = letterForgotPassword(linkActive);
 
     try {

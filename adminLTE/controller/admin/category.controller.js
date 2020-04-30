@@ -17,6 +17,11 @@ const renderCategory = async (req, res, next) => {
     }
 
     return res.render('admin/pages/category', {
+        title: 'Chuyên mục',
+        breadscrumb: [
+            { content: 'Home', href: '/' },
+            { content: 'Category', href: '#' },
+        ],
         user,
         categories,
         message,
@@ -80,9 +85,10 @@ const renderEditCategory = async (req, res, next) => {
     }
 
     return res.render('admin/pages/editCategory', {
-        title: 'Viết bài',
+        title: 'Chỉnh sửa chuyên mục',
         breadscrumb: [
-            { content: 'categories', href: '/admin/categories' },
+            { content: 'Home', href: '/' },
+            { content: 'Category', href: '/categories' },
             { content: category.name, href: '#' },
         ],
         user,

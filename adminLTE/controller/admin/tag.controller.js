@@ -16,6 +16,11 @@ const renderTagPage = async (req, res, next) => {
     }
 
     res.render(`${domain}/pages/tag`, {
+        breadscrumb: [
+            { content: 'Home', href: '/' },
+            { content: 'Tags', href: '#' },
+        ],
+        title: 'Danh sách tag',
         user,
         tags,
         message,
@@ -56,7 +61,8 @@ const editTag = async (req, res, next) => {
         title: 'Chỉnh sửa tag',
         breadscrumb: [
             { content: 'Home', href: '/' },
-            { content: 'Tags', href: '#' },
+            { content: 'Tags', href: '/tags' },
+            { content: 'Edit tag', href: '#' },
         ],
         user,
         tag: tag[0],

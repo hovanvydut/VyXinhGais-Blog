@@ -1,5 +1,5 @@
 - admin: https://vyxinhgaisblog.herokuapp.com/
-- client: https://reverent-mayer-cf419f.netlify.app/
+- client: https://vyxinhgaisblog.netlify.app/
 - account admin: hovanvydut@gmail.com password: abcdef123A!
 
 # SETUP

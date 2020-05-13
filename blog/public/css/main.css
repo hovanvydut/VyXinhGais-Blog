@@ -7,6 +7,10 @@ body {
   overflow-x: hidden;
 }
 
+pre {
+  font-size: 2rem !important;
+}
+
 .wrapper {
   display: flex;
   min-height: 100vh;
@@ -770,7 +774,7 @@ aside.sidebar {
 .full-post__subtitle {
   margin: 5rem 0rem 1rem 0rem;
   font-family: var(--third-font);
-  font-size: 3rem;
+  font-size: 3.2rem !important;
   font-weight: 400;
   color: var(--inky-black-color);
 }
@@ -778,9 +782,13 @@ aside.sidebar {
 .full-post__para {
   margin-bottom: 1.5rem;
   font-family: var(--secondary-font);
-  font-size: 1.5rem;
+  font-size: 2rem;
   line-height: 2;
   color: var(--inky-black-color);
+}
+
+.full-post__para > a {
+  color: blue;
 }
 
 .full-post__img {

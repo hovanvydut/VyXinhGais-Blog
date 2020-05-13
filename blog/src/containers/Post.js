@@ -50,9 +50,11 @@ class Post extends Component {
       allCategories,
       allPopularArticle,
     } = this.props;
+
     if (postDetail.status === 'failed') {
       return <Redirect to="/error" />;
     }
+
     return (
       <main>
         {this.showLoading()}

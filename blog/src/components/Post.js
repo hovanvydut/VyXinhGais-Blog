@@ -9,7 +9,9 @@ class Post extends Component {
     return (
       <article>
         <h1 className="full-post__main-title">{postDetail.title}</h1>
-        <p className="full-post__para">{postDetail.description}</p>
+        <p className="full-post__para" style={{ color: 'gray' }}>
+          {postDetail.description}
+        </p>
         {parse(String(content))}
         <br />
         <br />

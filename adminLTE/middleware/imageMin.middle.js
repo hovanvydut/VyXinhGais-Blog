@@ -10,7 +10,7 @@ const imageMin = async (req, res, next) => {
                 destination: 'public/uploads',
                 plugins: [
                     imageminMozjpeg({
-                        quality: 70,
+                        quality: 80,
                     }),
                     imageminPngquant({
                         quality: [0.6, 0.8],

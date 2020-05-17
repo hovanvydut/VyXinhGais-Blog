@@ -7,6 +7,8 @@ const renderHomePage = (req, res) => {
     res.render(`${domain}/pages/home`, {
         user,
         resendActiveEmailSuccess: resendActiveEmailSuccess[0],
+        title: 'Home',
+        breadscrumb: [{ content: 'Home', href: '/admin' }],
     });
 };
 

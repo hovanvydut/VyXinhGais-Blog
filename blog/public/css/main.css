@@ -8,7 +8,7 @@ body {
 }
 
 pre {
-  font-size: 2rem !important;
+  font-size: 1.8rem !important;
 }
 
 .wrapper {
@@ -443,6 +443,7 @@ article.travel-post {
 
 .pagination {
   display: flex;
+  justify-content: flex-end;
 }
 
 .pagination > li > a {
@@ -932,5 +933,11 @@ aside.sidebar {
     width: 6rem;
     height: 6rem;
     border-radius: 50%;
+  }
+}
+
+@media (max-width: 768px) {
+  pre {
+    font-size: 1.6rem !important;
   }
 }

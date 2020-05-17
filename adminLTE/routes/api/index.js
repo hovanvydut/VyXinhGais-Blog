@@ -12,8 +12,10 @@ router.get('/thumb-posts', postControl.getThumbPost);
 router.get('/posts/:linkPost', postControl.getPost);
 
 router.get('/tags', tagControl.getAllTags);
+router.get('/tag/:tagName', tagControl.filterPostByTag);
 
 router.get('/categories', categoryControl.getAllCategories);
+router.get('/category/:linkCategory', categoryControl.filterPostByCategory);
 
 router.get('/popular-article', popularArticleControl.getAllPopularArticle);
 

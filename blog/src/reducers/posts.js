@@ -57,6 +57,34 @@ function PostReducer(state = initialState, action) {
       };
     }
 
+    case types.FILTER_POST_BY_TAGNAME_REQUEST: {
+      return state;
+    }
+
+    case types.FILTER_POST_BY_TAGNAME_SUCCESS: {
+      const { posts } = action.payload;
+      return {
+        ...state,
+        post_thumb: {
+          home: posts,
+        },
+      };
+    }
+
+    case types.FILTER_POST_BY_CATEGORY_REQUEST: {
+      return state;
+    }
+
+    case types.FILTER_POST_BY_CATEGORY_SUCCESS: {
+      const { posts } = action.payload;
+      return {
+        ...state,
+        post_thumb: {
+          home: posts,
+        },
+      };
+    }
+
     default:
       return { ...state };
   }

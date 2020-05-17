@@ -6,7 +6,7 @@ import ArticleComp from '../components/Article';
 import LoadingBar from '../components/LoadingBar';
 import PaginationComp from '../components/Pagination';
 
-class Fashion extends Component {
+class Blog extends Component {
   componentDidMount() {
     const { getThumb } = this.props;
     getThumb('newest');
@@ -44,7 +44,7 @@ class Fashion extends Component {
   }
 }
 
-Fashion.propTypes = {
+Blog.propTypes = {
   getThumb: PropTypes.func,
   thumbList: PropTypes.array,
   loading: PropTypes.object,
@@ -65,4 +65,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Fashion);
+export default connect(mapStateToProps, mapDispatchToProps)(Blog);

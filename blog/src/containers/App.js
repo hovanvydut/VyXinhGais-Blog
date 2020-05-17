@@ -5,12 +5,13 @@ import LoadingComp from '../components/Loading';
 import MainMenuComp from '../components/MainMenu';
 import SubscribeForm from '../components/SubscribeForm';
 import Home from './Home';
-import Fashion from './Fashion';
+import Blog from './Blog';
 import Travel from './Travel';
 import Post from './Post';
 import Error from './Error';
 import SignInAndSignUp from './SignInAndSignUp';
 import Forum from './Forum';
+import FilterPostByTag from './FilterPostByTag';
 
 class App extends React.Component {
   render() {
@@ -31,7 +32,9 @@ class App extends React.Component {
 
           <Switch>
             <Route path="/" exact component={Home} />
-            <Route path="/blog" component={Fashion} />
+            <Route path="/tag/:tagName" component={FilterPostByTag} />
+            <Route path="/category/:linkCategory" component={FilterPostByTag} />
+            <Route path="/blog" component={Blog} />
             <Route path="/travel" component={Travel} />
             <Route path="/post/:linkPost" component={Post} />
             <Route path="/forum" component={Forum} />

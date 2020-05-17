@@ -23,3 +23,24 @@ export const getAllCategoriesFailed = errorMessage => {
     },
   };
 };
+
+export const filterPostByCategory = linkCategory => ({
+  type: types.FILTER_POST_BY_CATEGORY_REQUEST,
+  payload: {
+    linkCategory,
+  },
+});
+
+export const filterPostByCategorySuccess = posts => ({
+  type: types.FILTER_POST_BY_CATEGORY_SUCCESS,
+  payload: {
+    posts,
+  },
+});
+
+export const filterPostByCategoryFailure = errorMessage => ({
+  type: types.FILTER_POST_BY_CATEGORY_FAILURE,
+  payload: {
+    errorMessage,
+  },
+});

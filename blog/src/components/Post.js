@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import parse from 'html-react-parser';
 import Prism from 'prismjs';
-import '../containers/stylesheets/prism.css';
+import './stylesheets/prism.css';
 
 class Post extends Component {
   componentDidMount() {

@@ -113,6 +113,32 @@ function* signUpSaga(action) {
   yield put(actionUi.hideLoading());
 }
 
+function* filterPostByTagSaga(action) {
+  const { tagName } = action.payload;
+  yield put(actionUi.showLoading());
+  try {
+    const response = yield axios.get(`${HOST}/api/v1/tag/${tagName}`);
+    yield put(actionTag.filterPostByTagSuccess(response.data));
+  } catch (errMessage) {
+    yield put(actionTag.filterPostByTagFailure(errMessage));
+  }
+  delay(1000);
+  yield put(actionUi.hideLoading());
+}
+
+function* filterPostByCategorySaga(action) {
+  const { linkCategory } = action.payload;
+  yield put(actionUi.showLoading());
+  try {
+    const response = yield axios.get(`${HOST}/api/v1/category/${linkCategory}`);
+    yield put(actionCategories.filterPostByCategorySuccess(response.data));
+  } catch (errMessage) {
+    yield put(actionCategories.filterPostByCategoryFailure(errMessage));
+  }
+  delay(1000);
+  yield put(actionUi.hideLoading());
+}
+
 function* rootSaga() {
   yield takeLatest(types.GET_THUMB, getThumbSaga);
   yield takeLatest(types.GET_POST, getPostSaga);
@@ -121,6 +147,11 @@ function* rootSaga() {
   yield takeLatest(types.GET_POPULAR_ARTICLE, getPopularArticleSaga);
   yield takeLatest(types.USER_LOGIN_REQUEST, loginSaga);
   yield takeLatest(types.USER_SIGNUP_REQUEST, signUpSaga);
+  yield takeLatest(types.FILTER_POST_BY_TAGNAME_REQUEST, filterPostByTagSaga);
+  yield takeLatest(
+    types.FILTER_POST_BY_CATEGORY_REQUEST,
+    filterPostByCategorySaga
+  );
 }
 
 export default rootSaga;

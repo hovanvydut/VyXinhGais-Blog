@@ -14,16 +14,23 @@ import PaginationComp from '../components/Pagination';
 import PopularArticleComp from '../components/PopularArticle';
 import SearchBarComp from '../components/SearchBar';
 
-class Home extends Component {
+class FilterPostByTag extends Component {
   componentDidMount() {
     const {
       getThumb,
       getAllTags,
       getAllCategories,
       getPopularArticle,
+      match,
+      filterPostByTag,
+      filterPostByCategory,
     } = this.props;
 
-    getThumb('newest');
+    if (match.params?.tagName) filterPostByTag(match.params.tagName);
+    else if (match.params?.linkCategory)
+      filterPostByCategory(match.params.linkCategory);
+    else getThumb('newest');
+
     getAllTags();
     getAllCategories();
     getPopularArticle();
@@ -99,7 +106,7 @@ class Home extends Component {
   }
 }
 
-Home.propTypes = {
+FilterPostByTag.propTypes = {
   getThumb: PropTypes.func,
   thumbList: PropTypes.array,
   loading: PropTypes.object,
@@ -118,6 +125,8 @@ const mapStateToProps = state => {
     allTags: state.tags.allTags,
     allCategories: state.categories.allCategories,
     allPopularArticle: state.popularArticle.allPopularArticle,
+    filterPostByTag: PropTypes.func,
+    filterPostByCategory: PropTypes.func,
   };
 };
 
@@ -135,7 +144,10 @@ const mapDispatchToProps = dispatch => {
     getPopularArticle: () => {
       dispatch(actionPopularArticle.getPopularArticle());
     },
+    filterPostByTag: tagName => dispatch(actionTag.filterPostByTag(tagName)),
+    filterPostByCategory: linkCategory =>
+      dispatch(actionCategory.filterPostByCategory(linkCategory)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(FilterPostByTag);

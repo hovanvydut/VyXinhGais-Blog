@@ -1,14 +1,25 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import * as tagActionCreator from '../actions/tags';
 
 class HashTag extends React.Component {
+  handleClickTag = tagName => {
+    const { filterPostByTag } = this.props;
+    filterPostByTag(tagName);
+  };
+
   showAllTag = () => {
     const { allTags } = this.props;
     return allTags.map(tag => (
       <li key={tag.id}>
-        <a href={`/tags/${tag.name}`}>
+        <Link
+          to={`/tag/${tag.name}`}
+          onClick={() => this.handleClickTag(tag.name)}
+        >
           {`${tag.name.toUpperCase()} (${tag.countPost})`}
-        </a>
+        </Link>
       </li>
     ));
   };
@@ -22,8 +33,17 @@ class HashTag extends React.Component {
     );
   }
 }
+
 HashTag.propTypes = {
   allTags: PropTypes.array,
+  filterPostByTag: PropTypes.func,
 };
 
-export default HashTag;
+const mapDispatchToProps = dispatch => {
+  return {
+    filterPostByTag: tagName =>
+      dispatch(tagActionCreator.filterPostByTag(tagName)),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(HashTag);

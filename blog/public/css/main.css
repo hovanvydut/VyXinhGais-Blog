@@ -485,7 +485,7 @@ aside.sidebar {
   margin: 0 auto;
 }
 
-.search-form > i {
+.search-form > a {
   font-size: 2rem;
   position: absolute;
   right: 1.5rem;

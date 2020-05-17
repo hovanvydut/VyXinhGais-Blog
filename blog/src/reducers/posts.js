@@ -85,6 +85,20 @@ function PostReducer(state = initialState, action) {
       };
     }
 
+    case types.SEARCH_POST_NAME_REQUEST: {
+      return state;
+    }
+
+    case types.SEARCH_POST_NAME_SUCCESS: {
+      const { posts } = action.payload;
+      return {
+        ...state,
+        post_thumb: {
+          home: posts,
+        },
+      };
+    }
+
     default:
       return { ...state };
   }

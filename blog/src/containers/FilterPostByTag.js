@@ -6,6 +6,7 @@ import * as actionPost from '../actions/posts';
 import * as actionTag from '../actions/tags';
 import * as actionCategory from '../actions/categories';
 import * as actionPopularArticle from '../actions/popularArticle';
+import * as actionSearch from '../actions/search';
 import ArticleComp from '../components/Article';
 import CategoriesComp from '../components/Categories';
 import HashTagComp from '../components/HashTag';
@@ -24,11 +25,17 @@ class FilterPostByTag extends Component {
       match,
       filterPostByTag,
       filterPostByCategory,
+      location,
+      searchPostName,
     } = this.props;
+
+    const searchParam = new URLSearchParams(location.search);
 
     if (match.params?.tagName) filterPostByTag(match.params.tagName);
     else if (match.params?.linkCategory)
       filterPostByCategory(match.params.linkCategory);
+    else if (searchParam.has('postName'))
+      searchPostName(searchParam.get('postName'));
     else getThumb('newest');
 
     getAllTags();
@@ -116,6 +123,11 @@ FilterPostByTag.propTypes = {
   getAllCategories: PropTypes.func,
   getPopularArticle: PropTypes.func,
   allPopularArticle: PropTypes.array,
+  match: PropTypes.object,
+  location: PropTypes.object,
+  searchPostName: PropTypes.func,
+  filterPostByTag: PropTypes.func,
+  filterPostByCategory: PropTypes.func,
 };
 
 const mapStateToProps = state => {
@@ -147,6 +159,7 @@ const mapDispatchToProps = dispatch => {
     filterPostByTag: tagName => dispatch(actionTag.filterPostByTag(tagName)),
     filterPostByCategory: linkCategory =>
       dispatch(actionCategory.filterPostByCategory(linkCategory)),
+    searchPostName: postName => dispatch(actionSearch.searchPostName(postName)),
   };
 };
 

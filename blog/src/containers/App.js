@@ -34,6 +34,7 @@ class App extends React.Component {
             <Route path="/" exact component={Home} />
             <Route path="/tag/:tagName" component={FilterPostByTag} />
             <Route path="/category/:linkCategory" component={FilterPostByTag} />
+            <Route path="/search" component={FilterPostByTag} />
             <Route path="/blog" component={Blog} />
             <Route path="/travel" component={Travel} />
             <Route path="/post/:linkPost" component={Post} />

@@ -71,7 +71,33 @@ const getPost = async (req, res) => {
     }
 };
 
+const searchPost = async (req, res) => {
+    const searchValue = req.query.postName;
+    let data;
+    try {
+        data = await knex('posts')
+            .select(
+                'posts.id',
+                'posts.title',
+                'posts.linkPost',
+                'posts.description',
+                'posts.imgThumb',
+                'posts.countView',
+                'posts.created_at',
+                'users.name',
+                'categories.name as category'
+            )
+            .where('posts.title', 'like', `%${searchValue}%`)
+            .innerJoin('users', 'users.id', '=', 'posts.author')
+            .innerJoin('categories', 'categories.id', '=', 'posts.category');
+        return res.status(200).json(data);
+    } catch (err) {
+        return res.status(404).json(err.message);
+    }
+};
+
 module.exports = {
     getThumbPost,
     getPost,
+    searchPost,
 };

@@ -9,6 +9,8 @@ const authControl = require('./../../controller/api/auth.api.control');
 
 router.get('/thumb-posts', postControl.getThumbPost);
 
+router.get('/search', postControl.searchPost);
+
 router.get('/posts/:linkPost', postControl.getPost);
 
 router.get('/tags', tagControl.getAllTags);

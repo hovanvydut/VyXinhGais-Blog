@@ -7,6 +7,7 @@ import * as actionCategories from '../actions/categories';
 import * as actionUi from '../actions/ui';
 import * as actionPopularArticle from '../actions/popularArticle';
 import * as authActionCreator from '../actions/auth';
+import * as actionSearch from '../actions/search';
 import * as config from '../constants/config';
 
 const { HOST } = config;
@@ -139,6 +140,21 @@ function* filterPostByCategorySaga(action) {
   yield put(actionUi.hideLoading());
 }
 
+function* searchPostNameSaga(action) {
+  const { postName } = action.payload;
+  yield put(actionUi.showLoading());
+  try {
+    const response = yield axios.get(
+      `${HOST}/api/v1/search?postName=${postName}`
+    );
+    yield put(actionSearch.searchPostNameSuccess(response.data));
+  } catch (errMessage) {
+    yield put(actionSearch.searchPostNameFailure(errMessage));
+  }
+  delay(1000);
+  yield put(actionUi.hideLoading());
+}
+
 function* rootSaga() {
   yield takeLatest(types.GET_THUMB, getThumbSaga);
   yield takeLatest(types.GET_POST, getPostSaga);
@@ -152,6 +168,7 @@ function* rootSaga() {
     types.FILTER_POST_BY_CATEGORY_REQUEST,
     filterPostByCategorySaga
   );
+  yield takeLatest(types.SEARCH_POST_NAME_REQUEST, searchPostNameSaga);
 }
 
 export default rootSaga;

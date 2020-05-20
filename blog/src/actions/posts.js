@@ -4,8 +4,8 @@ export const getThumb = (subject = '') => {
   return {
     type: types.GET_THUMB,
     payload: {
-      subject
-    }
+      subject,
+    },
   };
 };
 
@@ -13,8 +13,8 @@ export const getThumbSuccess = data => {
   return {
     type: types.GET_THUMB_SUCCESS,
     payload: {
-      data
-    }
+      data,
+    },
   };
 };
 
@@ -22,8 +22,8 @@ export const getThumbFailed = error => {
   return {
     type: types.GET_THUMB_FAILED,
     payload: {
-      error
-    }
+      error,
+    },
   };
 };
 
@@ -31,8 +31,8 @@ export const getPost = linkPost => {
   return {
     type: types.GET_POST,
     payload: {
-      linkPost
-    }
+      linkPost,
+    },
   };
 };
 
@@ -40,8 +40,8 @@ export const getPostSuccess = post => {
   return {
     type: types.GET_POST_SUCCESS,
     payload: {
-      post
-    }
+      post,
+    },
   };
 };
 
@@ -49,7 +49,7 @@ export const getPostFailed = errorMessage => {
   return {
     type: types.GET_POST_FAILED,
     payload: {
-      errorMessage
-    }
+      errorMessage,
+    },
   };
 };

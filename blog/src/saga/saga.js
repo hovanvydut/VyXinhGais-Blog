@@ -6,8 +6,9 @@ import * as actionTag from '../actions/tags';
 import * as actionCategories from '../actions/categories';
 import * as actionUi from '../actions/ui';
 import * as actionPopularArticle from '../actions/popularArticle';
-import * as authActionCreator from '../actions/auth';
+import * as actionAuth from '../actions/auth';
 import * as actionSearch from '../actions/search';
+import * as actionComment from '../actions/comment';
 import * as config from '../constants/config';
 
 const { HOST } = config;
@@ -36,6 +37,14 @@ function* getPostSaga(action) {
   try {
     const response = yield axios.get(`${HOST}/api/v1/posts/${linkPost}`);
     yield put(actionPost.getPostSuccess(response.data));
+    try {
+      const response2 = yield axios.get(
+        `${HOST}/api/v1/posts/${response.data.id}/comments`
+      );
+      yield put(actionComment.getAllCommentSuccess(response2.data));
+    } catch (e) {
+      yield put(actionComment.getAllCommentFailure(e.message));
+    }
   } catch (error) {
     const errorMessage = `${error?.response?.status}:${error?.response?.statusText}`;
     yield put(actionPost.getPostFailed(errorMessage));
@@ -82,11 +91,11 @@ function* loginSaga(action) {
       email,
       password,
     });
-    yield put(authActionCreator.loginSuccess(response.data));
+    yield put(actionAuth.loginSuccess(response.data));
   } catch (error) {
     // const errorMessage = `${error?.response?.status}:${error?.response?.statusText}`;
-    // yield put(actionPost.getPostFailed(errorMessage));
-    console.log(error.message);
+    yield put(actionAuth.loginFail(error.message));
+    // console.log(error.message);
   }
   delay(1000);
   yield put(actionUi.hideLoading());
@@ -102,13 +111,10 @@ function* signUpSaga(action) {
       password,
       retypePassword,
     });
-
-    console.log(response);
-    // yield put(authActionCreator.signUp(response.data));
+    yield put(actionAuth.signUpSuccess(response.data));
   } catch (error) {
     // const errorMessage = `${error?.response?.status}:${error?.response?.statusText}`;
-    // yield put(actionPost.getPostFailed(errorMessage));
-    console.log(error);
+    yield put(actionAuth.signUpFail());
   }
   delay(1000);
   yield put(actionUi.hideLoading());
@@ -154,6 +160,16 @@ function* searchPostNameSaga(action) {
   delay(1000);
   yield put(actionUi.hideLoading());
 }
+// http://localhost:3000/api/v1/posts/378a-fe9f-3974-e838-9023/comments
+function* getAllCommentSaga(action) {
+  const { postId } = action.payload;
+  try {
+    const response = yield axios.get(`${HOST}/api/v1/posts/${postId}/comments`);
+    yield put(actionComment.getAllCommentSuccess(response.data));
+  } catch (e) {
+    yield put(actionComment.getAllCommentFailure(e.message));
+  }
+}
 
 function* rootSaga() {
   yield takeLatest(types.GET_THUMB, getThumbSaga);
@@ -169,6 +185,7 @@ function* rootSaga() {
     filterPostByCategorySaga
   );
   yield takeLatest(types.SEARCH_POST_NAME_REQUEST, searchPostNameSaga);
+  yield takeLatest(types.GET_ALL_COMMENTS_REQUEST, getAllCommentSaga);
 }
 
 export default rootSaga;

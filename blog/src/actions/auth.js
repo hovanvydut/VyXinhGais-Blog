@@ -19,9 +19,30 @@ export const loginSuccess = token => {
   };
 };
 
+export const loginFail = errorMessage => {
+  return {
+    type: types.USER_LOGIN_FAILURE,
+    payload: {
+      errorMessage,
+    },
+  };
+};
+
 export const signUpRequest = data => {
   return {
     type: types.USER_SIGNUP_REQUEST,
     payload: data,
+  };
+};
+
+export const signUpSuccess = () => {
+  return {
+    type: types.USER_SIGNUP_SUCCESS,
+  };
+};
+
+export const signUpFail = () => {
+  return {
+    type: types.USER_SIGNUP_FAILURE,
   };
 };

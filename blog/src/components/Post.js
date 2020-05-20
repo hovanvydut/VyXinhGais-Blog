@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import parse from 'html-react-parser';
 import Prism from 'prismjs';
+import * as actionComment from '../actions/comment';
+import CommentForm from './comment/CommentForm';
+import CommentBox from './comment/CommentBox';
 import './stylesheets/prism.css';
+import './stylesheets/comment.css';
 
 class Post extends Component {
   componentDidMount() {
@@ -14,7 +20,7 @@ class Post extends Component {
   }
 
   render() {
-    const { postDetail } = this.props;
+    const { postDetail, comments } = this.props;
     const { content, authorName, linkAvatarOfAuthor, tags } = postDetail;
     return (
       <article>
@@ -31,7 +37,7 @@ class Post extends Component {
             {tags
               ? tags.map(tag => (
                   <li key={tag.id}>
-                    <a href={`/tags?name=${tag.name}`}>{tag.name}</a>
+                    <Link to={`/tag/${tag.name}`}>{tag.name}</Link>
                   </li>
                 ))
               : ''}
@@ -48,6 +54,13 @@ class Post extends Component {
             </p>
           </div>
         </div>
+        {/* Comment here */}
+        <div>
+          <CommentForm postId={postDetail.id} />
+          {comments.map(data => (
+            <CommentBox key={data.id} data={data} />
+          ))}
+        </div>
       </article>
     );
   }
@@ -55,6 +68,20 @@ class Post extends Component {
 
 Post.propTypes = {
   postDetail: PropTypes.object,
+  comments: PropTypes.array,
 };
 
-export default Post;
+const mapStateToProps = state => {
+  return {
+    comments: state.comment.comments,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    getAllComments: postId =>
+      dispatch(actionComment.getAllCommentRequest(postId)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Post);

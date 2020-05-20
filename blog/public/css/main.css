@@ -823,6 +823,7 @@ aside.sidebar {
 
 .full-post__author {
   display: flex;
+  margin-bottom: 5rem;
 }
 
 .full-post__author > div:first-child {
@@ -940,4 +941,8 @@ aside.sidebar {
   pre {
     font-size: 1.6rem !important;
   }
+}
+
+.Toastify {
+  font-size: 1.5rem;
 }

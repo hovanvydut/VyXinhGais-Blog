@@ -25,8 +25,11 @@ const handleLogin = async (req, res) => {
             id: user.id,
             email: user.email,
             name: user.name,
+            avatar: user.avatar,
         };
-        const token = jwt.sign(data, 'mysecretkey', { expiresIn: 30 });
+        const token = jwt.sign(data, process.env.JWT_SECRET_KEY, {
+            expiresIn: '12h',
+        });
         return res.status(200).json(token);
     } catch (err) {
         return res.status(404).json({ message: 'Error when query database!' });
@@ -35,6 +38,7 @@ const handleLogin = async (req, res) => {
 
 const handleSignup = async (req, res) => {
     const email = req.body.email.trim().toLowerCase();
+
     if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/g.test(email)) {
         return res.status(403).json({ message: 'Invalid email' });
     }

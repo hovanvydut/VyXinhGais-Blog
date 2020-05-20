@@ -13,6 +13,7 @@ import * as postAction from '../actions/posts';
 import * as actionTag from '../actions/tags';
 import * as actionCategories from '../actions/categories';
 import * as actionPopularArticle from '../actions/popularArticle';
+import * as actionComment from '../actions/comment';
 
 class Post extends Component {
   componentDidMount() {
@@ -138,6 +139,8 @@ const mapDispatchToProps = dispatch => {
     getPopularArticle: () => {
       dispatch(actionPopularArticle.getPopularArticle());
     },
+    getAllComments: postId =>
+      dispatch(actionComment.getAllCommentRequest(postId)),
   };
 };
 

@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { ToastContainer, toast } from 'react-toastify';
 import { cambiar_login, cambiar_sign_up } from './scripts/sigin';
 import './stylesheets/SignInAndSignOut.css';
 import { loginRequest, signUpRequest } from '../actions/auth';
+import 'react-toastify/dist/ReactToastify.min.css';
 
 class SignInAndSignOut extends Component {
   constructor(props) {
@@ -71,13 +73,16 @@ class SignInAndSignOut extends Component {
   render() {
     const { auth } = this.props;
     const { login, signUp } = this.state;
-    const { user, loggedIn } = auth;
+    const { user, loggedIn, errorLogin } = auth;
 
     if (loggedIn && Date.now() / 1000 <= user.exp) {
-      return <Redirect to="/forum" />;
+      return <Redirect to="/" />;
     }
+
     return (
       <div className="cotn_principal">
+        <ToastContainer />
+        {errorLogin ? toast.error('Username or password wrong') : null}
         <div className="cont_centrar">
           <div className="cont_login">
             <div className="cont_info_log_sign_up">

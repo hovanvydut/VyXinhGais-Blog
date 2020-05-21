@@ -19,6 +19,10 @@ class CommentBox extends Component {
     this.loadMoreReply(commentId);
   };
 
+  hideCommentForm = () => {
+    this.setState({ showForm: false });
+  };
+
   loadMoreReply = async commentId => {
     try {
       const res = await axios({
@@ -67,10 +71,16 @@ class CommentBox extends Component {
           </div>
         </div>
         <div className="list-reply-comment">
-          {showForm ? <CommentForm /> : null}
+          {showForm ? (
+            <CommentForm
+              commentId={data.id}
+              loadMoreReply={this.loadMoreReply}
+              hideCommentForm={this.hideCommentForm}
+            />
+          ) : null}
           {replyComments.length > 0
-            ? replyComments.map(reply => (
-                <ReplyComment key={reply.id} data={reply} />
+            ? replyComments.map((reply, idx) => (
+                <ReplyComment key={idx} data={reply} />
               ))
             : null}
         </div>

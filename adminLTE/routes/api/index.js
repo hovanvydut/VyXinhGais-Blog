@@ -22,10 +22,7 @@ router
     .post('/posts/:postId/comment', commentControl.commentInPost)
     .get('/posts/:postId/comments', commentControl.getAllComments)
     .get('/posts/:linkPost', postControl.getPost)
-    .post(
-        '/posts/:postId/comment/:commentId/reply',
-        commentControl.replyComment
-    )
+    .post('/posts/comment/:commentId/reply', commentControl.replyComment)
     .get('/posts/comment/:commentId/reply', commentControl.getAllReplyComment);
 
 router.get('/tags', tagControl.getAllTags);

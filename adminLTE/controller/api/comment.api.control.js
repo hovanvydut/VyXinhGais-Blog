@@ -44,19 +44,19 @@ const getAllComments = async (req, res) => {
                 'users.avatar'
             )
             .where('comments.post_id', '=', postId)
+            .innerJoin('users', 'users.id', 'comments.user_id')
             .leftJoin(
                 'reply_comment',
                 'reply_comment.comment_id',
                 '=',
                 'comments.id'
             )
-            .innerJoin('users', 'users.id', 'comments.user_id')
-            .groupBy('reply_comment.comment_id')
+            .groupBy('comments.id')
             .count('reply_comment.comment_id as countReplyComment')
             .orderBy('comments.created_at', 'desc');
         return res.status(200).json(data);
     } catch (e) {
-        return res.status(404).json('Error when query database');
+        return res.status(404).json(e.message);
     }
 };
 

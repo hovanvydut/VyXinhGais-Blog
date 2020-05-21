@@ -20,11 +20,20 @@ class CommentForm extends Component {
   };
 
   handleReply = async () => {
-    const { postId, user, getAllComment } = this.props;
+    const {
+      postId,
+      user,
+      getAllComment,
+      commentId,
+      loadMoreReply,
+      hideCommentForm,
+    } = this.props;
     const { contentCommentForm } = this.state;
-    // posts/378a-fe9f-3974-e838-9023/comment
+    const url = postId
+      ? `posts/${postId}/comment`
+      : `posts/comment/${commentId}/reply`;
     await axios.post(
-      `${HOST}/api/v1/posts/${postId}/comment`,
+      `${HOST}/api/v1/${url}`,
       {
         content: contentCommentForm,
         userId: user.id,
@@ -33,8 +42,12 @@ class CommentForm extends Component {
         headers: { Authorization: `Bearer ${user.token}` },
       }
     );
-
-    getAllComment(postId);
+    if (postId) getAllComment(postId);
+    else {
+      loadMoreReply(commentId);
+      this.setState({ contentCommentForm: '' });
+      hideCommentForm();
+    }
   };
 
   render() {

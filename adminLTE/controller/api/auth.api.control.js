@@ -75,12 +75,14 @@ const handleSignup = async (req, res) => {
         .first();
     if (data) return res.status(403).json({ message: 'Email is exist' });
 
+    const salt = bcrypt.genSaltSync();
+    const hash = bcrypt.hashSync(password, salt);
     try {
         await knex('users').insert({
             id: generateId(),
             name: fullname,
             email,
-            password,
+            password: hash,
         });
     } catch (err) {
         return res.status(403).json({ message: 'Failed 403!' });

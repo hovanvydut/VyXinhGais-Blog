@@ -1,5 +1,11 @@
 import * as types from '../constants/ActionTypes';
 
+export const signOut = () => {
+  return {
+    type: types.SIGN_OUT,
+  };
+};
+
 export const loginRequest = (email = '', password = '') => {
   return {
     type: types.USER_LOGIN_REQUEST,
@@ -44,5 +50,11 @@ export const signUpSuccess = () => {
 export const signUpFail = () => {
   return {
     type: types.USER_SIGNUP_FAILURE,
+  };
+};
+
+export const setFalseAllSuccessErrorAuthFlag = () => {
+  return {
+    type: types.SET_FALSE_ALL_SUCCESS_ERROR_AUTH_FLAG,
   };
 };

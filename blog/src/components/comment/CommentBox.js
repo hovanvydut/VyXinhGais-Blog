@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ReplyComment from './ReplyComment';
 import CommentForm from './CommentForm';
 import { HOST } from '../../constants/config';
+import * as actionAuth from '../../actions/auth';
+import * as actionComment from '../../actions/comment';
 
 class CommentBox extends Component {
   constructor(props) {
@@ -31,12 +34,33 @@ class CommentBox extends Component {
       });
       this.setState({ replyComments: res.data });
     } catch (e) {
-      // console.log(e);
+      // nothing
+    }
+  };
+
+  deleteComment = async commentId => {
+    const { auth, signOutRequest, getAllComment, postId } = this.props;
+    // setTimeout(() => getAllComment(postId), 2000);
+    try {
+      // await axios.delete(`${HOST}/api/v1/posts/comment/${commentId}`, {
+      //   headers: { Authorization: `Bearer ${auth.user.token}` },
+      // });
+      await axios({
+        method: 'DELETE',
+        url: `${HOST}/api/v1/posts/comment/${commentId}`,
+        headers: { Authorization: `Bearer ${auth.user.token}` },
+      });
+      console.log('Im here');
+      getAllComment(postId);
+    } catch (e) {
+      if (e.status === 403) {
+        signOutRequest();
+      }
     }
   };
 
   render() {
-    const { data } = this.props;
+    const { data, auth } = this.props;
     const { replyComments, showForm } = this.state;
     return (
       <div className="comment-box">
@@ -68,6 +92,15 @@ class CommentBox extends Component {
                 ? `${data.countReplyComment} reply`
                 : ''}
             </span>
+            {auth.user && data.user_id === auth.user.id ? (
+              <span
+                role="button"
+                style={{ float: 'right' }}
+                onClick={() => this.deleteComment(data.id)}
+              >
+                x
+              </span>
+            ) : null}
           </div>
         </div>
         <div className="list-reply-comment">
@@ -91,6 +124,24 @@ class CommentBox extends Component {
 
 CommentBox.propTypes = {
   data: PropTypes.object,
+  signOutRequest: PropTypes.func,
+  auth: PropTypes.object,
+  getAllComment: PropTypes.func,
+  postId: PropTypes.string,
 };
 
-export default CommentBox;
+const mapStateToProps = state => {
+  return {
+    auth: state.Auth,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    signOutRequest: () => dispatch(actionAuth.signOut()),
+    getAllComment: postId =>
+      dispatch(actionComment.getAllCommentRequest(postId)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CommentBox);

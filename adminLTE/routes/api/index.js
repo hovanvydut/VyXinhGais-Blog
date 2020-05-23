@@ -21,6 +21,7 @@ router.get('/tests', (req, res) => res.json('test'));
 router
     .post('/posts/:postId/comment', commentControl.commentInPost)
     .get('/posts/:postId/comments', commentControl.getAllComments)
+    .delete('/posts/comment/:commentId', commentControl.deleteComment)
     .get('/posts/:linkPost', postControl.getPost)
     .post('/posts/comment/:commentId/reply', commentControl.replyComment)
     .get('/posts/comment/:commentId/reply', commentControl.getAllReplyComment);

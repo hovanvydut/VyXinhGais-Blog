@@ -1,10 +1,23 @@
 import * as types from '../constants/ActionTypes';
 
 const user = JSON.parse(localStorage.getItem('user'));
-const initialState = user ? { loggedIn: true, user, errorLogin: false } : {};
+const initialState = user
+  ? {
+      loggedIn: true,
+      user,
+      errorLogin: false,
+      errorSignUp: false,
+      signUpSuccess: false,
+    }
+  : {};
 
 const AuthReducer = (state = initialState, action) => {
   switch (action.type) {
+    case types.SIGN_OUT: {
+      localStorage.removeItem('user');
+      return {};
+    }
+
     case types.USER_LOGIN_REQUEST: {
       return state;
     }
@@ -17,9 +30,9 @@ const AuthReducer = (state = initialState, action) => {
       localStorage.setItem('user', JSON.stringify(data));
 
       return {
+        ...state,
         loggedIn: true,
         user: data,
-        errorLogin: false,
       };
     }
 
@@ -32,6 +45,29 @@ const AuthReducer = (state = initialState, action) => {
 
     case types.USER_SIGNUP_REQUEST: {
       return state;
+    }
+
+    case types.USER_SIGNUP_SUCCESS: {
+      return {
+        ...state,
+        signUpSuccess: true,
+      };
+    }
+
+    case types.USER_SIGNUP_FAILURE: {
+      return {
+        ...state,
+        errorSignUp: true,
+      };
+    }
+
+    case types.SET_FALSE_ALL_SUCCESS_ERROR_AUTH_FLAG: {
+      return {
+        ...state,
+        errorSignUp: false,
+        errorLogin: false,
+        signUpSuccess: false,
+      };
     }
 
     default: {

@@ -58,7 +58,7 @@ class Post extends Component {
         <div>
           <CommentForm postId={postDetail.id} />
           {comments.map(data => (
-            <CommentBox key={data.id} data={data} />
+            <CommentBox key={data.id} data={data} postId={postDetail.id} />
           ))}
         </div>
       </article>

@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import { HOST } from '../../constants/config';
 import * as actionComment from '../../actions/comment';
+import * as actionAuth from '../../actions/auth';
 
 class CommentForm extends Component {
   constructor(props) {
@@ -27,27 +28,37 @@ class CommentForm extends Component {
       commentId,
       loadMoreReply,
       hideCommentForm,
+      signOutRequest,
     } = this.props;
     const { contentCommentForm } = this.state;
     const url = postId
       ? `posts/${postId}/comment`
       : `posts/comment/${commentId}/reply`;
-    await axios.post(
-      `${HOST}/api/v1/${url}`,
-      {
-        content: contentCommentForm,
-        userId: user.id,
-      },
-      {
-        headers: { Authorization: `Bearer ${user.token}` },
+
+    try {
+      await axios.post(
+        `${HOST}/api/v1/${url}`,
+        {
+          content: contentCommentForm,
+          userId: user.id,
+        },
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        }
+      );
+    } catch (e) {
+      if (e.status === 403) {
+        // signOut();
       }
-    );
+    }
+
     if (postId) getAllComment(postId);
     else {
       loadMoreReply(commentId);
-      this.setState({ contentCommentForm: '' });
       hideCommentForm();
     }
+
+    this.setState({ contentCommentForm: '' });
   };
 
   render() {
@@ -105,6 +116,10 @@ CommentForm.propTypes = {
   user: PropTypes.object,
   postId: PropTypes.string,
   getAllComment: PropTypes.func,
+  commentId: PropTypes.string,
+  loadMoreReply: PropTypes.func,
+  hideCommentForm: PropTypes.func,
+  signOutRequest: PropTypes.func,
 };
 
 const mapStateToProps = state => {
@@ -117,6 +132,7 @@ const mapDispatchToProps = dispatch => {
   return {
     getAllComment: postId =>
       dispatch(actionComment.getAllCommentRequest(postId)),
+    signOutRequest: () => dispatch(actionAuth.signOut()),
   };
 };
 

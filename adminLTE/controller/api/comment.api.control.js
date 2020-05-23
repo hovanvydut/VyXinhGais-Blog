@@ -26,7 +26,7 @@ const commentInPost = async (req, res) => {
         });
         return res.status(201).json({ id });
     } catch (e) {
-        return res.status(404).json(e.message);
+        return res.status(403).json(e.message);
     }
 };
 
@@ -56,7 +56,7 @@ const getAllComments = async (req, res) => {
             .orderBy('comments.created_at', 'desc');
         return res.status(200).json(data);
     } catch (e) {
-        return res.status(404).json(e.message);
+        return res.status(403).json(e.message);
     }
 };
 
@@ -73,7 +73,7 @@ const replyComment = async (req, res) => {
         });
         return res.status(201).json({ id });
     } catch (e) {
-        return res.status(404).json(e.message);
+        return res.status(403).json(e.message);
     }
 };
 
@@ -94,7 +94,31 @@ const getAllReplyComment = async (req, res) => {
             .orderBy('reply_comment.created_at', 'asc');
         return res.status(200).json(data);
     } catch (e) {
-        return res.status(404).json(e.message);
+        return res.status(403).json(e.message);
+    }
+};
+
+const deleteComment = async (req, res) => {
+    const { commentId } = req.params;
+    let decoded;
+
+    try {
+        decoded = jwt.verify(
+            req.headers.authorization.split(' ')[1],
+            process.env.JWT_SECRET_KEY
+        );
+    } catch (e) {
+        return res.status(403).json('invalid token');
+    }
+
+    try {
+        await knex('comments')
+            .where({ id: commentId, user_id: decoded.id })
+            .del();
+    } catch (e) {
+        return res
+            .status(409)
+            .json("You dont allow delete another user's comment");
     }
 };
 
@@ -103,4 +127,5 @@ module.exports = {
     getAllComments,
     replyComment,
     getAllReplyComment,
+    deleteComment,
 };

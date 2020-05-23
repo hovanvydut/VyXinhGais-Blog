@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { ToastContainer, toast } from 'react-toastify';
+import * as actionAuth from '../actions/auth';
 import { cambiar_login, cambiar_sign_up } from './scripts/sigin';
 import './stylesheets/SignInAndSignOut.css';
 import { loginRequest, signUpRequest } from '../actions/auth';
@@ -23,6 +24,24 @@ class SignInAndSignOut extends Component {
         retypePassword: '',
       },
     };
+  }
+
+  componentDidUpdate() {
+    const { auth, setFalseAllSuccessErrorAuthFlag } = this.props;
+    const { errorLogin, errorSignUp, signUpSuccess } = auth;
+    if (signUpSuccess) {
+      this.setState({
+        signUp: {
+          fullname: '',
+          email: '',
+          password: '',
+          retypePassword: '',
+        },
+      });
+    }
+    if (errorLogin || errorSignUp || signUpSuccess) {
+      setFalseAllSuccessErrorAuthFlag();
+    }
   }
 
   handleFormSignIn = e => {
@@ -73,16 +92,27 @@ class SignInAndSignOut extends Component {
   render() {
     const { auth } = this.props;
     const { login, signUp } = this.state;
-    const { user, loggedIn, errorLogin } = auth;
+    const { user, loggedIn, signUpSuccess, errorLogin, errorSignUp } = auth;
 
     if (loggedIn && Date.now() / 1000 <= user.exp) {
       return <Redirect to="/" />;
     }
 
+    if (errorLogin) {
+      toast.error('Username or password wrong');
+    }
+    if (errorSignUp) {
+      toast.error(
+        'Invalid email or password must have least 8 characters, 1 special character, 1 number'
+      );
+    }
+    if (signUpSuccess) {
+      toast.success('Sign up successfully!');
+    }
+
     return (
       <div className="cotn_principal">
         <ToastContainer />
-        {errorLogin ? toast.error('Username or password wrong') : null}
         <div className="cont_centrar">
           <div className="cont_login">
             <div className="cont_info_log_sign_up">
@@ -206,6 +236,7 @@ SignInAndSignOut.propTypes = {
   auth: PropTypes.object,
   loginDispatch: PropTypes.func,
   signUpDispatch: PropTypes.func,
+  setFalseAllSuccessErrorAuthFlag: PropTypes.func,
 };
 
 const mapStateToProps = state => {
@@ -217,6 +248,8 @@ const mapDispatchToProps = dispatch => {
   return {
     loginDispatch: (email, password) => dispatch(loginRequest(email, password)),
     signUpDispatch: data => dispatch(signUpRequest(data)),
+    setFalseAllSuccessErrorAuthFlag: () =>
+      dispatch(actionAuth.setFalseAllSuccessErrorAuthFlag()),
   };
 };
 

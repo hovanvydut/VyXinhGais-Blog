@@ -164,6 +164,7 @@ function* searchPostNameSaga(action) {
 function* getAllCommentSaga(action) {
   const { postId } = action.payload;
   try {
+    console.log(postId);
     const response = yield axios.get(`${HOST}/api/v1/posts/${postId}/comments`);
     yield put(actionComment.getAllCommentSuccess(response.data));
   } catch (e) {

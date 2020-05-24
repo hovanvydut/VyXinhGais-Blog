@@ -6,7 +6,6 @@ const commentInPost = async (req, res) => {
     const { postId } = req.params;
     const { content, userId } = req.body;
     let decoded;
-    console.log('here');
     try {
         decoded = jwt.verify(
             req.headers.authorization.split(' ')[1],
@@ -85,7 +84,7 @@ const getAllReplyComment = async (req, res) => {
                 'reply_comment.id',
                 'reply_comment.content',
                 'reply_comment.created_at',
-                'users.id',
+                'users.id as user_id',
                 'users.name',
                 'users.avatar'
             )
@@ -115,6 +114,34 @@ const deleteComment = async (req, res) => {
         await knex('comments')
             .where({ id: commentId, user_id: decoded.id })
             .del();
+
+        return res.status(200).json('delete comment successfully');
+    } catch (e) {
+        return res
+            .status(409)
+            .json("You dont allow delete another user's comment");
+    }
+};
+
+const deleteReplyComment = async (req, res) => {
+    const { replyCommentId } = req.params;
+    let decoded;
+
+    try {
+        decoded = jwt.verify(
+            req.headers.authorization.split(' ')[1],
+            process.env.JWT_SECRET_KEY
+        );
+    } catch (e) {
+        return res.status(403).json('invalid token');
+    }
+
+    try {
+        await knex('reply_comment')
+            .where({ id: replyCommentId, user_id: decoded.id })
+            .del();
+
+        return res.status(200).json('delete reply comment successfully');
     } catch (e) {
         return res
             .status(409)
@@ -128,4 +155,5 @@ module.exports = {
     replyComment,
     getAllReplyComment,
     deleteComment,
+    deleteReplyComment,
 };

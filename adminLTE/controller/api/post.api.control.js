@@ -48,7 +48,8 @@ const getPost = async (req, res) => {
                 'posts.countView',
                 'posts.created_at',
                 'users.name as authorName',
-                'users.avatar as linkAvatarOfAuthor'
+                'users.avatar as linkAvatarOfAuthor',
+                'users.introduce as introduceAuthor'
             )
             .where({ linkPost })
             .innerJoin('users', 'users.id', '=', 'posts.author')

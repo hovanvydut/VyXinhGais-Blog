@@ -35,8 +35,8 @@ class CommentForm extends Component {
       ? `posts/${postId}/comment`
       : `posts/comment/${commentId}/reply`;
 
-    try {
-      await axios.post(
+    await axios
+      .post(
         `${HOST}/api/v1/${url}`,
         {
           content: contentCommentForm,
@@ -45,17 +45,12 @@ class CommentForm extends Component {
         {
           headers: { Authorization: `Bearer ${user.token}` },
         }
-      );
-    } catch (e) {
-      if (e.status === 403) {
-        // signOut();
-      }
-    }
+      )
+      .catch(() => signOutRequest());
 
     if (postId) getAllComment(postId);
     else {
       loadMoreReply(commentId);
-      hideCommentForm();
     }
 
     this.setState({ contentCommentForm: '' });

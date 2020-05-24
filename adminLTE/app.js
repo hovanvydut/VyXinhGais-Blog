@@ -48,7 +48,7 @@ app.use('/api/v1', cors(), apiRouter);
 app.use('/admin', indexRouter);
 app.use('/admin/accounts', accountsRouter);
 app.use('/', (req, res) => {
-    res.send('home page');
+    res.send('https://github.com/hovanvydut');
 });
 
 // catch 404 and forward to error handler

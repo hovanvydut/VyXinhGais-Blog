@@ -14,6 +14,7 @@ exports.up = function(knex) {
         table.string('avatar').defaultTo(config.defaultAvatar());
         table.string('role', 50).defaultTo('customer');
         table.boolean('is_active_email').defaultTo(false);
+        table.text('introduce').defaultTo('');
     });
 };
 

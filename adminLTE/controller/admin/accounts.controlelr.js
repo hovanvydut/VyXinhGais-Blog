@@ -5,6 +5,7 @@ const letterActiveEmail = require('../../common/letterActiveEmail');
 const generateId = require('../../common/generateId');
 const sendMyMail = require('../../common/nodemailer.config');
 const { DBError, SendMailError } = require('../../common/customErr');
+const config = require('../../common/config');
 
 const renderSignInView = (req, res) => {
     // error sent by handleSingIn
@@ -116,6 +117,7 @@ const handleSignUp = async (req, res, next) => {
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(user.password, salt);
     user.password = hash;
+    user.avatar = config.defaultAvatar();
     await knex('users').insert(user);
 
     // ? And save data in `active_email` table to send email which help active email

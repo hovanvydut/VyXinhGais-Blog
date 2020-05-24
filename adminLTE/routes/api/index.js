@@ -12,11 +12,6 @@ router.get('/thumb-posts', postControl.getThumbPost);
 
 // api/v1/search?postName=abcxyz
 router.get('/search', postControl.searchPost);
-/** /api/v1/
- * GET /posts/:postId/comments
- * POST /posts/:postId/comment
- * POST /posts/:postId/comment/:commentId/reply
- */
 router.get('/tests', (req, res) => res.json('test'));
 router
     .post('/posts/:postId/comment', commentControl.commentInPost)
@@ -24,7 +19,11 @@ router
     .delete('/posts/comment/:commentId', commentControl.deleteComment)
     .get('/posts/:linkPost', postControl.getPost)
     .post('/posts/comment/:commentId/reply', commentControl.replyComment)
-    .get('/posts/comment/:commentId/reply', commentControl.getAllReplyComment);
+    .get('/posts/comment/:commentId/reply', commentControl.getAllReplyComment)
+    .delete(
+        '/posts/comment/:commentId/reply/:replyCommentId',
+        commentControl.deleteReplyComment
+    );
 
 router.get('/tags', tagControl.getAllTags);
 router.get('/tag/:tagName', tagControl.filterPostByTag);

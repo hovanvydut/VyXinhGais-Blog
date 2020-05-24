@@ -71,9 +71,21 @@ const renderEditProfile = async (req, res, next) => {
 const updateInfo = async (req, res, next) => {
     const { user } = req.session;
     const { userID } = req.params;
+    let { introduce } = req.body;
+    introduce = introduce.trim().replace(/\s(?=\s)/g, '');
+
+    if (!req.file && introduce.length > 0) {
+        await knex('users')
+            .where({ id: userID })
+            .update({
+                introduce,
+            })
+            .catch((err) => next(new DBError(err.message)));
+        return res.redirect(`/admin/profile/${userID}`);
+    }
 
     if (!req.file) {
-        req.flash('blankMessage', 'Please select imate to update');
+        req.flash('blankMessage', 'Please select image to update');
         return res.redirect('/admin/blank-message');
     }
 
@@ -119,6 +131,7 @@ const updateInfo = async (req, res, next) => {
             .where({ id: userID })
             .update({
                 avatar: uploadedImg.url,
+                introduce,
             });
 
         console.log(`* ${uploadedImg.public_id}`);

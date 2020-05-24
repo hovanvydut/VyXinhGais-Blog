@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const generateId = require('./../../common/generateId');
 const knex = require('../../database/connection');
+const config = require('../../common/config');
 
 const handleLogin = async (req, res) => {
     // `${process.env.HOST}/api/v1/login
@@ -83,6 +84,7 @@ const handleSignup = async (req, res) => {
             name: fullname,
             email,
             password: hash,
+            avatar: config.defaultAvatar(),
         });
     } catch (err) {
         return res.status(403).json({ message: 'Failed 403!' });

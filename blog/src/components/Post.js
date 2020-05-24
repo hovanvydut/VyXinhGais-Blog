@@ -21,7 +21,13 @@ class Post extends Component {
 
   render() {
     const { postDetail, comments } = this.props;
-    const { content, authorName, linkAvatarOfAuthor, tags } = postDetail;
+    const {
+      content,
+      authorName,
+      linkAvatarOfAuthor,
+      tags,
+      introduceAuthor,
+    } = postDetail;
     return (
       <article>
         <h1 className="full-post__main-title">{postDetail.title}</h1>
@@ -49,9 +55,7 @@ class Post extends Component {
           </div>
           <div>
             <h3 className="full-post__author-name">{authorName}</h3>
-            <p className="full-post__author-introduce">
-              Fill introduction here
-            </p>
+            <p className="full-post__author-introduce">{introduceAuthor}</p>
           </div>
         </div>
         {/* Comment here */}

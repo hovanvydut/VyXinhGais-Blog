@@ -40,17 +40,11 @@ class CommentBox extends Component {
 
   deleteComment = async commentId => {
     const { auth, signOutRequest, getAllComment, postId } = this.props;
-    // setTimeout(() => getAllComment(postId), 2000);
+
     try {
-      // await axios.delete(`${HOST}/api/v1/posts/comment/${commentId}`, {
-      //   headers: { Authorization: `Bearer ${auth.user.token}` },
-      // });
-      await axios({
-        method: 'DELETE',
-        url: `${HOST}/api/v1/posts/comment/${commentId}`,
+      await axios.delete(`${HOST}/api/v1/posts/comment/${commentId}`, {
         headers: { Authorization: `Bearer ${auth.user.token}` },
       });
-      console.log('Im here');
       getAllComment(postId);
     } catch (e) {
       if (e.status === 403) {
@@ -95,7 +89,7 @@ class CommentBox extends Component {
             {auth.user && data.user_id === auth.user.id ? (
               <span
                 role="button"
-                style={{ float: 'right' }}
+                style={{ float: 'right', marginTop: '-30px' }}
                 onClick={() => this.deleteComment(data.id)}
               >
                 x
@@ -113,7 +107,12 @@ class CommentBox extends Component {
           ) : null}
           {replyComments.length > 0
             ? replyComments.map((reply, idx) => (
-                <ReplyComment key={idx} data={reply} />
+                <ReplyComment
+                  key={idx}
+                  data={reply}
+                  commentId={data.id}
+                  loadMoreReply={this.loadMoreReply}
+                />
               ))
             : null}
         </div>

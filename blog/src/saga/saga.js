@@ -37,14 +37,12 @@ function* getPostSaga(action) {
   try {
     const response = yield axios.get(`${HOST}/api/v1/posts/${linkPost}`);
     yield put(actionPost.getPostSuccess(response.data));
-    try {
-      const response2 = yield axios.get(
-        `${HOST}/api/v1/posts/${response.data.id}/comments`
-      );
-      yield put(actionComment.getAllCommentSuccess(response2.data));
-    } catch (e) {
-      yield put(actionComment.getAllCommentFailure(e.message));
-    }
+    const response2 = yield axios
+      .get(`${HOST}/api/v1/posts/${response.data.id}/comments`)
+      .catch(function*(e) {
+        yield put(actionComment.getAllCommentFailure(e.message));
+      });
+    yield put(actionComment.getAllCommentSuccess(response2.data));
   } catch (error) {
     const errorMessage = `${error?.response?.status}:${error?.response?.statusText}`;
     yield put(actionPost.getPostFailed(errorMessage));

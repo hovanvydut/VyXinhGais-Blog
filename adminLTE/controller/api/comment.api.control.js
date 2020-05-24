@@ -31,6 +31,7 @@ const commentInPost = async (req, res) => {
 
 const getAllComments = async (req, res) => {
     const { postId } = req.params;
+    console.log(postId);
     try {
         const data = await knex('comments')
             .select(

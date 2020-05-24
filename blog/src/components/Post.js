@@ -3,21 +3,28 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import parse from 'html-react-parser';
-import Prism from 'prismjs';
+import hljs from 'highlight.js';
 import * as actionComment from '../actions/comment';
 import CommentForm from './comment/CommentForm';
 import CommentBox from './comment/CommentBox';
 import './stylesheets/prism.css';
 import './stylesheets/comment.css';
+import 'highlight.js/styles/atom-one-light.css';
 
 class Post extends Component {
   componentDidMount() {
-    Prism.highlightAll();
+    this.updateCodeSyntaxHighlighting();
   }
 
   componentDidUpdate() {
-    Prism.highlightAll();
+    this.updateCodeSyntaxHighlighting();
   }
+
+  updateCodeSyntaxHighlighting = () => {
+    document.querySelectorAll('pre code').forEach(block => {
+      hljs.highlightBlock(block);
+    });
+  };
 
   render() {
     const { postDetail, comments } = this.props;

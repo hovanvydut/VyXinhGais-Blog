@@ -63,7 +63,7 @@ class CommentForm extends Component {
     if (!user) {
       return (
         <h2>
-          <Link to="/login" style={{ color: 'blue' }}>
+          <Link to="/login" style={{ color: 'blue', fontSize: '1.5rem' }}>
             Đăng nhập
           </Link>{' '}
           để bình luận

@@ -2,11 +2,20 @@ const knex = require('../../database/connection');
 
 const getAllTags = async (req, res) => {
     // `${process.env.HOST}/api/v1/tags
+    /*
+        "id": "0179-a045-f2f8-d1dc-006b",
+        "name": "Design Pattern",
+        "countPost": 1
+    */
     try {
-        const data = await knex('tags').select();
+        const data = await knex('tags')
+            .select('tags.id', 'tags.name')
+            .leftJoin('post_tags', 'tags.id', '=', 'post_tags.tag_id')
+            .groupBy('tags.id')
+            .count('tag_id as countPost');
         return res.status(200).json(data);
     } catch (err) {
-        return res.status(404).json('Error when query database!');
+        return res.status(404).json(err.message);
     }
 };
 

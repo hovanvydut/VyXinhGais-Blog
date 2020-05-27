@@ -10,7 +10,10 @@ const renderPostPage = async (req, res, next) => {
     const { user } = req.session;
     const message = req.flash('message')[0];
     let data;
-
+    let condition = { 'posts.author': user.id };
+    if (user.role === 'admin') {
+        condition = {};
+    }
     try {
         data = await knex('posts')
             .innerJoin('users', 'posts.author', '=', 'users.id')
@@ -19,11 +22,12 @@ const renderPostPage = async (req, res, next) => {
                 'posts.id',
                 'posts.title',
                 'posts.imgThumb',
-                knex.ref('users.name').as('author'),
-                knex.ref('users.id').as('author_id'),
-                knex.ref('categories.name').as('category_name'),
+                'users.name as author',
+                'users.id as author_id',
+                'categories.name as category_name',
                 'posts.created_at'
             )
+            .where(condition)
             .limit(10)
             .offset(0);
     } catch (err) {
@@ -67,6 +71,11 @@ const renderEditPost = async (req, res, next) => {
         return next(new DBError(err.message));
     }
 
+    if (user.role !== 'admin' && post.author !== user.id) {
+        req.flash('blankMessage', 'You dont allow to edit this post');
+        return res.redirect('/admin/blank-message');
+    }
+
     return res.render('admin/pages/editPost', {
         title: 'Edit post',
         breadscrumb: [
@@ -84,6 +93,8 @@ const renderEditPost = async (req, res, next) => {
 };
 
 const updatePost = async (req, res, next) => {
+    const currentUser = req.session.user;
+
     const { idPost } = req.params;
     const { title, content, tags, description, category } = req.body;
     const linkPost = `${speakingUrl(title)}-${generateId(1)}`;
@@ -103,103 +114,125 @@ const updatePost = async (req, res, next) => {
     } */
 
     // ! start: replace method old upload method by cloudinary upload
-    const oldPost = await knex('posts')
-        .select()
-        .where({ id: idPost })
-        .first();
-
-    let { imgThumb } = oldPost;
+    let oldPost;
     try {
-        const uploadedImg = await cloudinary.uploader.upload(req.file.path, {
-            tags: 'thumbnail',
-            folder: 'VyXinhGais-Blog/thumbnail',
-        });
-        console.log('* ', uploadedImg.url);
-        imgThumb = uploadedImg.url;
-
-        const tmp = oldPost.imgThumb.match(/VyXinhGais-Blog\/thumbnail\/\w+/);
-        const oldPulicId = tmp ? tmp[0] : 'error';
-
-        cloudinary.uploader
-            .destroy(oldPulicId, {
-                invalidate: true,
-            })
-            .catch((err) => console.log(err));
-        fs.unlinkSync(req.file.path);
-    } catch (err) {
-        console.log(err);
-    }
-    // ! end: replace method old upload method by cloudinary upload
-
-    try {
-        if (category !== oldPost.category) {
-            await Promise.all([
-                knex('categories')
-                    .where({ id: category })
-                    .increment('countPost', 1),
-                knex('categories')
-                    .where({ id: oldPost.category })
-                    .whereNot('countPost', 0)
-                    .decrement('countPost', 1),
-            ]);
-        }
-
-        await Promise.all([
-            knex('posts')
-                .where({ id: idPost })
-                .update({
-                    title,
-                    content: content.replace(
-                        new RegExp('(../)?..(?=/static/uploads)', 'g'),
-                        process.env.HOST.slice(0, -1)
-                    ),
-                    linkPost,
-                    description,
-                    category,
-                    imgThumb,
-                }),
-            // ? delete all old tags
-            knex('post_tags')
-                .where({ post_id: idPost })
-                .del(),
-        ]);
-
-        // ? if tags = array => typeof array === "object"; this help avoid tags = undefined
-        let temp = [];
-        if (typeof tags === 'object') {
-            temp = tags;
-        } else if (typeof tags === 'string') {
-            temp.push(tags);
-        }
-        await Promise.all(
-            temp.map((tagId) =>
-                knex('post_tags').insert({
-                    id: generateId(),
-                    post_id: idPost,
-                    tag_id: tagId,
-                })
-            )
-        );
-
-        req.flash('message', {
-            status: 'success',
-            name: 'Update post successfully!',
-        });
-        return res.redirect('/admin/posts');
+        oldPost = await knex('posts')
+            .select()
+            .where({ id: idPost })
+            .first();
     } catch (err) {
         return next(new DBError(err.message));
     }
+    if (currentUser.role !== 'admin' && oldPost.author !== currentUser.id) {
+        req.flash('blankMessage', 'You dont allow to edit this post');
+        return res.redirect('/admin/blank-message');
+    }
+
+    let { imgThumb } = oldPost;
+    if (req.file) {
+        try {
+            const uploadedImg = await cloudinary.uploader.upload(
+                req.file.path,
+                {
+                    tags: 'thumbnail',
+                    folder: 'VyXinhGais-Blog/thumbnail',
+                }
+            );
+            console.log('* ', uploadedImg.url);
+            imgThumb = uploadedImg.url;
+
+            const tmp = oldPost.imgThumb.match(
+                /VyXinhGais-Blog\/thumbnail\/\w+/
+            );
+            const oldPulicId = tmp ? tmp[0] : 'error';
+
+            cloudinary.uploader
+                .destroy(oldPulicId, {
+                    invalidate: true,
+                })
+                .catch((err) => console.log(err));
+            fs.unlinkSync(req.file.path);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    // ! end: replace method old upload method by cloudinary upload
+
+    /*     if (category !== oldPost.category) {
+        await Promise.all([
+            knex('categories')
+                .where({ id: category })
+                .increment('countPost', 1),
+            knex('categories')
+                .where({ id: oldPost.category })
+                .whereNot('countPost', 0)
+                .decrement('countPost', 1),
+        ]).catch((e) => console.log(e));
+    } */
+
+    await Promise.all([
+        knex('posts')
+            .where({ id: idPost })
+            .update({
+                title,
+                content: content.replace(
+                    new RegExp('(../)?..(?=/static/uploads)', 'g'),
+                    process.env.HOST.slice(0, -1)
+                ),
+                linkPost,
+                description,
+                category,
+                imgThumb,
+            }),
+        // ? delete all old tags
+        knex('post_tags')
+            .where({ post_id: idPost })
+            .del(),
+    ]).catch((e) => console.log(e));
+
+    // ? if tags = array => typeof array === "object"; this help avoid tags = undefined
+    let temp = [];
+    if (typeof tags === 'object') {
+        temp = tags;
+    } else if (typeof tags === 'string') {
+        temp.push(tags);
+    }
+
+    await Promise.all(
+        temp.map((tagId) =>
+            knex('post_tags').insert({
+                id: generateId(),
+                post_id: idPost,
+                tag_id: tagId,
+            })
+        )
+    ).catch((e) => console.log(e));
+
+    req.flash('message', {
+        status: 'success',
+        name: 'Update post successfully!',
+    });
+    return res.redirect('/admin/posts');
 };
 
 const deletePost = async (req, res, next) => {
     const { idPost } = req.params;
+    const { user } = req.session;
 
     try {
-        await knex('posts')
-            .where({ id: idPost })
-            .del();
+        if (user.role === 'admin') {
+            await knex('posts')
+                .where({ id: idPost })
+                .del();
+        } else {
+            await knex('posts')
+                .where({ id: idPost, author: user.id })
+                .del();
+        }
     } catch (err) {
-        return next(new DBError(err.message));
+        req.flash('blankMessage', 'You dont allow to delete this post');
+        return res.redirect('/admin/blank-message');
     }
 
     req.flash('message', {

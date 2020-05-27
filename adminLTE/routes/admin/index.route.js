@@ -66,22 +66,15 @@ router
     .get('/profile/:userID', verify.isSignIn, profileController.renderProfile);
 
 router
-    .get(
-        '/posts',
-        verify.isSignInAndActiveEmail,
-        verify.isAdmin,
-        postController.renderPostPage
-    )
+    .get('/posts', verify.isSignInAndActiveEmail, postController.renderPostPage)
     .get(
         '/posts/:idPost',
         verify.isSignInAndActiveEmail,
-        verify.isAdmin,
         postController.renderEditPost
     )
     .post(
         '/posts/:idPost',
         verify.isSignInAndActiveEmail,
-        verify.isAdmin,
         upload.single('imgThumb'),
         imageMin,
         postController.updatePost
@@ -89,7 +82,6 @@ router
     .delete(
         '/posts/:idPost',
         verify.isSignInAndActiveEmail,
-        verify.isAdmin,
         postController.deletePost
     )
     .get('/my-posts', postController.renderMyPost);

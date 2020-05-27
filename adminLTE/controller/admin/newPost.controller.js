@@ -48,7 +48,7 @@ const savePost = async (req, res, next) => {
     if (!tags) {
         req.flash(
             'blankMessage',
-            'Categories is empty! Admin, please create a new tag '
+            'Tag is empty! Please select tag or contact admin to create a new tag '
         );
         return res.redirect('/admin/blank-message');
     }
@@ -99,9 +99,9 @@ const savePost = async (req, res, next) => {
             imgThumb,
         });
 
-        await knex('categories')
+        /* await knex('categories')
             .where({ id: category })
-            .increment('countPost', 1);
+            .increment('countPost', 1); */
 
         let temp = [];
         if (typeof tags === 'object') {
@@ -122,13 +122,13 @@ const savePost = async (req, res, next) => {
         );
 
         // ? update `tags`.`countPost` = `countPost` + 1
-        await Promise.all(
+        /*  await Promise.all(
             temp.map((tagId) =>
                 knex('tags')
                     .where({ id: tagId })
                     .increment('countPost', 1)
             )
-        );
+        ); */
     } catch (err) {
         return next(new DBError(err.message));
     }

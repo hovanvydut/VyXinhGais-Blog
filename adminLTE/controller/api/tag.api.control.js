@@ -2,11 +2,6 @@ const knex = require('../../database/connection');
 
 const getAllTags = async (req, res) => {
     // `${process.env.HOST}/api/v1/tags
-    /*
-        "id": "0179-a045-f2f8-d1dc-006b",
-        "name": "Design Pattern",
-        "countPost": 1
-    */
     try {
         const data = await knex('tags')
             .select('tags.id', 'tags.name')

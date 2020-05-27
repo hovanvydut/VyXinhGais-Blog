@@ -3,7 +3,15 @@ const knex = require('../../database/connection');
 const getAllCategories = async (req, res) => {
     // `${process.env.HOST}/api/v1/categories
     try {
-        const data = await knex('categories').select();
+        const data = await knex('categories')
+            .select(
+                'categories.id',
+                'categories.name',
+                'categories.linkCategory'
+            )
+            .innerJoin('posts', 'posts.category', '=', 'categories.id')
+            .groupBy('categories.id')
+            .count('posts.id as countPost');
         return res.status(200).json(data);
     } catch (err) {
         return res.status(404).json('Error when query database!');

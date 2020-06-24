@@ -1,6 +1,13 @@
 - admin: https://vyxinhgaisblog.herokuapp.com/
 - client: https://vyxinhgaisblog.netlify.app/
 - account admin: hovanvydut@gmail.com password: abcdef123A!
+# DEMO
+* Home page
+![Home page](https://res.cloudinary.com/dgext7ewd/image/upload/v1592965014/VyXinhGais-Blog/github/vy1_zx3wbe.jpg)
+* Article page
+![Article page](https://res.cloudinary.com/dgext7ewd/image/upload/v1592965014/VyXinhGais-Blog/github/vy2_zkv9zy.jpg)
+* Admin page
+![Admin page](https://res.cloudinary.com/dgext7ewd/image/upload/v1592965014/VyXinhGais-Blog/github/vy3_gqcszj.jpg)
 
 # SETUP
 

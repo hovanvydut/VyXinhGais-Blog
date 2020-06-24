@@ -17,6 +17,10 @@ pre {
   background: var(--white-color);
 }
 
+iframe {
+  width: 100%;
+}
+
 /* HEADER */
 .wrapper > header {
   position: fixed;
